@@ -1,0 +1,26 @@
+---
+- import_tasks: fedora.yml
+  when: ansible_facts['distribution'] == "Fedora"
+- import_tasks: debian.yml
+  when: ansible_facts['os_family'] == "Debian"
+- name: Fish config directory present
+  become: true
+  file:
+    dest: /root/.config/fish
+    state: directory
+    owner: root
+    mode: "u=rwx,g=rx,o=x"
+- name: Shell environment templates for root present
+  become: true
+  copy:
+    src: config.fish
+    dest: /root/.config/fish/config.fish
+    owner: root
+    mode: "u=rw,g=,o="
+- name: Fish is login shell for root
+  become: true
+  user:
+    name: root
+    shell: /usr/bin/fish
+- import_tasks: trim.yml
+- import_tasks: pam.yml

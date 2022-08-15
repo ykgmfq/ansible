@@ -1,0 +1,14 @@
+---
+- name: User group present
+  group:
+    name: "{{ role_name }}"
+    gid: "{{ id }}"
+    system: true
+- name: User present
+  user:
+    name: "{{ role_name }}"
+    comment: "{{ role_name }}"
+    uid: "{{ id }}"
+    group: "{{ role_name }}"
+    system: true
+    shell: "{{ user_shell }}"

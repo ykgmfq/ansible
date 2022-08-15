@@ -1,0 +1,10 @@
+---
+- name: Fedora packages present
+  become: true
+  dnf:
+    name:
+      - exa
+      - fish
+      - ripgrep
+      - fd-find
+      - bat

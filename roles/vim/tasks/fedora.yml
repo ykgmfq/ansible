@@ -1,0 +1,4 @@
+---
+- name: packages present
+  dnf:
+    name: neovim

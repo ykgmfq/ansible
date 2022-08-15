@@ -1,0 +1,5 @@
+{{ role_name }}.dm-poepperl.de {
+  reverse_proxy localhost:8096
+  import stdheader
+  encode zstd gzip
+}

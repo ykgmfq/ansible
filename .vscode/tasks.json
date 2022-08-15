@@ -1,0 +1,57 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "playbook check",
+            "type": "process",
+            "command": "ansible-playbook",
+            "args": [
+                "headless.yml",
+                "-i=headless-inventory.yml",
+                "--extra-vars=@secrets.yml",
+                "--vault-password-file=pw.txt",
+                "--diff",
+                "--check"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "playbook check verbose",
+            "type": "process",
+            "command": "ansible-playbook",
+            "args": [
+                "headless.yml",
+                "-i=headless-inventory.yml",
+                "--extra-vars=@secrets.yml",
+                "--vault-password-file=pw.txt",
+                "--diff",
+                "--check",
+                "-vvv"
+            ],
+            "problemMatcher": [],
+        },
+        {
+            "label": "playbook",
+            "type": "process",
+            "command": "ansible-playbook",
+            "args": [
+                "headless.yml",
+                "-i=headless-inventory.yml",
+                "--extra-vars=@secrets.yml",
+                "--vault-password-file=pw.txt",
+                "--diff"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}

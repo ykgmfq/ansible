@@ -1,0 +1,6 @@
+---
+- name: Debian packages present
+  apt:
+    name:
+      - podman
+    install_recommends: no

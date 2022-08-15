@@ -1,0 +1,109 @@
+---
+- name: Access to scans
+  user:
+    append: true
+    name: "{{ role_name }}"
+    groups: "scan"
+- name: Service stopped
+  systemd:
+    state: stopped
+    name: "container-{{ role_name }}"
+  changed_when: false
+  failed_when: false
+- import_tasks: server.db.yml
+- name: Container id file absent
+  file:
+    path: "/run/container-{{ role_name}}.ctr-id"
+    state: absent
+  changed_when: false
+- name: Secret set up
+  containers.podman.podman_secret:
+    force: true
+    name: "{{ item.key }}"
+    data: "{{ item.value }}"
+  loop: "{{ opts | dict2items }}"
+  vars:
+    opts:
+      docs-admin: "{{ secrets.docs.admin }}"
+      docs-key: "{{ secrets.docs.key }}"
+      docs-pg: "{{ secrets.docs.db_pw }}"
+- name: Container dirs present
+  file:
+    path: "/srv/de.dm-poepperl.docs/{{ item }}"
+    state: directory
+  loop:
+    - media
+    - data
+- name: Container present
+  changed_when: false
+  containers.podman.podman_container:
+    image: "localhost/paperless"
+    name: "{{ role_name }}"
+    state: present
+    network: host
+    volume:
+      - "/srv/de.dm-poepperl.docs/data:/usr/src/paperless/data"
+      - "/srv/de.dm-poepperl.docs/media:/usr/src/paperless/media"
+      - /srv/scan/processed:/usr/src/paperless/export
+      - /srv/scan/inbox:/usr/src/paperless/consume
+    cidfile: "/run/container-{{ role_name }}.ctr-id"
+    secrets:
+      - "docs-key,type=env,target=PAPERLESS_SECRET_KEY"
+      - "docs-pg,type=env,target=PAPERLESS_DBPASS"
+      - "docs-admin,type=env,target=PAPERLESS_ADMIN_PASSWORD"
+    env:
+      PAPERLESS_URL: https://docs.dm-poepperl.de
+      PAPERLESS_TIME_ZONE: Europe/Berlin
+      USERMAP_UID: "{{ id }}"
+      USERMAP_GID: "{{ id }}"
+      PAPERLESS_ADMIN_USER: admin
+      PAPERLESS_DBUSER: "{{ role_name }}"
+      PAPERLESS_DBNAME: "{{ role_name }}"
+      PAPERLESS_DBHOST: localhost
+      PAPERLESS_DBSSLMODE: require
+      PAPERLESS_OCR_LANGUAGE: "deu+eng"
+    label:
+      podman_systemd_unit: "container-{{ role_name }}.service"
+      io.containers.autoupdate: local
+- name: Service generated
+  changed_when: false
+  register: service
+  when: not ansible_check_mode
+  command:
+    argv:
+      - "/usr/bin/podman"
+      - "generate"
+      - "systemd"
+      - "--name"
+      - "--no-header"
+      - "--restart-policy"
+      - "no"
+      - "--new"
+      - "{{ role_name }}"
+- name: Service present
+  when: not ansible_check_mode
+  copy:
+    content: "{{ service.stdout }}\n"
+    dest: "/etc/systemd/system/container-{{ role_name}}.service"
+- name: Service started
+  systemd:
+    state: started
+    enabled: true
+    name: "container-{{ role_name }}"
+    daemon-reload: true
+  changed_when: false
+- name: Caddyfile present
+  template:
+    src: Caddyfile
+    dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"
+- name: Sanoid config
+  community.general.ini_file:
+    path: "/etc/sanoid/sanoid.conf"
+    section: "data/{{ role_name }}"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ opts | dict2items }}"
+  vars:
+    opts:
+      use_template: production
+      pre_snapshot_script: "/usr/local/bin/pg_dump.fish"

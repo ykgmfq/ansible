@@ -1,0 +1,12 @@
+---
+- name: DB user present
+  community.postgresql.postgresql_user:
+    login_user: root
+    db: postgres
+    name: "{{ role_name }}"
+    password: "{{ secrets.docs.db_pw }}"
+- name: Database present
+  community.postgresql.postgresql_db:
+    login_user: root
+    name: "{{ role_name }}"
+    owner: "{{ role_name }}"

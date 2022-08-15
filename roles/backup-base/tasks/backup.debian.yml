@@ -1,0 +1,6 @@
+---
+- name: Debian packages present
+  apt:
+    name:
+      - sanoid
+    install_recommends: no

@@ -1,0 +1,5 @@
+---
+- name: Debian packages present
+  apt:
+    name: libvirt-daemon-system
+    install_recommends: no

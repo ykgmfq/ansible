@@ -1,0 +1,13 @@
+---
+- import_tasks: debian.yml
+  when: ansible_facts['os_family'] == "Debian"
+- name: Facts established
+  set_fact:
+    home_automation_dir: "{{ persist_dir }}/{{ role_name }}"
+    home_address: "192.168.122.141"
+- name: Restart backup timer
+  listen: "backup config changed"
+  systemd:
+    name: "backup@{{ role_name }}.timer"
+    state: restarted
+    daemon_reload: true

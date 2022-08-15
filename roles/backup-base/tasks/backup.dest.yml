@@ -1,0 +1,51 @@
+---
+- name: Sanoid config
+  community.general.ini_file:
+    path: "/etc/sanoid/sanoid.conf"
+    section: "template_backup"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ opts | dict2items }}"
+  vars:
+    opts:
+      frequently: 0
+      hourly: 0
+      daily: 7
+      monthly: 12
+      yearly: 1
+      autosnap: "false"
+      autoprune: "true"
+      hourly_warn: 2880
+      hourly_crit: 3600
+      daily_warn: 48
+      daily_crit: 60
+
+# - name: System units present
+#   import_role:
+#     name: "0x0i.systemd"
+#   vars:
+#     unit_config:
+#       - name: "syncoid@"
+#         path: /usr/local/lib/systemd/system
+#         Unit:
+#           Description: Dm-poepperl.de Syncoid
+#           After: network-online.target
+#           Requires: network-online.target
+#           OnFailure: notify-email@%N.service
+#         Service:
+#           User: backup
+#           Type: oneshot
+#           Restart: on-failure
+#           RestartSec: 5min
+#           ExecStart: "/usr/sbin/syncoid --no-sync-snap --no-privilege-elevation backup@dm-poepperl.de:data/%i backup/%i"
+#       - name: "syncoid@"
+#         path: /usr/local/lib/systemd/system
+#         type: timer
+#         Unit:
+#           Description: Dm-poepperl.de Syncoid
+#         Timer:
+#           OnCalendar: "12:00"
+#           Persistent: true
+#           RandomizedDelaySec: 2h
+#         Install:
+#           WantedBy: default.target

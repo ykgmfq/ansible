@@ -1,0 +1,2 @@
+ACTION=="add", ATTRS{product}=="ConBee II", SYMLINK+="conbee"
+SUBSYSTEM=="tty", SYMLINK=="conbee", TAG+="systemd", ENV{SYSTEMD_WANTS}="container-home.service"

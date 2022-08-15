@@ -1,0 +1,8 @@
+{{ role_name }}.dm-poepperl.de {
+  reverse_proxy localhost:8123
+  # Mozilla Observatory B+
+  import stdheader
+  # https://github.com/home-assistant/iOS/issues/106
+  #Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' wss://home.dm-poepperl.de/;"
+  encode zstd gzip
+}

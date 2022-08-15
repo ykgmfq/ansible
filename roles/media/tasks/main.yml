@@ -1,0 +1,27 @@
+---
+- import_tasks: debian.yml
+- name: Caddyfile present
+  template:
+    src: Caddyfile
+    dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"
+- name: Sanoid config template
+  community.general.ini_file:
+    path: "/etc/sanoid/sanoid.conf"
+    section: "template_{{ role_name }}"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ opts | dict2items }}"
+  vars:
+    opts:
+      hourly: 6
+      daily: 3
+      monthly: 1
+      yearly: 0
+      autosnap: true
+      autoprune: true
+- name: Sanoid config
+  community.general.ini_file:
+    path: "/etc/sanoid/sanoid.conf"
+    section: "data/{{ role_name }}"
+    option: "use_template"
+    value: "{{ role_name }}"

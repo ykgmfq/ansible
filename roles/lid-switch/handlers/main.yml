@@ -1,0 +1,5 @@
+---
+- name: Restart machine for logind
+  listen: "logind config changed"
+  debug:
+    msg: "Dont't forget to reboot later."

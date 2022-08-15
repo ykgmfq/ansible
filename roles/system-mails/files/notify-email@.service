@@ -1,0 +1,8 @@
+[Unit]
+Description=Sent status email
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/notify-email.py %i

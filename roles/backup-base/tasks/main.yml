@@ -1,0 +1,16 @@
+---
+- import_tasks: backup.debian.yml
+- import_tasks: backup.dest.yml
+  when: is_backup_system
+- import_tasks: backup.target.yml
+  when: not is_backup_system
+- name: System units present
+  import_role:
+    name: "0x0i.systemd"
+  vars:
+    unit_config:
+      - name: "override"
+        type: conf
+        path: "/etc/systemd/system/sanoid.service.d"
+        Unit:
+          OnFailure: "notify-email@%N.service"

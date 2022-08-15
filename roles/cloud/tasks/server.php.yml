@@ -1,0 +1,56 @@
+---
+- name: FPM alias set
+  notify: "fpm config changed"
+  file:
+    src: "/lib/systemd/system/php{{ phpver }}-fpm.service"
+    dest: "/etc/systemd/system/php-fpm.service"
+    state: link
+- name: Nextcloud FPM config
+  notify: "fpm config changed"
+  community.general.ini_file:
+    path: "/etc/php/{{ phpver }}/fpm/conf.d/99-nextcloud.ini"
+    section: ""
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ opts | dict2items }}"
+  vars:
+    opts:
+      memory_limit: 1G
+- name: Nextcloud Updater config
+  notify: "fpm config changed"
+  community.general.ini_file:
+    path: "/etc/php/{{ phpver }}/cli/conf.d/99-nextcloud-updater.ini"
+    section: ""
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ opts | dict2items }}"
+  vars:
+    opts:
+      apc.enable_cli: "1"
+      max_execution_time: "120"
+      max_input_time: "90"
+      memory_limit: 1G
+- name: Pool configured
+  notify: "fpm config changed"
+  community.general.ini_file:
+    path: "/etc/php/{{ phpver }}/fpm/pool.d/{{ role_name }}.conf"
+    section: "{{ role_name }}"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ opts | dict2items }}"
+  vars:
+    opts:
+      user: "{{ role_name }}"
+      group: www-data
+      listen: "{{ php_socket }}"
+      listen.owner: "{{ role_name }}"
+      listen.group: www-data
+      pm: static
+      pm.max_children: "10"
+      chdir: "{{ html_dir }}"
+      clear_env: "no"
+- name: Caddyfile present
+  notify: "web config changed"
+  template:
+    src: Caddyfile
+    dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"

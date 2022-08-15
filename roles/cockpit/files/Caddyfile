@@ -1,0 +1,5 @@
+cockpit.dm-poepperl.de {
+  reverse_proxy localhost:9090
+  import stdheader
+  encode zstd gzip
+}

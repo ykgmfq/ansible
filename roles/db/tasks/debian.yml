@@ -1,0 +1,8 @@
+---
+- name: Debian packages present
+  apt:
+    name:
+      - "postgresql"
+      - "postgresql-client-{{ pgver }}"
+      - python3-psycopg2
+    install_recommends: no

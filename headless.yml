@@ -1,0 +1,24 @@
+---
+- name: Common headless functionality present
+  hosts: headless
+  remote_user: root
+  roles:
+    - docs
+    - apt
+    - common
+    - cloud
+    - backup-base
+    - home
+    - vault
+    - vim
+    - system-mails
+- name: Home server configured
+  hosts: homeserver
+  remote_user: root
+  roles:
+    - scan
+    - media
+    - caddy
+    - container
+    - db
+    - lid-switch

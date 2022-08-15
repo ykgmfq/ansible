@@ -1,0 +1,8 @@
+---
+- name: Debian packages present
+  apt:
+    name:
+      - jellyfin-web
+      - jellyfin-server
+      - ffmpeg
+    install_recommends: no

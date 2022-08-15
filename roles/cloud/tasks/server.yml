@@ -1,0 +1,81 @@
+---
+- name: Pool set
+  set_fact:
+    pool_dir: "/srv/de.dm-poepperl.cloud"
+- name: Paths set
+  notify: "fpm config changed"
+  set_fact:
+    html_dir: "{{ pool_dir }}/html/"
+    php_socket: "/run/php/cloud.sock"
+- import_tasks: server.debian.yml
+- import_tasks: server.db.yml
+- name: ZFS dataset present
+  community.general.zfs:
+    name: "data/{{ role_name }}"
+    state: present
+    extra_zfs_properties:
+      mountpoint: "{{ pool_dir }}"
+- name: Root directory present
+  file:
+    dest: "{{ pool_dir }}"
+    state: directory
+    owner: cloud
+    mode: "u=rwx,g=rx,o=x"
+- import_tasks: server.php.yml
+- name: System units present
+  import_role:
+    name: "0x0i.systemd"
+  vars:
+    unit_config:
+      - name: "cloud-upgrade"
+        Unit:
+          Description: Cloud upgrade
+          After: network-online.target postgresql.service
+          Requires: network-online.target postgresql.service
+          OnFailure: notify-email@%N.service
+        Service:
+          User: cloud
+          Type: oneshot
+          ExecStartPre: "/usr/bin/php occ app:update --all"
+          ExecStart: "/usr/bin/php updater/updater.phar --no-interaction"
+          WorkingDirectory: "/srv/de.dm-poepperl.cloud/html"
+      - name: "cloud-upgrade"
+        enabled: true
+        type: timer
+        Unit:
+          Description: Cloud upgrade
+        Timer:
+          OnCalendar: "04:00"
+          Persistent: true
+        Install:
+          WantedBy: php-fpm.service
+      - name: "cloud-cron"
+        Unit:
+          Description: Cloud cron
+          After: cloud-upgrade.service postgresql.service
+          Requires: postgresql.service
+          OnFailure: notify-email@%N.service
+        Service:
+          User: cloud
+          Type: oneshot
+          ExecStartPre: "/usr/bin/php occ preview:pre-generate"
+          ExecStart: "/usr/bin/php -f cron.php"
+          WorkingDirectory: "/srv/de.dm-poepperl.cloud/html"
+      - name: "cloud-cron"
+        enabled: true
+        type: timer
+        Unit:
+          Description: Cloud cron
+          BindsTo: php-fpm.service
+        Timer:
+          OnUnitActiveSec: "5min"
+          OnBootSec: "5min"
+        Install:
+          WantedBy: php-fpm.service
+- name: PDF previews allowed with ImageMagick
+  community.general.xml:
+    path: /etc/ImageMagick-6/policy.xml
+    xpath: '/policymap/policy[@pattern="PDF"]'
+    attribute: rights
+    value: read
+- import_tasks: server.backup.yml

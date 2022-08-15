@@ -1,0 +1,8 @@
+{{ role_name }}.dm-poepperl.de {
+  reverse_proxy localhost:{{ docs_port }}
+  # Mozilla Observatory B+
+  header / {
+    import sts
+  }
+  encode zstd gzip
+}

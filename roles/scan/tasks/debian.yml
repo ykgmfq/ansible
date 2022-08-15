@@ -1,0 +1,8 @@
+---
+- name: Debian scan packages present
+  apt:
+    name:
+      - samba
+      - ocrmypdf
+      - tesseract-ocr-deu
+    install_recommends: no

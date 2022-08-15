@@ -1,0 +1,12 @@
+---
+- name: Sanoid config
+  community.general.ini_file:
+    path: "/etc/sanoid/sanoid.conf"
+    section: "backup/{{ role_name }}"
+    option: use_template
+    value: production
+- name: Syncoid pull service active
+  systemd:
+    name: "syncoid@{{ role_name }}.timer"
+    state: started
+    enabled: true

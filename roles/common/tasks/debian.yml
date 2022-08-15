@@ -1,0 +1,20 @@
+---
+- name: Debian packages present
+  apt:
+    name:
+      - fish
+      - ripgrep
+      - fd-find
+      - aptitude
+      - gnupg
+      - exa
+      - bat
+      - smartmontools
+    install_recommends: no
+- name: Debian packages absent
+  apt:
+    state: absent
+    autoremove: true
+    name:
+      - rsyslog
+      - snapd

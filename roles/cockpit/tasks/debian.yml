@@ -1,0 +1,7 @@
+---
+- name: Cockpit APT packages installed
+  apt:
+    install_recommends: no
+    name:
+      - cockpit
+      - libpam-google-authenticator

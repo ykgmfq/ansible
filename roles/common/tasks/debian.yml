@@ -18,3 +18,14 @@
     name:
       - rsyslog
       - snapd
+      - modemmanager
+      - pi-bluetooth
+      - udisks2
+- name: Services disabled
+  systemd:
+    state: stopped
+    enabled: false
+    name: "{{ item }}"
+  loop:
+    - cron
+    - wpa_supplicant

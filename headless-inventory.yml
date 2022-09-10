@@ -15,6 +15,8 @@ headless:
         docs_port: 8000
     rpi:
       hosts:
+        monitor.fritz.box:
+          user_shell: "/usr/bin/nologin"
         rpi-backup.fritz.box:
           is_backup_system: true
           user_shell: "/usr/bin/nologin"

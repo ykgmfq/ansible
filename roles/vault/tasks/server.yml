@@ -18,7 +18,7 @@
   containers.podman.podman_secret:
     force: true
     name: vault-pg
-    data: "postgresql://vault:{{ secrets.vault.db_pw }}@localhost/vault"
+    data: "postgresql://vault:{{ secrets.vault.db }}@localhost/vault"
 - name: Container present
   changed_when: false
   containers.podman.podman_container:

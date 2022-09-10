@@ -1,0 +1,6 @@
+---
+- name: Restart Resolved
+  listen: "resolved config changed"
+  systemd:
+    name: systemd-resolved
+    state: restarted

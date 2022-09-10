@@ -1,0 +1,91 @@
+---
+- name: Resolved config
+  notify: "resolved config changed"
+  community.general.ini_file:
+    path: "/etc/systemd/resolved.conf"
+    section: "Resolve"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ opts | dict2items }}"
+  vars:
+    opts:
+      DNS: "8.8.8.8"
+      DNSStubListener: "no"
+- name: Network access allowed
+  firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+  loop:
+    - dns
+    - dhcp
+    - http
+- name: Service stopped
+  systemd:
+    state: stopped
+    name: "container-{{ role_name }}"
+  changed_when: false
+  failed_when: false
+- name: Container id file absent
+  file:
+    path: "/run/container-{{ role_name}}.ctr-id"
+    state: absent
+  changed_when: false
+- name: Volume present
+  containers.podman.podman_volume:
+    name: "{{ item }}"
+  loop:
+    - "pihole_etc"
+    - "pihole_dnsmasq"
+- name: Secret set up
+  no_log: true
+  containers.podman.podman_secret:
+    force: true
+    name: pihole-pw
+    data: "{{ secrets.pihole.pw }}"
+- name: Container present
+  changed_when: false
+  containers.podman.podman_container:
+    image: "docker.io/pihole/pihole"
+    name: "{{ role_name }}"
+    state: present
+    network: host
+    volume:
+      - "pihole_etc:/etc/pihole"
+      - "pihole_dnsmasq:/etc/dnsmasq.d"
+    cidfile: "/run/container-{{ role_name }}.ctr-id"
+    secrets:
+      - "pihole-pw,type=env,target=WEBPASSWORD"
+    env:
+      TZ: Europe/Berlin
+      WEB_PORT: "8080"
+    cap_add:
+      - NET_ADMIN
+    label:
+      podman_systemd_unit: "container-{{ role_name }}.service"
+      io.containers.autoupdate: registry
+- name: Service generated
+  changed_when: false
+  register: service
+  when: not ansible_check_mode
+  command:
+    argv:
+      - "/usr/bin/podman"
+      - "generate"
+      - "systemd"
+      - "--name"
+      - "--no-header"
+      - "--new"
+      - "{{ role_name }}"
+- name: Service present
+  when: not ansible_check_mode
+  copy:
+    content: "{{ service.stdout }}\n"
+    dest: "/etc/systemd/system/container-{{ role_name}}.service"
+- name: Service started
+  systemd:
+    state: started
+    enabled: true
+    name: "container-{{ role_name }}"
+    daemon-reload: true
+  changed_when: false

@@ -13,8 +13,7 @@
       ansible.posix.authorized_key:
         user: root
         key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id.pub') }}"
-    # - name: Public-key auth
-- name: Ubuntu standard user disable
+- name: Ubuntu standard user disabled and unwanted features removed
   remote_user: root
   hosts: all
   tasks:
@@ -23,3 +22,21 @@
         name: ubuntu
         state: absent
         force: true
+    - name: Debian packages absent
+      apt:
+        state: absent
+        autoremove: true
+        name:
+          - rsyslog
+          - snapd
+          - modemmanager
+          - pi-bluetooth
+          - udisks2
+    - name: Services disabled
+      systemd:
+        state: stopped
+        enabled: false
+        name: "{{ item }}"
+      loop:
+        - cron
+        - wpa_supplicant

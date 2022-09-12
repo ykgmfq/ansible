@@ -43,7 +43,7 @@
   when: not ansible_check_mode
   copy:
     content: "{{ service.stdout }}\n"
-    dest: "/usr/local/lib/systemd/system/container-{{ container_name}}.service"
+    dest: "/etc/systemd/system/container-{{ container_name}}.service"
 - name: Service started
   systemd:
     state: started

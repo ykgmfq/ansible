@@ -19,14 +19,13 @@
       hourly_crit: 3600
       daily_warn: 48
       daily_crit: 60
-
 # - name: System units present
 #   import_role:
 #     name: "0x0i.systemd"
 #   vars:
 #     unit_config:
 #       - name: "syncoid@"
-#         path: /usr/local/lib/systemd/system
+#         path: /etc/systemd/system
 #         Unit:
 #           Description: Dm-poepperl.de Syncoid
 #           After: network-online.target
@@ -39,7 +38,7 @@
 #           RestartSec: 5min
 #           ExecStart: "/usr/sbin/syncoid --no-sync-snap --no-privilege-elevation backup@dm-poepperl.de:data/%i backup/%i"
 #       - name: "syncoid@"
-#         path: /usr/local/lib/systemd/system
+#         path: /etc/systemd/system
 #         type: timer
 #         Unit:
 #           Description: Dm-poepperl.de Syncoid

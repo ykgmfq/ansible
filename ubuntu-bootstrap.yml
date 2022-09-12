@@ -1,6 +1,6 @@
 ---
 - name: Ubuntu root user bootstrap
-  remote_user: root
+  remote_user: ubuntu
   hosts: all
   tasks:
     - name: Root password set

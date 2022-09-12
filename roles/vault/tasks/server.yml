@@ -7,7 +7,7 @@
   failed_when: false
 - name: Container id file absent
   file:
-    path: "/run/container-{{ role_name}}.ctr-id"
+    path: "/run/container-{{ role_name }}.ctr-id"
     state: absent
   changed_when: false
 - name: Icon volume present
@@ -18,7 +18,8 @@
   containers.podman.podman_secret:
     force: true
     name: vault-pg
-    data: "postgresql://vault:{{ secrets.vault.db }}@localhost/vault"
+    data: "postgresql://{{ role_name }}:{{ db_pw }}@localhost/{{ role_name }}"
+- import_tasks: server.db.yml
 - name: Container present
   changed_when: false
   containers.podman.podman_container:
@@ -57,7 +58,7 @@
   when: not ansible_check_mode
   copy:
     content: "{{ service.stdout }}\n"
-    dest: "/usr/local/lib/systemd/system/container-{{ role_name}}.service"
+    dest: "/etc/systemd/system/container-{{ role_name}}.service"
 - name: Service started
   systemd:
     state: started

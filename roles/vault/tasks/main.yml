@@ -2,6 +2,7 @@
 - name: User id set
   set_fact:
     id: "{{ users.vault }}"
+    db_pw: "{{ secrets.vault.db_pw }}"
 - import_tasks: ../../shared/user/main.yml
 - import_tasks: server.yml
   when: not is_backup_system

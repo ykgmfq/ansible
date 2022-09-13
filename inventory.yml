@@ -16,11 +16,10 @@ headless:
     rpi:
       hosts:
         monitor.fritz.box:
-          user_shell: "/usr/bin/nologin"
         rpi-backup.fritz.box:
           is_backup_system: true
-          user_shell: "/usr/bin/nologin"
       vars:
+        user_shell: "/usr/bin/nologin"
         apt_repos:
           - http://ports.ubuntu.com/ubuntu-ports jammy main restricted
           - http://ports.ubuntu.com/ubuntu-ports jammy universe

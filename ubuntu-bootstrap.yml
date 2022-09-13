@@ -32,6 +32,8 @@
           - modemmanager
           - pi-bluetooth
           - udisks2
+          - irqbalance
+          - cloud-init
     - name: Services disabled
       systemd:
         state: stopped
@@ -40,3 +42,6 @@
       loop:
         - cron
         - wpa_supplicant
+        - snap.lxd.activate
+        - multipathd
+        - multipathd.socket

@@ -17,6 +17,7 @@
     state: absent
   changed_when: false
 - name: Secret set up
+  no_log: true
   containers.podman.podman_secret:
     force: true
     name: "{{ item.key }}"

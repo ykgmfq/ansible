@@ -15,6 +15,7 @@
     name: vault_icons
 - name: Secret set up
   no_log: true
+  changed_when: false
   containers.podman.podman_secret:
     force: true
     name: vault-pg

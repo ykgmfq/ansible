@@ -22,7 +22,7 @@
   containers.podman.podman_container:
     image: "localhost/home-assistant"
     name: "{{ role_name }}"
-    state: present
+    state: created
     network: host
     volume:
       - "/srv/de.dm-poepperl.{{ role_name }}:/config"

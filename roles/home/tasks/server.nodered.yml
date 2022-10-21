@@ -16,7 +16,7 @@
   containers.podman.podman_container:
     image: "localhost/nodered"
     name: "{{ container_name }}"
-    state: present
+    state: created
     network: host
     restart_policy: "no"
     volume:

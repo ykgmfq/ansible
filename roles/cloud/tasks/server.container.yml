@@ -1,8 +1,14 @@
 ---
+- name: Container build source present
+  notify: "cloud container config changed"
+  copy:
+    src: "container/"
+    dest: "/var/container-data/{{ role_name }}/"
 - name: Version config
   notify: "cloud container config changed"
   community.general.ini_file:
-    path: "/etc/systemd/system/env/{{ role_name }}.ini"
+    no_extra_spaces: true
+    path: "/var/container-data/cloud.ini"
     section:
     option: "{{ item.key }}"
     value: "{{ item.value }}"
@@ -12,12 +18,6 @@
       fedora: "{{ cloud_base }}"
       php: "{{ cloud_php }}"
       port: "{{ cloud_port }}"
-      id: "{{ id }}"
-- name: Container build source present
-  notify: "cloud container config changed"
-  copy:
-    src: "container/"
-    dest: "/var/container-data/{{ role_name }}/"
 - name: Secret set up
   no_log: true
   changed_when: false
@@ -93,9 +93,8 @@
           Requires: network-online.target
           OnFailure: notify-email@%N.service
         Service:
-          EnvironmentFile: "/etc/systemd/system/env/{{ r_name }}.ini"
           WorkingDirectory: "/var/container-data/{{ r_name }}"
-          ExecStart: "/usr/bin/podman build --pull --tag {{ r_name }} --build-arg id=${id} --build-arg fedora=${fedora} --build-arg php=${php} --build-arg port=${port} ."
+          ExecStart: "/usr/bin/fish build.fish"
           Type: oneshot
       - name: "image-{{ r_name }}-upgrade"
         enabled: true

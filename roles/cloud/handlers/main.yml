@@ -1,9 +1,9 @@
 ---
-- name: Restart FPM
-  listen: "fpm config changed"
+- name: Rebuild image
+  listen: "cloud container config changed"
   systemd:
-    name: php-fpm
-    state: restarted
+    name: "image-{{ role_name }}-upgrade"
+    state: started
 - name: Restart web server
   listen: "web config changed"
   systemd:

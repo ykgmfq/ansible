@@ -1,0 +1,10 @@
+[Unit]
+Description=Cloud cron
+BindsTo=php-fpm.service
+
+[Timer]
+OnUnitActiveSec=5min
+OnBootSec=5min
+
+[Install]
+WantedBy=php-fpm.service

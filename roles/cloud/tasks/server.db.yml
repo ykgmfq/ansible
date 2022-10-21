@@ -4,6 +4,7 @@
     login_user: root
     db: postgres
     name: "{{ role_name }}"
+    password: "{{ db_pw }}"
 - name: Database present
   community.postgresql.postgresql_db:
     login_user: root

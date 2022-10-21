@@ -1,0 +1,110 @@
+---
+- name: Version config
+  notify: "cloud container config changed"
+  community.general.ini_file:
+    path: "/etc/systemd/system/env/{{ role_name }}.ini"
+    section:
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ opts | dict2items }}"
+  vars:
+    opts:
+      fedora: "{{ cloud_base }}"
+      php: "{{ cloud_php }}"
+      port: "{{ cloud_port }}"
+      id: "{{ id }}"
+- name: Container build source present
+  notify: "cloud container config changed"
+  copy:
+    src: "container/"
+    dest: "/var/container-data/{{ role_name }}/"
+- name: Secret set up
+  no_log: true
+  changed_when: false
+  containers.podman.podman_secret:
+    force: true
+    name: cloud-pg
+    data: "{{ db_pw }}"
+- name: Service stopped
+  systemd:
+    state: stopped
+    name: "container-{{ role_name }}"
+  changed_when: false
+  failed_when: false
+- name: Container id file absent
+  file:
+    path: "/run/container-{{ role_name}}.ctr-id"
+    state: absent
+  changed_when: false
+- name: Container present
+  changed_when: false
+  containers.podman.podman_container:
+    image: "localhost/{{ role_name }}"
+    name: "{{ role_name }}"
+    state: created
+    network: host
+    volume:
+      - "{{ pool_dir }}:{{ pool_dir }}"
+    cidfile: "/run/container-{{ role_name }}.ctr-id"
+    secrets:
+      - "cloud-pg,type=env,target=DBPASSWORD"
+    label:
+      podman_systemd_unit: "container-{{ role_name }}.service"
+      io.containers.autoupdate: local
+- name: Service generated
+  changed_when: false
+  register: service
+  when: not ansible_check_mode
+  command:
+    argv:
+      - "/usr/bin/podman"
+      - "generate"
+      - "systemd"
+      - "--name"
+      - "--no-header"
+      - "--new"
+      - "{{ role_name }}"
+- name: Service present
+  when: not ansible_check_mode
+  copy:
+    content: "{{ service.stdout }}\n"
+    dest: "/etc/systemd/system/container-{{ role_name}}.service"
+- name: Service started
+  systemd:
+    state: started
+    enabled: true
+    name: "container-{{ role_name }}"
+    daemon-reload: true
+  changed_when: false
+- name: Caddyfile present
+  template:
+    src: Caddyfile
+    dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"
+- name: System units present
+  import_role:
+    name: "0x0i.systemd"
+  vars:
+    r_name: "cloud"
+    unit_config:
+      - name: "image-{{ r_name }}-upgrade"
+        Unit:
+          Description: "{{ r_name }} upgrade"
+          After: network-online.target
+          Requires: network-online.target
+          OnFailure: notify-email@%N.service
+        Service:
+          EnvironmentFile: "/etc/systemd/system/env/{{ r_name }}.ini"
+          WorkingDirectory: "/var/container-data/{{ r_name }}"
+          ExecStart: "/usr/bin/podman build --pull --tag {{ r_name }} --build-arg id=${id} --build-arg fedora=${fedora} --build-arg php=${php} --build-arg port=${port} ."
+          Type: oneshot
+      - name: "image-{{ r_name }}-upgrade"
+        enabled: true
+        state: started
+        type: timer
+        Unit:
+          Description: "{{ r_name }} upgrade"
+        Timer:
+          OnCalendar: "Fri 22:00"
+          Persistent: true
+        Install:
+          WantedBy: "container-{{ r_name }}"

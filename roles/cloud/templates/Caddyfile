@@ -1,7 +1,7 @@
 cloud.dm-poepperl.de {
-  root * {{ html_dir }}
+  root * {{ pool_dir }}/html
   file_server
-  php_fastcgi unix/{{ php_socket }}
+  php_fastcgi localhost:{{ cloud_port }}
   # Mozilla Observatory B+, STS not working
   import stdheader
   encode zstd gzip

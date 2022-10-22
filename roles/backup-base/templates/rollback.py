@@ -69,7 +69,7 @@ if pg.exists():
 if questionary.confirm(
     "Auf Stand zurücksetzen?", auto_enter=False, default=False
 ).ask():
-	# -r: rekursiv, roll auch mittlere Schnappschüsse zurück
+    # -r: rekursiv, roll auch mittlere Schnappschüsse zurück
     zfs_rollback = subprocess.run(
         ["/usr/sbin/zfs", "rollback", "-r", snap],
         capture_output=True,
@@ -83,9 +83,9 @@ if questionary.confirm(
                 [
                     "/usr/bin/pg_restore",
                     "--clean",
-                    "--single-transaction",
+                    "--create",
                     "-d",
-                    db,
+                    "postgres",
                     pg,
                 ],
                 capture_output=True,

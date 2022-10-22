@@ -4,6 +4,22 @@
     append: true
     name: "{{ role_name }}"
     groups: "scan"
+- name: System units present
+  import_role:
+    name: "0x0i.systemd"
+  vars:
+    r_name: "docs"
+    unit_config:
+      - name: "image-{{ r_name }}-upgrade"
+        Unit:
+          Description: "{{ r_name }} upgrade"
+          After: network-online.target
+          Requires: network-online.target
+          OnFailure: notify-email@%N.service
+        Service:
+          WorkingDirectory: "/var/container-data/{{ r_name }}"
+          ExecStart: "/usr/bin/fish build.fish"
+          Type: oneshot
 - name: Service stopped
   systemd:
     state: stopped
@@ -38,9 +54,9 @@
 - name: Container present
   changed_when: false
   containers.podman.podman_container:
-    image: "localhost/paperless"
+    image: "localhost/docs"
     name: "{{ role_name }}"
-    state: present
+    state: created
     network: host
     volume:
       - "/srv/de.dm-poepperl.docs/data:/usr/src/paperless/data"

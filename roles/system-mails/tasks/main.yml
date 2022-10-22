@@ -23,3 +23,10 @@
     owner: root
     group: root
     mode: "u=rx,g=r,o="
+- name: Secret set up
+  no_log: true
+  changed_when: false
+  containers.podman.podman_secret:
+    force: true
+    name: "mail_pw"
+    data: "{{ secrets.sys.mail_pw }}"

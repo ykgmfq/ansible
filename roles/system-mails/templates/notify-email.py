@@ -25,7 +25,7 @@ message.set_content(status)
 
 port = 465  # For SSL
 smtp_server = "smtp.strato.de"
-password = "{{ secrets.mails.pw }}"
+password = "{{ secrets.sys.mail_pw }}"
 sender_email = "{{ mail_smtpname }}"
 with SMTP_SSL(smtp_server, port, context=ssl.create_default_context()) as server:
     server.login(sender_email, password)

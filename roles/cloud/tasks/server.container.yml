@@ -23,8 +23,14 @@
   changed_when: false
   containers.podman.podman_secret:
     force: true
-    name: cloud-pg
-    data: "{{ db_pw }}"
+    name: "{{ item.key }}"
+    data: "{{ item.value }}"
+  loop: "{{ opts | dict2items }}"
+  vars:
+    opts:
+      cloud-pwsalt: "{{ secrets.cloud.passwordsalt }}"
+      cloud-secret: "{{ secrets.cloud.secret }}"
+      cloud-pg: "{{ db_pw }}"
 - name: Service stopped
   systemd:
     state: stopped
@@ -46,8 +52,12 @@
     volume:
       - "{{ pool_dir }}:{{ pool_dir }}"
     cidfile: "/run/container-{{ role_name }}.ctr-id"
+    # target must be upper case
     secrets:
+      - "mail_pw,type=env,target=MAIL_SMTPPASSWORD"
       - "cloud-pg,type=env,target=DBPASSWORD"
+      - "cloud-secret,type=env,target=SECRET"
+      - "cloud-pwsalt,type=env,target=PASSWORDSALT"
     label:
       podman_systemd_unit: "container-{{ role_name }}.service"
       io.containers.autoupdate: local

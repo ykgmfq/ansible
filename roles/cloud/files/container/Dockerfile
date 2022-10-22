@@ -6,4 +6,5 @@ arg port
 copy ./src tmp
 run bash /tmp/install.sh $id $php
 expose $port
+env port=$port
 cmd [ "/sbin/init" ]

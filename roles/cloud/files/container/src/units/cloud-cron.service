@@ -7,4 +7,4 @@ User=cloud
 Type=oneshot
 ExecStart=/usr/bin/php -f cron.php
 WorkingDirectory=/srv/de.dm-poepperl.cloud/html
-
+PassEnvironment=DBPASSWORD

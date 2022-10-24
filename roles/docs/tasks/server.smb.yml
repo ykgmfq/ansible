@@ -1,0 +1,7 @@
+- name: Root directory present
+  file:
+    dest: /srv/scan
+    state: directory
+    owner: "{{ role_name }}"
+    group: "{{ role_name }}"
+    mode: "u=rwx,g=rwx,o=x"

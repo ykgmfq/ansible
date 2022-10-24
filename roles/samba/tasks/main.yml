@@ -1,0 +1,12 @@
+---
+- import_tasks: debian.yml
+- import_tasks: smb_user.yml
+- name: Samba config present
+  template:
+    src: smb.conf
+    dest: /etc/samba/
+- name: Network access allowed
+  firewalld:
+    service: samba
+    permanent: true
+    state: enabled

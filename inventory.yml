@@ -15,6 +15,9 @@ headless:
         cloud_port: 9000
         cloud_base: 36
         cloud_php: "8.1"
+        samba_users:
+          - username: docs
+            password: "{{ secrets.docs.samba }}"
     rpi:
       hosts:
         monitor.fritz.box:

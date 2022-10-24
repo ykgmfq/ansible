@@ -3,6 +3,5 @@
   apt:
     name:
       - samba
-      - ocrmypdf
-      - tesseract-ocr-deu
+      - smbclient
     install_recommends: no

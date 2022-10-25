@@ -11,7 +11,7 @@ rpm -i *rpm
 # Package management
 dnf module enable php:remi-$2
 dnf update
-dnf install systemd php php-{cli,bcmath,gmp,fpm,xml,process,gd,mbstring,intl,pecl-{apcu,imagick-im7},opcache,json,zip,pgsql,sodium} ImageMagick7-heic libdav1d
+dnf install systemd php php-{cli,bcmath,gmp,fpm,xml,process,gd,mbstring,intl,pecl-{apcu,imagick-im7},opcache,json,zip,pgsql,sodium} ImageMagick7-heic ffmpeg
 dnf clean all
 # Permissions
 groupadd --gid $1 cloud

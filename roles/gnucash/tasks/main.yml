@@ -1,9 +1,0 @@
----
-- name: User id set
-  set_fact:
-    id: "{{ users.gnucash }}"
-- import_tasks: ../../shared/user/main.yml
-- import_tasks: server.yml
-  when: not is_backup_system
-- import_tasks: ../../shared/backup-sink/main.yml
-  when: is_backup_system

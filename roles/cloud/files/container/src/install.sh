@@ -15,6 +15,7 @@ dnf module enable php:remi-$2
 dnf update
 dnf install systemd ImageMagick7-heic ffmpeg \
 php{,-{cli,bcmath,gmp,fpm,xml,process,gd,mbstring,intl,opcache,json,zip,pgsql,sodium,pecl-{apcu,imagick-im7}}}
+dnf reinstall tzdata
 dnf clean all
 # Create user and matching group
 echo u cloud $1 | systemd-sysusers -

@@ -3,15 +3,14 @@
   email free-software@dm-poepperl.de
 }
 (sts) {
-  Strict-Transport-Security "max-age=31536000;"
+  header / ?Strict-Transport-Security "max-age=63072000"
 }
 (stdheader) {
    header / {
-      import sts
-      X-XSS-Protection "1; mode=block"
-      X-Content-Type-Options "nosniff"
-      X-Frame-Options "deny"
-      Referrer-Policy "no-referrer"
-	}
+      ?X-XSS-Protection "1; mode=block"
+      ?X-Content-Type-Options "nosniff"
+      ?X-Frame-Options "deny"
+      ?Referrer-Policy "no-referrer"
+}
 }
 import sites/*

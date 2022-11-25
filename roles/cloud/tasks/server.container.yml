@@ -28,8 +28,6 @@
   loop: "{{ opts | dict2items }}"
   vars:
     opts:
-      cloud-pwsalt: "{{ secrets.cloud.passwordsalt }}"
-      cloud-secret: "{{ secrets.cloud.secret }}"
       cloud-pg: "{{ db_pw }}"
 - name: Service stopped
   systemd:
@@ -56,8 +54,6 @@
     secrets:
       - "mail_pw,type=env,target=MAIL_SMTPPASSWORD"
       - "cloud-pg,type=env,target=DBPASSWORD"
-      - "cloud-secret,type=env,target=SECRET"
-      - "cloud-pwsalt,type=env,target=PASSWORDSALT"
     label:
       podman_systemd_unit: "container-{{ role_name }}.service"
       io.containers.autoupdate: local

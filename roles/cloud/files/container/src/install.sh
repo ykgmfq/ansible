@@ -30,5 +30,5 @@ new_units=$(ls units/)
 mv units/* /etc/systemd/system/
 rm -r *
 # Set system unit states
-systemctl disable systemd-oomd{,.socket} dbus{,.socket} systemd-userdbd.socket
+systemctl disable systemd-oomd{,.socket} dbus{,.socket} systemd-userdbd.socket $(ls /etc/systemd/system/multi-user.target.wants/)
 systemctl enable php-fpm $new_units

@@ -57,7 +57,6 @@
     opts:
       After: network-online.target
       Requires: network-online.target
-      On-Failure: network-online.target
 - name: Syncoid Service - service config
   community.general.ini_file:
     path: "/usr/local/lib/systemd/system/syncoid@.service"
@@ -84,7 +83,7 @@
       OnCalendar: "12:00"
       Persistent: "true"
       Restart: on-failure
-      RandomizedDelaySec: 30min
+      RandomizedDelaySec: 2min
 - name: Syncoid Timer - install config
   community.general.ini_file:
     path: "/usr/local/lib/systemd/system/syncoid@.timer"

@@ -4,6 +4,6 @@
     id: "{{ users.home }}"
 - import_tasks: ../../shared/user/main.yml
 - import_tasks: server.yml
-  when: not is_backup_system
+  when: not is_backup_sink
 - import_tasks: ../../shared/backup-sink/main.yml
-  when: is_backup_system
+  when: is_backup_sink

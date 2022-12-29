@@ -1,9 +1,9 @@
 ---
 - import_tasks: backup.debian.yml
-- import_tasks: backup.dest.yml
-  when: is_backup_system
-- import_tasks: backup.target.yml
-  when: not is_backup_system
+- import_tasks: backup.sink.yml
+  when: is_backup_sink
+- import_tasks: backup.source.yml
+  when: not is_backup_sink
 - name: System units present
   import_role:
     name: "0x0i.systemd"

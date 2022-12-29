@@ -15,12 +15,6 @@
       yearly: 3
       autosnap: "true"
       autoprune: "true"
-      no_inconsistent_snapshot : "true"
+      no_inconsistent_snapshot: "true"
+      recursive: "true"
       script_timeout: 0
-- name: Postgre dump script present
-  copy:
-    src: pg_dump.fish
-    dest: "/usr/local/bin/"
-    owner: root
-    group: root
-    mode: "u=rx,g=rx,o=rx"

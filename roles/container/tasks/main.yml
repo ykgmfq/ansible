@@ -1,23 +1,4 @@
 ---
 - import_tasks: debian.yml
   when: ansible_facts['os_family'] == "Debian"
-- name: System units present
-  import_role:
-    name: "0x0i.systemd"
-  vars:
-    unit_config:
-      - name: "container-prune"
-        Unit:
-          Description: Prune containers
-        Service:
-          ExecStart: "/usr/bin/podman system prune --all --force"
-          Type: oneshot
-      - name: "container-prune"
-        enabled: true
-        state: started
-        type: timer
-        Unit:
-          Description: Prune containers
-        Timer:
-          OnCalendar: "01:00"
-          Persistent: true
+- import_tasks: systemd.yml

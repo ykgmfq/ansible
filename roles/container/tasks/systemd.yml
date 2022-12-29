@@ -1,0 +1,88 @@
+---
+- import_tasks: debian.yml
+  when: ansible_facts['os_family'] == "Debian"
+- name: Paths set
+  set_fact:
+    image_build: "/etc/systemd/system/image-build@"
+    image_prune: "/etc/systemd/system/image-prune"
+- name: Image prun service - unit config
+  community.general.ini_file:
+    path: "{{ image_prune }}.service"
+    section: "Unit"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ opts | dict2items }}"
+  vars:
+    opts:
+      After: network-online.target
+      Requires: network-online.target
+- name: Image prune service - service config
+  community.general.ini_file:
+    path: "{{ image_prune }}.service"
+    section: "Service"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ opts | dict2items }}"
+  vars:
+    opts:
+      Type: oneshot
+      ExecStart: "/usr/bin/podman system prune --all --force"
+- name: Image prune timer - timer config
+  community.general.ini_file:
+    path: "{{ image_prune }}.timer"
+    section: "Timer"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ opts | dict2items }}"
+  vars:
+    opts:
+      OnCalendar: "01:00"
+      Persistent: "true"
+- name: Image prune timer - install config
+  community.general.ini_file:
+    path: "{{ image_prune }}.timer"
+    section: "Install"
+    option: WantedBy
+    value: podman-auto-update.timer
+
+- name: Image build service - unit config
+  community.general.ini_file:
+    path: "{{ image_build }}.service"
+    section: "Unit"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ opts | dict2items }}"
+  vars:
+    opts:
+      After: network-online.target
+      Requires: network-online.target
+- name: Image build service - service config
+  community.general.ini_file:
+    path: "{{ image_build }}.service"
+    section: "Service"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ opts | dict2items }}"
+  vars:
+    opts:
+      Type: oneshot
+      WorkingDirectory: /var/container-data/%i
+      ExecStart: /usr/bin/fish build.fish
+- name: Image build timer - timer config
+  community.general.ini_file:
+    path: "{{ image_build }}.timer"
+    section: "Timer"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ opts | dict2items }}"
+  vars:
+    opts:
+      OnCalendar: "Fri 23:00"
+      Persistent: "true"
+      RandomizedDelaySec: 10min
+- name: Image build timer - install config
+  community.general.ini_file:
+    path: "{{ image_build }}.timer"
+    section: "Install"
+    option: WantedBy
+    value: podman-auto-update.timer

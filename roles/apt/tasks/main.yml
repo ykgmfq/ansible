@@ -5,14 +5,7 @@
       - aptitude
       - unattended-upgrades
     install_recommends: no
-- name: Sources file empty
-  copy:
-    content: "\n"
-    dest: /etc/apt/sources.list
-- name: APT base repositories present
-  apt_repository:
-    repo: deb {{ item }}
-  loop: "{{ apt_repos }}"
+
 - name: Unattended Upgrades config file present
   template:
     src: unattended_upgrades.conf
@@ -20,21 +13,3 @@
     owner: root
     group: root
     mode: "u=rw,g=r,o=r"
-- name: Apt timers active
-  systemd:
-    name: "{{ item }}.timer"
-    state: started
-    enabled: true
-  loop:
-    - apt-daily
-    - apt-daily-upgrade
-- name: System units present
-  import_role:
-    name: "0x0i.systemd"
-  vars:
-    unit_config:
-      - name: "override"
-        type: conf
-        path: "/etc/systemd/system/apt-daily-upgrade.service.d"
-        Unit:
-          OnFailure: "notify-email@%N.service"

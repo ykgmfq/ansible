@@ -1,14 +1,6 @@
 ---
-- name: Caddy signing key trusted
-  apt_key:
-    url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
-    id: 65760C51EDEA2017CEA2CA15155B6D79CA56EA34
-- name: APT repository present
-  apt_repository:
-    repo: "deb https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main"
 - name: Package installed
   apt:
-    update_cache: yes
     name: caddy
 - name: Config file directories present
   file:

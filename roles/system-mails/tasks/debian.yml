@@ -1,9 +1,0 @@
----
-- name: Install mail packages
-  apt:
-    name: msmtp-mta
-    install_recommends: false
-  register: apt
-- name: Public root certificates directory set
-  set_fact:
-    ca_dir: "/etc/ssl/certs/ca-certificates.crt"

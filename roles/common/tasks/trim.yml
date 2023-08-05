@@ -1,7 +1,0 @@
----
-- name: TRIM timer active
-  become: true
-  systemd:
-    name: fstrim.timer
-    state: started
-    enabled: true

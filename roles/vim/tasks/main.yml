@@ -1,11 +1,9 @@
 ---
-- import_tasks: fedora.yml
-  when: ansible_facts['distribution'] == "Fedora"
 - import_tasks: debian.yml
   when: ansible_facts['os_family'] == "Debian"
 - name: Nvim config dir set
   set_fact:
-        nvim_config_dir: .config/nvim
+    nvim_config_dir: .config/nvim
 - name: /root/{{ nvim_config_dir }} directory present
   file:
     dest: /root/{{ nvim_config_dir }}

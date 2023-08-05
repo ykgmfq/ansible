@@ -1,0 +1,58 @@
+---
+- name: Stubby installed
+  apt:
+    name:
+      - stubby
+    install_recommends: no
+- name: Network config present
+  copy:
+    src: 00-wired.network
+    dest: /etc/systemd/network
+    owner: root
+    group: root
+    mode: "u=r,g=r,o=r"
+- name: Stubby config present
+  copy:
+    src: stubby.yml
+    dest: /etc/stubby/
+    owner: root
+    group: root
+    mode: "u=r,g=r,o=r"
+- name: Pihole config present
+  template:
+    src: setupVars.conf.j2
+    dest: /etc/pihole/setupVars.conf
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+- name: EDNS config present
+  copy:
+    content: "edns-packet-max=1232\n"
+    dest: /etc/dnsmasq.d/99-edns.conf
+    owner: root
+    group: root
+    mode: "u=r,g=r,o=r"
+- name: Network access allowed
+  ansible.posix.firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+  loop:
+    - dhcp
+    - http
+    - dns
+- name: Systemd units present
+  copy:
+    src: "pihole-up.{{ item }}"
+    dest: /etc/systemd/system/
+    owner: root
+    group: root
+    mode: "u=r,g=r,o=r"
+  loop:
+    - service
+    - timer
+- name: Systemd unit enabled
+  systemd:
+    name: pihole-up.timer
+    enabled: true
+    daemon-reload: true

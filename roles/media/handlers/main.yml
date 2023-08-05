@@ -1,0 +1,14 @@
+---
+- name: Restart deployment
+  listen: "media config changed"
+  systemd:
+    name: "{{ service }}"
+    state: restarted
+- name: Rebuild image
+  listen: "media build changed"
+  notify: "media config changed"
+  command:
+    chdir: "{{ dir }}"
+    argv:
+      - "/usr/bin/fish"
+      - "build.fish"

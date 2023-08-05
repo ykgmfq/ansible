@@ -1,8 +1,6 @@
 {{ role_name }}.dm-poepperl.de {
   reverse_proxy localhost:{{ vault_port }}
   # Mozilla Observatory B+
-  header / {
-    import sts
-  }
+  import sts
   encode zstd gzip
 }

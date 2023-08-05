@@ -1,84 +1,34 @@
 ---
-- name: Service stopped
-  systemd:
-    state: stopped
-    name: "container-{{ role_name }}"
-  changed_when: false
-  failed_when: false
-- name: Container id file absent
+- name: Facts set
+  set_fact:
+    dir: "/opt/container/{{ role_name }}"
+- name: Directory present
   file:
-    path: "/run/container-{{ role_name }}.ctr-id"
-    state: absent
-  changed_when: false
-- name: Icon volume present
-  containers.podman.podman_volume:
-    name: vault_icons
-- name: Secret set up
-  no_log: true
-  changed_when: false
-  containers.podman.podman_secret:
-    force: true
-    name: vault-pg
-    data: "postgresql://{{ role_name }}:{{ db_pw }}@localhost/{{ role_name }}"
-- import_tasks: server.db.yml
-- name: Container present
-  changed_when: false
-  containers.podman.podman_container:
-    image: "docker.io/vaultwarden/server:alpine"
-    name: "{{ role_name }}"
-    state: created
-    network: host
-    user: "{{ users.vault }}:{{ users.vault }}"
-    volume:
-      - "/srv/de.dm-poepperl.vault:/data"
-      - "vault_icons:/var/icons"
-    cidfile: "/run/container-{{ role_name }}.ctr-id"
-    secrets:
-      - "vault-pg,type=env,target=DATABASE_URL"
-    env:
-      ROCKET_PORT: "{{ vault_port }}"
-      TZ: Europe/Berlin
-      ICON_CACHE_FOLDER: "/var/icons"
-    label:
-      podman_systemd_unit: "container-{{ role_name }}.service"
-      io.containers.autoupdate: registry
-- name: Service generated
-  changed_when: false
-  register: service
-  when: not ansible_check_mode
-  command:
-    argv:
-      - "/usr/bin/podman"
-      - "generate"
-      - "systemd"
-      - "--name"
-      - "--no-header"
-      - "--new"
-      - "{{ role_name }}"
-- name: Service present
-  when: not ansible_check_mode
-  copy:
-    content: "{{ service.stdout }}\n"
-    dest: "/etc/systemd/system/container-{{ role_name}}.service"
-- name: Service started
-  systemd:
-    state: started
-    enabled: true
-    name: "container-{{ role_name }}"
-    daemon-reload: true
-  changed_when: false
+    path: "{{ dir }}"
+    state: directory
+- name: Deployment present
+  notify: "kube config changed"
+  template:
+    src: kube.yml.j2
+    dest: "{{ dir }}/kube.yml"
+- import_tasks: service.yml
+- name: Volumes
+  block:
+    - name: ZFS volumes
+      containers.podman.podman_volume:
+        name: "{{ role_name }}-{{ item.key }}"
+        options:
+          - "device=data/{{ role_name }}{{ item.value }}"
+          - "type=zfs"
+      loop: "{{ vols | dict2items }}"
+      vars:
+        vols:
+          data: ""
+          db: /db
+    - name: Local volumes
+      containers.podman.podman_volume:
+        name: "{{ role_name }}-icons"
 - name: Caddyfile present
   template:
     src: Caddyfile
     dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"
-- name: Sanoid config
-  community.general.ini_file:
-    path: "/etc/sanoid/sanoid.conf"
-    section: "data/{{ role_name }}"
-    option: "{{ item.key }}"
-    value: "{{ item.value }}"
-  loop: "{{ opts | dict2items }}"
-  vars:
-    opts:
-      use_template: production
-      pre_snapshot_script: "/usr/local/bin/pg_dump.fish"

@@ -1,0 +1,83 @@
+{% set icons = '/var/icons' %}
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    io.containers.autoupdate: registry
+  labels:
+    app: vault-pod
+  name: vault-pod
+spec:
+  automountServiceAccountToken: false
+  containers:
+    - env:
+        - name: TZ
+          value: Europe/Berlin
+        - name: ICON_CACHE_FOLDER
+          value: {{ icons }}
+        - name: ROCKET_PORT
+          value: "{{ vault_port }}"
+        - name: DATABASE_URL
+          value: postgresql://vault@localhost/vault
+      image: ghcr.io/dani-garcia/vaultwarden:alpine
+      name: app
+      livenessProbe:
+        httpGet:
+          path: /alive
+          port: {{ vault_port }}
+        initialDelaySeconds: 5
+        periodSeconds: 60
+      ports:
+        - name: vault
+          containerPort: {{ vault_port }}
+          hostPort: {{ vault_port }}
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+            - CAP_MKNOD
+            - CAP_NET_RAW
+            - CAP_AUDIT_WRITE
+        runAsGroup: {{ users.vault }}
+        runAsUser: {{ users.vault }}
+      volumeMounts:
+        - mountPath: /data
+          name: vault-data-pvc
+        - mountPath: {{ icons }}
+          name: vault-icons-pvc
+    - args:
+        - postgres
+      env:
+        - name: POSTGRES_PASSWORD
+          value: a
+      image: docker.io/library/postgres:15-alpine
+      name: db
+      resources: {}
+      livenessProbe:
+        exec:
+          command:
+            - pg_isready
+        initialDelaySeconds: 5
+        periodSeconds: 60
+      securityContext:
+        capabilities:
+          drop:
+            - CAP_MKNOD
+            - CAP_NET_RAW
+            - CAP_AUDIT_WRITE
+      volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: vault-db-pvc
+  enableServiceLinks: false
+  hostname: vault
+  restartPolicy: Always
+  volumes:
+    - name: vault-data-pvc
+      persistentVolumeClaim:
+        claimName: vault-data
+    - name: vault-icons-pvc
+      persistentVolumeClaim:
+        claimName: vault-icons
+    - name: vault-db-pvc
+      persistentVolumeClaim:
+        claimName: vault-db

@@ -9,5 +9,4 @@
       - gnupg
       - exa
       - bat
-      - smartmontools
     install_recommends: no

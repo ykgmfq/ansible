@@ -1,14 +1,11 @@
 if status is-interactive
     set --erase fish_greeting
     switch (whoami)
-        case "dmp"
+        case dmp
             set --export fish_user_paths ~/.local/bin /var/lib/flatpak/exports/bin
             set --export GPG_TTY (tty)
-            function server --description 'Connect as root to the home server'
-                ssh root@dm-poepperl.de $argv
-            end
             alias o="xdg-open"
-        case "root"
+        case root
             printf "\nFailed Units:\n"
             systemctl list-units --failed
             printf "\nFailed Timers:\n"
@@ -21,7 +18,7 @@ if status is-interactive
     set --export EDITOR nvim
     set --export BAT_THEME OneHalfLight
     set --export VISUAL $EDITOR
-    set --export LESS "-RSMsi"
+    set --export LESS -RSMsi
     alias mkdir="mkdir --parents"
     alias cp="cp --recursive"
 
@@ -50,14 +47,15 @@ if status is-interactive
     else
         alias g="grep"
     end
+    function cd-vol --description 'Go to volume mount'
+        set dir (cat /etc/mtab|g "data/$argv(\s+)"|awk '{ print $2 }')
+        cd $dir
+    end
     function eng --description 'Run with english locale'
         set --local --export LANG "en_US.utf8"
         eval $argv
     end
     function last-boot-errors --description 'Print errors from last boot'
         journalctl --no-pager --boot -1 --priority=err | g --invert-match sshd
-    end
-    function hist --description 'Search the history'
-        g $argv ~/.local/share/fish/fish_history
     end
 end

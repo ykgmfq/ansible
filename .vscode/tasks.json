@@ -52,6 +52,35 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "Galaxy collections",
+            "type": "process",
+            "command": "ansible-galaxy",
+            "args": [
+                "collection",
+                "install",
+                "-r=roles/requirements.yml",
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Get U2F public key",
+            "type": "process",
+            "command": "pamu2fcfg",
+            "args": [
+                "--nouser",
+                "--no-user-presence",
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }

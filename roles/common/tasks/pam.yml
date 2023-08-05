@@ -9,7 +9,7 @@
     u2f_path: "/etc/u2f_mappings"
 - name: U2F mapping set
   copy:
-    src: u2f_mappings
+    content: "root:{{ u2f_key }},+presence\n"
     dest: "{{ u2f_path }}"
     owner: root
     group: root
@@ -23,12 +23,5 @@
     new_type: auth
     new_control: sufficient
     new_module_path: pam_u2f.so
+    module_arguments: "cue authfile={{ u2f_path }}"
     state: after
-- name: Security key PAM options set
-  community.general.pamd:
-    name: login
-    type: auth
-    control: sufficient
-    module_path: pam_u2f.so
-    module_arguments: 'cue authfile={{ u2f_path }}'
-    state: args_present

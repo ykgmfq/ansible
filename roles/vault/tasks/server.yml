@@ -7,7 +7,7 @@
     path: "{{ dir }}"
     state: directory
 - name: Deployment present
-  notify: "kube config changed"
+  notify: "vault config changed"
   template:
     src: kube.yml.j2
     dest: "{{ dir }}/kube.yml"
@@ -16,15 +16,13 @@
   block:
     - name: ZFS volumes
       containers.podman.podman_volume:
-        name: "{{ role_name }}-{{ item.key }}"
+        name: '{{ item | replace("/", "-")}}'
         options:
-          - "device=data/{{ role_name }}{{ item.value }}"
+          - "device=data/{{ item }}"
           - "type=zfs"
-      loop: "{{ vols | dict2items }}"
-      vars:
-        vols:
-          data: ""
-          db: /db
+      loop:
+        - vault
+        - vault/db
     - name: Local volumes
       containers.podman.podman_volume:
         name: "{{ role_name }}-icons"

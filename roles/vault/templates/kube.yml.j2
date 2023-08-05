@@ -42,7 +42,7 @@ spec:
         runAsUser: {{ users.vault }}
       volumeMounts:
         - mountPath: /data
-          name: vault-data-pvc
+          name: vault-pvc
         - mountPath: {{ icons }}
           name: vault-icons-pvc
     - args:
@@ -72,9 +72,9 @@ spec:
   hostname: vault
   restartPolicy: Always
   volumes:
-    - name: vault-data-pvc
+    - name: vault-pvc
       persistentVolumeClaim:
-        claimName: vault-data
+        claimName: vault
     - name: vault-icons-pvc
       persistentVolumeClaim:
         claimName: vault-icons

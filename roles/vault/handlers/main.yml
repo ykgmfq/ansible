@@ -1,6 +1,6 @@
 ---
 - name: Restart web server
-  listen: "kube config changed"
+  listen: "vault config changed"
   systemd:
     name: "{{ service }}"
     state: restarted

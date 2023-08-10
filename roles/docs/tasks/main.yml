@@ -1,9 +1,7 @@
 ---
 - name: User id set
   set_fact:
-    id: "{{ users.docs }}"
-- import_tasks: ../../shared/user/main.yml
+    id: "{{ users.vault }}"
+# - import_tasks: ../../shared/user/main.yml
 - import_tasks: server.yml
   when: not is_backup_sink
-- import_tasks: ../../shared/backup-sink/main.yml
-  when: is_backup_sink

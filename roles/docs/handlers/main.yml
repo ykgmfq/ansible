@@ -1,0 +1,14 @@
+---
+- name: Restart deployment
+  listen: "docs config changed"
+  systemd:
+    name: "{{ service }}"
+    state: restarted
+- name: Rebuild image
+  listen: "docs build changed"
+  notify: "docs config changed"
+  command:
+    chdir: "{{ dir }}"
+    argv:
+      - "/usr/bin/fish"
+      - "build.fish"

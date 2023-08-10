@@ -1,0 +1,122 @@
+{% set data = '/usr/src/paperless/data' %}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    io.containers.autoupdate: registry
+    io.containers.autoupdate/app: local
+  labels:
+    app: docs-pod
+  name: docs-pod
+spec:
+  automountServiceAccountToken: false
+  containers:
+    - args:
+        - /usr/local/bin/paperless_cmd.sh
+      image: localhost/docs:latest
+      name: app
+      livenessProbe:
+        httpGet:
+          port: {{ docs_port }}
+        initialDelaySeconds: 5
+        periodSeconds: 60
+      ports:
+        - containerPort: {{ docs_port }}
+          hostPort: {{ docs_port }}
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+            - CAP_MKNOD
+            - CAP_NET_RAW
+            - CAP_AUDIT_WRITE
+      env:
+        - name: PAPERLESS_URL
+          value: https://docs.dm-poepperl.de
+        - name: PAPERLESS_TIME_ZONE
+          value: Europe/Berlin
+        - name: PAPERLESS_ADMIN_USER
+          value: admin
+        - name: PAPERLESS_DBUSER
+          value: docs
+        - name: PAPERLESS_DBNAME
+          value: docs
+        - name: PAPERLESS_DBHOST
+          value: localhost
+        - name: PAPERLESS_OCR_LANGUAGE
+          value: deu+eng
+        - name: PAPERLESS_OCR_CLEAN
+          value: clean-final
+        - name: PAPERLESS_DATA_DIR
+          value: {{ data }}
+        - name: PAPERLESS_MEDIA_ROOT
+          value: {{ data }}/media
+      volumeMounts:
+        - mountPath: /usr/src/paperless/consume
+          name: srv-scan-inbox-host-0
+        - mountPath: {{ data }}/media/documents/thumbnails
+          name: docs-thumbnails-pvc
+        - mountPath: {{ data }}
+          name: docs-pvc
+    - args:
+        - postgres
+      env:
+        - name: POSTGRES_PASSWORD
+          value: a
+      image: docker.io/library/postgres:15-alpine
+      livenessProbe:
+        exec:
+          command:
+            - pg_isready
+        initialDelaySeconds: 5
+        periodSeconds: 60
+      name: db
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+            - CAP_MKNOD
+            - CAP_NET_RAW
+            - CAP_AUDIT_WRITE
+      volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: docs-db-pvc
+    - args:
+        - redis-server
+      image: docker.io/library/redis:7-alpine
+      name: redis
+      resources: {}
+      livenessProbe:
+        exec:
+          command:
+            - redis-cli
+            - "--raw"
+            - incr
+            - ping
+        initialDelaySeconds: 5
+        periodSeconds: 60
+      securityContext:
+        capabilities:
+          drop:
+            - CAP_MKNOD
+            - CAP_NET_RAW
+            - CAP_AUDIT_WRITE
+      volumeMounts:
+        - mountPath: /data
+          name: docs-redis-pvc
+  enableServiceLinks: false
+  hostname: docs
+  restartPolicy: Always
+  volumes:
+    - hostPath:
+        path: /srv/scan/inbox
+        type: Directory
+      name: srv-scan-inbox-host-0
+{% for vols in volumes.values() %}
+{% for vol in vols %}
+    - name: {{ vol }}-pvc
+      persistentVolumeClaim:
+        claimName: {{ vol }}
+{% endfor %}
+{% endfor %}

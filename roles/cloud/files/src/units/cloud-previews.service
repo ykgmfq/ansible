@@ -1,0 +1,10 @@
+[Unit]
+Description=Cloud previews
+After=cloud-upgrade.service
+
+[Service]
+User=cloud
+Type=oneshot
+ExecStart=/usr/bin/php occ preview:pre-generate
+WorkingDirectory=/srv/de.dm-poepperl.cloud/html
+PassEnvironment=DBPASSWORD

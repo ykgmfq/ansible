@@ -1,0 +1,10 @@
+[Unit]
+Description=Cloud previews
+BindsTo=php-fpm.service
+
+[Timer]
+OnUnitActiveSec=10min
+OnBootSec=10min
+
+[Install]
+WantedBy=php-fpm.service

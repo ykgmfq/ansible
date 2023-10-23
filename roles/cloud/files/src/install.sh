@@ -1,22 +1,21 @@
 #!/usr/bin/bash
 set -eu
 fedora=$(rpm -E %fedora)
-function dnf { microdnf --{assumeyes,nodocs,setopt=install_weak_deps=0} $@; }
+function f { dnf --{assumeyes,nodocs,setopt=install_weak_deps=0} $@; }
 echo "Using ID $1 for cloud user and group. Installing PHP version $2."
 echo "This is Fedora $fedora."
 cd /tmp
 # Configure extra repositories
-curl --location --no-progress-meter --remote-name-all \
+f install \
+fedora-repos-modular \
 https://rpms.remirepo.net/fedora/remi-release-$fedora.rpm \
 https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$fedora.noarch.rpm
-rpm -i *.rpm
+f module enable postgresql:14 php:remi-$2
 # Package management
-dnf module enable php:remi-$2
-dnf update
-dnf install systemd ImageMagick7-heic ffmpeg \
+f install systemd postgresql-server ffmpeg ImageMagick-heic \
 php{,-{cli,bcmath,gmp,fpm,xml,process,gd,mbstring,intl,opcache,json,zip,pgsql,sodium,pecl-{apcu,imagick-im7}}}
-dnf reinstall tzdata
-dnf clean all
+#f reinstall tzdata
+f clean all
 # Create user and matching group
 echo u cloud $1 | systemd-sysusers -
 # Place PHP Config files
@@ -30,5 +29,5 @@ new_units=$(ls units/)
 mv units/* /etc/systemd/system/
 rm -r *
 # Set system unit states
-systemctl disable systemd-oomd{,.socket} dbus{,.socket} systemd-userdbd.socket $(ls /etc/systemd/system/multi-user.target.wants/)
-systemctl enable php-fpm $new_units
+systemctl disable $(ls /etc/systemd/system/multi-user.target.wants/) systemd-{userdb,login}d
+systemctl enable php-fpm postgresql $new_units

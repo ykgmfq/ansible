@@ -1,0 +1,28 @@
+{
+	admin off
+	auto_https off
+}
+:80 {
+	root * /srv/de.dm-poepperl.cloud/html
+	file_server
+	php_fastcgi localhost:9000
+	@dav {
+		path /.well-known/carddav
+		path /.well-known/caldav
+	}
+	@forbidden {
+		path /.htaccess
+		path /data/
+		path /config/
+		path /db_structure
+		path /.xml
+		path /README
+		path /3rdparty/
+		path /lib/
+		path /templates/*
+		path /occ
+		path /console.php
+	}
+	respond @forbidden 404
+	redir @dav /remote.php/dav permanent
+}

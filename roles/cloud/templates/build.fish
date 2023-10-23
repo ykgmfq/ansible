@@ -8,20 +8,20 @@ echo "Port        | $port"
 echo "Tag         | $tag"
 echo "User ID     | $uid"
 # Web server
-set ctr (buildah from --pull docker.io/library/caddy:2)
-buildah copy $ctr ./src/Caddyfile /etc/caddy/
-buildah commit --rm $ctr $tag-web
-# PHP
-set ctr (buildah from --pull quay.io/fedora/fedora:$fedora)
-#set ctr (buildah from --pull quay.io/fedora/fedora-minimal:$fedora)
-buildah copy $ctr ./src tmp
-buildah config \
-    --port $port \
-    --cmd /sbin/init \
-    $ctr
-echo buildah $status
-if test $status -ne 0
-    exit 1
+begin
+    set ctr (buildah from --pull docker.io/library/caddy:2)
+    buildah copy $ctr ./src/Caddyfile /etc/caddy/; or false
+    buildah run $ctr apk add --no-cache curl; or false
+    buildah commit --rm $ctr $tag-web
 end
-buildah run $ctr /tmp/install.sh $uid $php
-buildah commit --rm $ctr $tag
+# PHP
+begin
+    set ctr (buildah from --pull quay.io/fedora/fedora:$fedora)
+    buildah copy $ctr ./src tmp; or false
+    buildah config \
+        --port $port \
+        --cmd /sbin/init \
+        $ctr
+    buildah run $ctr /tmp/install.sh $uid $php; or false
+    buildah commit --rm $ctr $tag
+end

@@ -17,6 +17,12 @@ spec:
         - name: web
           containerPort: 80
           hostPort: 8088
+      livenessProbe:
+        httpGet:
+          path: /alive
+          port: 80
+        initialDelaySeconds: 5
+        periodSeconds: 60
       securityContext:
         capabilities:
           drop:
@@ -32,6 +38,12 @@ spec:
           readOnly: true
     - image: localhost/cloud:latest
       name: app
+      livenessProbe:
+        exec:
+          command:
+            - /usr/local/bin/alive.sh
+        initialDelaySeconds: 5
+        periodSeconds: 60
       securityContext:
         capabilities:
           drop:

@@ -1,7 +1,7 @@
 ---
 # https://stackoverflow.com/a/71050848
 - name: Samba users present
-  shell: >
+  ansible.builtin.shell: >
     set -e -o pipefail
     && (pdbedit --user={{ item.username }} 2>&1 > /dev/null)
     || (echo '{{ item.password }}'; echo '{{ item.password }}')
@@ -13,7 +13,7 @@
   loop: "{{ samba_users }}"
   no_log: true
 - name: Samba passwords set
-  shell: >
+  ansible.builtin.shell: >
     set -e -o pipefail
     && (smbclient -U {{ item.username }}%{{ item.password }} -L 127.0.0.1 2>&1 > /dev/null)
     || (echo '{{ item.password }}'; echo '{{ item.password }}')

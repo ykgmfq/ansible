@@ -1,7 +1,0 @@
----
-- name: Debian scan packages present
-  apt:
-    name:
-      - samba
-      - smbclient
-    install_recommends: no

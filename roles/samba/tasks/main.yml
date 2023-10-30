@@ -1,12 +1,17 @@
 ---
-- import_tasks: debian.yml
+- name: Debian scan packages present
+  ansible.builtin.apt:
+    name:
+      - samba
+      - smbclient
+    install_recommends: false
 - import_tasks: smb_user.yml
 - name: Samba config present
-  template:
+  ansible.builtin.template:
     src: smb.conf
     dest: /etc/samba/
 - name: Network access allowed
-  firewalld:
+  ansible.posix.firewalld:
     service: samba
     permanent: true
     state: enabled

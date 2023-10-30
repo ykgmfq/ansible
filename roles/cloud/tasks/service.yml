@@ -1,0 +1,21 @@
+---
+- name: Service enabled
+  block:
+    - name: Kube file escaped
+      register: escape
+      check_mode: false
+      changed_when: false
+      command:
+        argv:
+          - "/usr/bin/systemd-escape"
+          - "{{ dir }}/kube.yml"
+    - name: Service name set
+      set_fact:
+        service: "podman-kube@{{ escape.stdout }}"
+    - name: Service name
+      debug:
+        msg: "{{ service }}"
+    - name: Service enabled
+      systemd:
+        enabled: true
+        name: "{{ service }}"

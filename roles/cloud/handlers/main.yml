@@ -1,9 +1,17 @@
 ---
-- name: Rebuild image
-  listen: "cloud container config changed"
+- name: Restart deployment
+  listen: "cloud config changed"
   systemd:
-    name: "image-{{ role_name }}-upgrade"
-    state: started
+    name: "{{ service }}"
+    state: restarted
+- name: Rebuild image
+  listen: "cloud build changed"
+  notify: "cloud config changed"
+  command:
+    chdir: "/opt/container/{{ role_name }}"
+    argv:
+      - "/usr/bin/fish"
+      - "build.fish"
 - name: Restart web server
   listen: "web config changed"
   systemd:

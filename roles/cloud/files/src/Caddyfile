@@ -23,6 +23,7 @@
 		path /occ
 		path /console.php
 	}
+	respond /alive "File server is alive!"
 	respond @forbidden 404
 	redir @dav /remote.php/dav permanent
 }

@@ -1,28 +1,6 @@
 cloud.dm-poepperl.de {
-  import stdheader
+  reverse_proxy localhost:{{ ports.cloud }}
+  # Mozilla Observatory B+
   import sts
-  root * {{ pool_dir }}/html
-  file_server
-  php_fastcgi localhost:{{ cloud_port }}
-  # Mozilla Observatory B+, STS not working
   encode zstd gzip
-  @dav {
-    path /.well-known/carddav
-    path /.well-known/caldav
-  }
-  @forbidden {
-    path    /.htaccess
-    path    /data/
-    path    /config/
-    path    /db_structure
-    path    /.xml
-    path    /README
-    path    /3rdparty/
-    path    /lib/
-    path    /templates/*
-    path    /occ
-    path    /console.php
-  }
-  respond @forbidden 404
-  redir @dav /remote.php/dav permanent
 }

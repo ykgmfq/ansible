@@ -3,7 +3,6 @@
   set_fact:
     pool_dir: "/srv/de.dm-poepperl.cloud"
     id: "{{ users.cloud }}"
-    port: "{{ cloud_port }}"
     dir: "/opt/container/{{ role_name }}"
     volumes:
       zfs:
@@ -11,42 +10,6 @@
         - cloud
       local:
         - cloud-preview
-- name: Directory present
-  file:
-    path: "{{ dir }}"
-    state: directory
-- name: Image builder present
-  template:
-    src: build.fish
-    dest: "{{ dir }}/build.fish"
-- name: Deployment present
-  notify: "docs config changed"
-  template:
-    src: kube.yml.j2
-    dest: "{{ dir }}/kube.yml"
-- name: Volumes
-  block:
-    - name: ZFS dataset present
-      community.general.zfs:
-        name: "data/{{ item }}"
-        state: present
-        extra_zfs_properties:
-          mountpoint: "legacy"
-      loop: "{{ volumes.zfs }}"
-    - name: ZFS volumes
-      containers.podman.podman_volume:
-        name: "{{ item }}"
-        options:
-          - "device=data/{{ item | replace('-', '/')}}"
-          - "type=zfs"
-      loop: "{{ volumes.zfs }}"
-    - name: Local volumes
-      containers.podman.podman_volume:
-        name: "{{ item }}"
-      loop: "{{ volumes.local }}"
+- import_tasks: files.yml
+- import_tasks: volumes.yml
 - import_tasks: service.yml
-- name: Caddyfile present
-  notify: "web config changed"
-  template:
-    src: Caddyfile
-    dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"

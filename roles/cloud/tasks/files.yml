@@ -1,0 +1,23 @@
+---
+- name: Directory present
+  file:
+    path: "{{ dir }}"
+    state: directory
+- name: Build sources present
+  copy:
+    src: src/
+    dest: "{{ dir }}/src/"
+- name: Image builder present
+  template:
+    src: build.fish
+    dest: "{{ dir }}/build.fish"
+- name: Deployment present
+  notify: "docs config changed"
+  template:
+    src: kube.yml.j2
+    dest: "{{ dir }}/kube.yml"
+- name: Caddyfile present
+  notify: "web config changed"
+  template:
+    src: Caddyfile
+    dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"

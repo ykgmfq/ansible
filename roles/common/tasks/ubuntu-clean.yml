@@ -1,0 +1,9 @@
+---
+- name: Services disabled
+  systemd:
+    state: stopped
+    enabled: false
+    name: "{{ item }}"
+  loop:
+    - wpa_supplicant
+    - snapd

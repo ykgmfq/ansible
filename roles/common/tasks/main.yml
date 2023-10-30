@@ -1,6 +1,14 @@
 ---
-- import_tasks: debian.yml
-  when: ansible_facts['os_family'] == "Debian"
+- name: Debian packages present
+  apt:
+    name:
+      - fish
+      - ripgrep
+      - fd-find
+      - gnupg
+      - exa
+      - bat
+    install_recommends: no
 - name: Fish config directory present
   become: true
   file:

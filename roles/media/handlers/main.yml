@@ -8,7 +8,7 @@
   listen: "media build changed"
   notify: "media config changed"
   command:
-    chdir: "{{ dir }}"
+    chdir: "/opt/container/{{ role_name }}"
     argv:
       - "/usr/bin/fish"
       - "build.fish"

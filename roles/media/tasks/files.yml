@@ -1,0 +1,19 @@
+---
+- name: Directory present
+  file:
+    path: "{{ dir }}"
+    state: directory
+- name: Deployment present
+  notify: "media config changed"
+  template:
+    src: kube.yml.j2
+    dest: "{{ dir }}/kube.yml"
+- name: Build file present
+  notify: "media build changed"
+  template:
+    src: build.fish.j2
+    dest: "{{ dir }}/build.fish"
+- name: Caddyfile present
+  template:
+    src: Caddyfile
+    dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"

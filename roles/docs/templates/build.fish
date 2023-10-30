@@ -1,7 +1,7 @@
 #!/usr/bin/fish
 set tag (basename (pwd))
 set scan_id (id --user scan)
-set -x USERMAP_UID (id --user $tag)
+set -x USERMAP_UID {{ users.docs }}
 set -x USERMAP_GID $USERMAP_UID
 set -x PAPERLESS_LOGGING_DIR /tmp/log
 echo User ID for scan: $USERMAP_UID

@@ -19,4 +19,3 @@
       systemd:
         enabled: true
         name: "{{ service }}"
-        daemon-reload: true

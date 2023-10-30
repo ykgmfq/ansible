@@ -9,34 +9,6 @@
       local:
         - docs-redis
         - docs-thumbnails
-- name: Directory present
-  file:
-    path: "{{ dir }}"
-    state: directory
-- name: Image builder present
-  template:
-    src: build.fish
-    dest: "{{ dir }}/build.fish"
-- name: Deployment present
-  notify: "docs config changed"
-  template:
-    src: kube.yml.j2
-    dest: "{{ dir }}/kube.yml"
+- import_tasks: files.yml
 - import_tasks: service.yml
-- name: Volumes
-  block:
-    - name: ZFS volumes
-      containers.podman.podman_volume:
-        name: "{{ item }}"
-        options:
-          - "device=data/{{ item | replace('-', '/')}}"
-          - "type=zfs"
-      loop: "{{ volumes.zfs }}"
-    - name: Local volumes
-      containers.podman.podman_volume:
-        name: "{{ item }}"
-      loop: "{{ volumes.local }}"
-- name: Caddyfile present
-  template:
-    src: Caddyfile
-    dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"
+- import_tasks: volumes.yml

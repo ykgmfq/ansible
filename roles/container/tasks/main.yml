@@ -1,4 +1,8 @@
 ---
+- name: Directory present
+  file:
+    path: "/opt/container/"
+    state: directory
 - import_tasks: debian.yml
   when: ansible_facts['os_family'] == "Debian"
 - import_tasks: systemd.yml

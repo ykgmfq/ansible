@@ -1,0 +1,6 @@
+---
+- name: Restart Caddy
+  listen: "caddy config changed"
+  systemd:
+    name: "{{ role_name }}"
+    state: restarted

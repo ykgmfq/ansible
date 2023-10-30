@@ -13,6 +13,7 @@
     - avail
     - sites
 - name: Main Caddy file present
+  notify: "caddy config changed"
   copy:
     src: Caddyfile
     dest: /etc/caddy/Caddyfile

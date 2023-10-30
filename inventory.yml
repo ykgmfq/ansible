@@ -25,6 +25,7 @@ headless:
         user_shell: "/usr/bin/nologin"
         auto_reboot: true
   vars:
+    u2f_key: TEST
     users:
       vault: 844
       scan: 835

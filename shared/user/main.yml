@@ -9,6 +9,6 @@
     name: "{{ role_name }}"
     comment: "{{ role_name }}"
     uid: "{{ id }}"
-    ansible.builtin.group: "{{ role_name }}"
+    group: "{{ role_name }}"
     system: true
     shell: "{{ user_shell }}"

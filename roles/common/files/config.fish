@@ -1,20 +1,9 @@
 if status is-interactive
     set --erase fish_greeting
-    switch (whoami)
-        case dmp
-            set --export fish_user_paths ~/.local/bin /var/lib/flatpak/exports/bin
-            set --export GPG_TTY (tty)
-            alias o="xdg-open"
-        case root
-            printf "\nFailed Units:\n"
-            systemctl list-units --failed
-            printf "\nFailed Timers:\n"
-            systemctl list-timers --failed
-            printf "\n\n"
-            if test -b /dev/sda
-                smartctl -a /dev/sda | awk '/Percent_Lifetime_Remain/ {printf "Remaining Lifetime: %i %%\n",$4}'
-            end
-    end
+    printf "\nFailed Units:\n"
+    systemctl list-units --failed
+    printf "\nFailed Timers:\n"
+    systemctl list-timers --failed
     set --export EDITOR nvim
     set --export BAT_THEME OneHalfLight
     set --export VISUAL $EDITOR
@@ -23,7 +12,6 @@ if status is-interactive
     alias cp="cp --recursive"
 
     alias f=fdfind
-    alias f=fd
 
     if type --quiet (which exa)
         alias ls="exa"

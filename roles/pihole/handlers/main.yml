@@ -1,0 +1,11 @@
+---
+- name: Restart Unbound
+  listen: "unbound config changed"
+  systemd:
+    name: unbound
+    state: restarted
+- name: Restart pihole
+  listen: "pihole config changed"
+  systemd:
+    name: pihole-FTL
+    state: restarted

@@ -1,9 +1,8 @@
 ---
-- name: Stubby installed
+- name: Unbound installed
   apt:
     name:
-      - stubby
-    install_recommends: no
+      - unbound
 - name: Network config present
   copy:
     src: 00-wired.network
@@ -11,14 +10,16 @@
     owner: root
     group: root
     mode: "u=r,g=r,o=r"
-- name: Stubby config present
+- name: Unbound config present
+  notify: "unbound config changed"
   copy:
-    src: stubby.yml
-    dest: /etc/stubby/
+    src: unbound.conf
+    dest: /etc/unbound/unbound.conf.d/pi-hole.conf
     owner: root
     group: root
     mode: "u=r,g=r,o=r"
 - name: Pihole config present
+  notify: "pihole config changed"
   template:
     src: setupVars.conf.j2
     dest: /etc/pihole/setupVars.conf
@@ -26,6 +27,7 @@
     group: root
     mode: "u=rw,g=r,o=r"
 - name: EDNS config present
+  notify: "pihole config changed"
   copy:
     content: "edns-packet-max=1232\n"
     dest: /etc/dnsmasq.d/99-edns.conf
@@ -56,3 +58,11 @@
     name: pihole-up.timer
     enabled: true
     daemon-reload: true
+- name: Service up
+  systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop:
+    - unbound
+    - pihole-FTL

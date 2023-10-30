@@ -1,13 +1,13 @@
 ---
 - name: Restart deployment
   listen: "media config changed"
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ service }}"
     state: restarted
 - name: Rebuild image
   listen: "media build changed"
   notify: "media config changed"
-  command:
+  ansible.builtin.command:
     chdir: "/opt/container/{{ role_name }}"
     argv:
       - "/usr/bin/fish"

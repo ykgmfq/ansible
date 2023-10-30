@@ -1,17 +1,17 @@
 ---
 - name: Service stopped
-  systemd:
+  ansible.builtin.systemd_service:
     state: stopped
     name: "container-{{ role_name }}"
   changed_when: false
   failed_when: false
 - name: Container id file absent
-  file:
+  ansible.builtin.file:
     path: "/run/container-{{ role_name}}.ctr-id"
     state: absent
   changed_when: false
 - name: Udev rules present
-  copy:
+  ansible.builtin.copy:
     src: conbee.rules
     dest: /etc/udev.rules.d
     owner: root
@@ -36,7 +36,7 @@
   changed_when: false
   register: service
   when: not ansible_check_mode
-  command:
+  ansible.builtin.command:
     argv:
       - "/usr/bin/podman"
       - "generate"
@@ -47,18 +47,18 @@
       - "{{ role_name }}"
 - name: Service present
   when: not ansible_check_mode
-  copy:
+  ansible.builtin.copy:
     content: "{{ service.stdout }}\n"
     dest: "/etc/systemd/system/container-{{ role_name}}.service"
 - name: Service started
-  systemd:
+  ansible.builtin.systemd_service:
     state: started
     enabled: true
     name: "container-{{ role_name }}"
     daemon-reload: true
   changed_when: false
 - name: Caddyfile present
-  template:
+  ansible.builtin.template:
     src: Caddyfile
     dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"
 - name: System units present

@@ -1,18 +1,18 @@
 ---
 - name: Directory present
-  file:
+  ansible.builtin.file:
     path: "{{ dir }}"
     state: directory
 - name: Caddyfile present
-  template:
+  ansible.builtin.template:
     src: Caddyfile
     dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"
 - name: Image builder present
-  template:
+  ansible.builtin.template:
     src: build.fish
     dest: "{{ dir }}/build.fish"
 - name: Deployment present
   notify: "docs config changed"
-  template:
+  ansible.builtin.template:
     src: kube.yml.j2
     dest: "{{ dir }}/kube.yml"

@@ -1,19 +1,19 @@
 ---
 - name: Restart deployment
   listen: "cloud config changed"
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ service }}"
     state: restarted
 - name: Rebuild image
   listen: "cloud build changed"
   notify: "cloud config changed"
-  command:
+  ansible.builtin.command:
     chdir: "/opt/container/{{ role_name }}"
     argv:
       - "/usr/bin/fish"
       - "build.fish"
 - name: Restart web server
   listen: "web config changed"
-  systemd:
+  ansible.builtin.systemd_service:
     name: caddy
     state: restarted

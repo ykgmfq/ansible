@@ -1,6 +1,6 @@
 ---
 - name: Facts set
-  set_fact:
+  ansible.builtin.set_fact:
     pool_dir: "/srv/de.dm-poepperl.cloud"
     id: "{{ users.cloud }}"
     dir: "/opt/container/{{ role_name }}"

@@ -1,13 +1,13 @@
 ---
 - name: Aptitude and unattented-upgrades installed
-  apt:
+  ansible.builtin.apt:
     name:
       - aptitude
       - unattended-upgrades
-    install_recommends: no
+    install_recommends: false
 
 - name: Unattended Upgrades config file present
-  template:
+  ansible.builtin.template:
     src: unattended_upgrades.conf
     dest: /etc/apt/apt.conf.d/50unattended-upgrades
     owner: root

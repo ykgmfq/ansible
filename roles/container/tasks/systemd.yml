@@ -2,7 +2,7 @@
 - import_tasks: debian.yml
   when: ansible_facts['os_family'] == "Debian"
 - name: Paths set
-  set_fact:
+  ansible.builtin.set_fact:
     image_build: "/etc/systemd/system/image-build@"
     image_prune: "/etc/systemd/system/image-prune"
 - name: Image prun service - unit config

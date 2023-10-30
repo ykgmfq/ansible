@@ -1,6 +1,6 @@
 ---
 - name: Services disabled
-  systemd:
+  ansible.builtin.systemd_service:
     state: stopped
     enabled: false
     name: "{{ item }}"

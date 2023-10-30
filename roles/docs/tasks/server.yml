@@ -1,6 +1,6 @@
 ---
 - name: Facts set
-  set_fact:
+  ansible.builtin.set_fact:
     dir: "/opt/container/{{ role_name }}"
     volumes:
       zfs:

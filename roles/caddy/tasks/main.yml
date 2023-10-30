@@ -1,9 +1,9 @@
 ---
 - name: Package installed
-  apt:
+  ansible.builtin.apt:
     name: caddy
 - name: Config file directories present
-  file:
+  ansible.builtin.file:
     state: directory
     dest: "/etc/caddy/{{ item }}"
     owner: root
@@ -14,7 +14,7 @@
     - sites
 - name: Main Caddy file present
   notify: "caddy config changed"
-  copy:
+  ansible.builtin.copy:
     src: Caddyfile
     dest: /etc/caddy/Caddyfile
     owner: root

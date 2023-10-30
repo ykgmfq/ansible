@@ -1,14 +1,14 @@
 ---
 - name: Directory present
-  file:
+  ansible.builtin.file:
     path: "{{ dir }}"
     state: directory
 - name: Deployment present
   notify: "vault config changed"
-  template:
+  ansible.builtin.template:
     src: kube.yml.j2
     dest: "{{ dir }}/kube.yml"
 - name: Caddyfile present
-  template:
+  ansible.builtin.template:
     src: Caddyfile
     dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"

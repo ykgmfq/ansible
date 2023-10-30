@@ -1,6 +1,6 @@
 ---
 - name: Facts set
-  set_fact:
+  ansible.builtin.set_fact:
     dir: "/opt/container/{{ role_name }}"
 - import_tasks: files.yml
 - import_tasks: volumes.yml

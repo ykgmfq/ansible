@@ -1,6 +1,6 @@
 ---
 - name: Facts set
-  set_fact:
+  ansible.builtin.set_fact:
     id: "{{ users.media }}"
     dir: "/opt/container/{{ role_name }}"
 - import_tasks: server.yml

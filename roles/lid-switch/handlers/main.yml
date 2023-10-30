@@ -1,5 +1,5 @@
 ---
 - name: Restart machine for logind
   listen: "logind config changed"
-  debug:
+  ansible.builtin.debug:
     msg: "Dont't forget to reboot later."

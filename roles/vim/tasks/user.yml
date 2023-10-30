@@ -1,18 +1,18 @@
 ---
 - name: config directory for user present
-  file:
+  ansible.builtin.file:
     dest: /home/{{ user }}/{{ nvim_config_dir }}
     state: directory
     owner: "{{ user }}"
     mode: "u=rwx,g=rx,o=rx"
 - name: config for user present
-  copy:
+  ansible.builtin.copy:
     src: init.vim
     dest: /home/{{ user }}/{{ nvim_config_dir }}
     owner: "{{ user }}"
     mode: "u=rw,g=r,o=r"
 - name: Ideavim config for user present
-  copy:
+  ansible.builtin.copy:
     src: ideavimrc.vim
     dest: /home/{{ user }}/.ideavimrc
     owner: "{{ user }}"

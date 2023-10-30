@@ -6,7 +6,7 @@
     option: use_template
     value: production
 - name: Syncoid pull service active
-  systemd:
+  ansible.builtin.systemd_service:
     name: "syncoid@{{ role_name }}.timer"
     state: started
     enabled: true

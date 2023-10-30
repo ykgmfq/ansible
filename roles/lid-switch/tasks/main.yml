@@ -1,7 +1,7 @@
 ---
 - name: logind.conf.d directory present
   become: true
-  file:
+  ansible.builtin.file:
     dest: /etc/systemd/logind.conf.d
     state: directory
     owner: root

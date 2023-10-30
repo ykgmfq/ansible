@@ -1,6 +1,6 @@
 ---
 - name: User id set
-  set_fact:
+  ansible.builtin.set_fact:
     id: "{{ users.vault }}"
     db_pw: "{{ secrets.vault.db_pw }}"
 - import_tasks: ../../shared/user/main.yml

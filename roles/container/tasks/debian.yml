@@ -1,6 +1,6 @@
 ---
 - name: Debian packages present
-  apt:
+  ansible.builtin.apt:
     name:
       - podman
-    install_recommends: no
+    install_recommends: false

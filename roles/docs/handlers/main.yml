@@ -1,13 +1,13 @@
 ---
 - name: Restart deployment
   listen: "docs config changed"
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ service }}"
     state: restarted
 - name: Rebuild image
   listen: "docs build changed"
   notify: "docs config changed"
-  command:
+  ansible.builtin.command:
     chdir: "{{ dir }}"
     argv:
       - "/usr/bin/fish"

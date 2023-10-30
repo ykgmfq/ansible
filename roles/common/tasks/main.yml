@@ -1,6 +1,6 @@
 ---
 - name: Debian packages present
-  apt:
+  ansible.builtin.apt:
     name:
       - fish
       - ripgrep
@@ -8,17 +8,17 @@
       - gnupg
       - exa
       - bat
-    install_recommends: no
+    install_recommends: false
 - name: Fish config directory present
   become: true
-  file:
+  ansible.builtin.file:
     dest: /root/.config/fish
     state: directory
     owner: root
     mode: "u=rwx,g=rx,o=x"
 - name: Shell environment templates for root present
   become: true
-  copy:
+  ansible.builtin.copy:
     src: config.fish
     dest: /root/.config/fish/config.fish
     owner: root

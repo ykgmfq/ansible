@@ -1,14 +1,14 @@
 ---
 # https://developers.yubico.com/pam-u2f/
 - name: U2F PAM module installed
-  apt:
+  ansible.builtin.apt:
     name: libpam-u2f
-    install_recommends: no
+    install_recommends: false
 - name: U2F mapping path set
-  set_fact:
+  ansible.builtin.set_fact:
     u2f_path: "/etc/u2f_mappings"
 - name: U2F mapping set
-  copy:
+  ansible.builtin.copy:
     content: "root:{{ u2f_key }},+presence\n"
     dest: "{{ u2f_path }}"
     owner: root

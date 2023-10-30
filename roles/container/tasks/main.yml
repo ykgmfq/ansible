@@ -1,6 +1,6 @@
 ---
 - name: Directory present
-  file:
+  ansible.builtin.file:
     path: "/opt/container/"
     state: directory
 - import_tasks: debian.yml

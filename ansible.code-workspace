@@ -102,5 +102,12 @@
 				}
 			}
 		]
+	},
+	"extensions": {
+		"recommendations": [
+			"redhat.vscode-yaml",
+			"wholroyd.jinja",
+			"redhat.ansible"
+		]
 	}
 }

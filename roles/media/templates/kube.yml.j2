@@ -21,9 +21,6 @@ spec:
           port: 8096
         initialDelaySeconds: 5
         periodSeconds: 60
-      resources:
-        limits:
-          memory: 3Gi
       env:
         - name: JELLYFIN_CACHE_DIR
           value: {{ cache }}
@@ -31,6 +28,8 @@ spec:
           value: {{ data }}
         - name: JELLYFIN_LOG_DIR
           value: /var/log/jellyfin
+        - name: MALLOC_TRIM_THRESHOLD_
+          value: 131072
       securityContext:
         capabilities:
           drop:

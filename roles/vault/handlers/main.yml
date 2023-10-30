@@ -1,5 +1,5 @@
 ---
-- name: Restart web server
+- name: Restart Vault
   listen: "vault config changed"
   systemd:
     name: "{{ service }}"

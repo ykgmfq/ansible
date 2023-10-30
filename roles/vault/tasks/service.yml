@@ -15,8 +15,7 @@
     - name: Service name
       debug:
         msg: "{{ service }}"
-    - name: Service started
+    - name: Service enabled
       systemd:
         enabled: true
         name: "{{ service }}"
-        daemon-reload: true

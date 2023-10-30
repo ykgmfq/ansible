@@ -1,5 +1,6 @@
 ---
-- ansible.builtin.set_fact:
+- name: Fact
+  ansible.builtin.set_fact:
     container_name: nodered
 - name: Service stopped
   ansible.builtin.systemd_service:
@@ -9,7 +10,7 @@
   failed_when: false
 - name: Container id file absent
   ansible.builtin.file:
-    path: "/run/container-{{ container_name}}.ctr-id"
+    path: "/run/container-{{ container_name }}.ctr-id"
     state: absent
   changed_when: false
 - name: Container present
@@ -39,11 +40,13 @@
       - "--no-header"
       - "--new"
       - "{{ container_name }}"
+  changed_when: false
 - name: Service present
   when: not ansible_check_mode
   ansible.builtin.copy:
     content: "{{ service.stdout }}\n"
-    dest: "/etc/systemd/system/container-{{ container_name}}.service"
+    dest: "/etc/systemd/system/container-{{ container_name }}.service"
+    mode: "u=r,g=r,o=r"
 - name: Service started
   ansible.builtin.systemd_service:
     state: started
@@ -55,21 +58,4 @@
   ansible.builtin.template:
     src: NodeCaddyfile
     dest: "/etc/caddy/avail/de.dm-poepperl.{{ container_name }}"
-- name: System units present
-  import_role:
-    name: "0x0i.systemd"
-  vars:
-    unit_config:
-      - name: "nodered-upgrade"
-        Unit:
-          Description: NodeRed upgrade
-          Before: podman-auto-update.service
-          After: network-online.target
-          Requires: network-online.target
-          OnFailure: notify-email@%N.service
-        Service:
-          WorkingDirectory: "/var/container-data/nodered"
-          ExecStart: "/usr/bin/podman build --pull --tag nodered ."
-          Type: oneshot
-        Install:
-          WantedBy: podman-auto-update.service
+    mode: "u=r,g=r,o=r"

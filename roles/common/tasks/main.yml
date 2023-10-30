@@ -25,7 +25,8 @@
     mode: "u=rw,g=,o="
 - name: Fish is login shell for root
   become: true
-  user:
+  ansible.builtin.user:
     name: root
     shell: /usr/bin/fish
-- import_tasks: pam.yml
+- name: Import
+  ansible.builtin.import_tasks: pam.yml

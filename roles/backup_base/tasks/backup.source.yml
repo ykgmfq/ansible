@@ -1,6 +1,7 @@
 ---
 - name: Sanoid config
   community.general.ini_file:
+    mode: "u=r,g=r,o=r"
     path: "/etc/sanoid/sanoid.conf"
     section: "template_production"
     option: "{{ item.key }}"

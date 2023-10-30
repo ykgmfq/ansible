@@ -1,10 +1,12 @@
 ---
-- import_tasks: debian.yml
+- name: Packages present
+  ansible.builtin.apt:
+    name: neovim
   when: ansible_facts['os_family'] == "Debian"
 - name: Nvim config dir set
   ansible.builtin.set_fact:
     nvim_config_dir: .config/nvim
-- name: /root/{{ nvim_config_dir }} directory present
+- name: Root directory present
   ansible.builtin.file:
     dest: /root/{{ nvim_config_dir }}
     state: directory
@@ -16,5 +18,6 @@
     dest: /root/{{ nvim_config_dir }}
     owner: root
     mode: "u=rw,g=r,o=r"
-- import_tasks: user.yml
+- name: User
+  ansible.builtin.import_tasks: user.yml
   when: user is defined

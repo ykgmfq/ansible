@@ -7,7 +7,7 @@
   failed_when: false
 - name: Container id file absent
   ansible.builtin.file:
-    path: "/run/container-{{ role_name}}.ctr-id"
+    path: "/run/container-{{ role_name }}.ctr-id"
     state: absent
   changed_when: false
 - name: Udev rules present
@@ -49,7 +49,8 @@
   when: not ansible_check_mode
   ansible.builtin.copy:
     content: "{{ service.stdout }}\n"
-    dest: "/etc/systemd/system/container-{{ role_name}}.service"
+    dest: "/etc/systemd/system/container-{{ role_name }}.service"
+    mode: "u=r,g=r,o=r"
 - name: Service started
   ansible.builtin.systemd_service:
     state: started
@@ -61,28 +62,4 @@
   ansible.builtin.template:
     src: Caddyfile
     dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"
-- name: System units present
-  import_role:
-    name: "0x0i.systemd"
-  vars:
-    unit_config:
-      - name: "home-upgrade"
-        Unit:
-          Description: Home upgrade
-          After: network-online.target
-          Requires: network-online.target
-          OnFailure: notify-email@%N.service
-        Service:
-          ExecStart: "/usr/bin/bash -c 'set -e && /usr/bin/podman pull ghcr.io/home-assistant/home-assistant && /usr/bin/podman tag ghcr.io/home-assistant/home-assistant home-assistant'"
-          Type: oneshot
-      - name: "home-upgrade"
-        enabled: true
-        state: started
-        type: timer
-        Unit:
-          Description: Home upgrade
-        Timer:
-          OnCalendar: "Fri *-*~07/1 22:00"
-          Persistent: true
-        Install:
-          WantedBy: container-home.service
+    mode: "u=r,g=r,o=r"

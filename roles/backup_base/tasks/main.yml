@@ -1,0 +1,19 @@
+---
+- name: Debian packages present
+  ansible.builtin.apt:
+    name:
+      - sanoid
+      - python3-venv
+    install_recommends: false
+- name: Questionary present
+  ansible.builtin.pip:
+    name: questionary~=2
+    state: present
+    virtualenv: /opt/rollback
+    virtualenv_site_packages: true
+- name: Import
+  ansible.builtin.import_tasks: backup.sink.yml
+  when: is_backup_sink
+- name: Import
+  ansible.builtin.import_tasks: backup.source.yml
+  when: not is_backup_sink

@@ -12,3 +12,4 @@
     argv:
       - "/usr/bin/fish"
       - "build.fish"
+  changed_when: true

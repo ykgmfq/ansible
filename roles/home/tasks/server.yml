@@ -1,9 +1,12 @@
 ---
-- import_tasks: server.ha.yml
-- import_tasks: server.nodered.yml
+- name: Import
+  ansible.builtin.import_tasks: server.ha.yml
+- name: Import
+  ansible.builtin.import_tasks: server.nodered.yml
 - name: Sanoid config
   community.general.ini_file:
     path: "/etc/sanoid/sanoid.conf"
     section: "data/{{ role_name }}"
     option: "use_template"
     value: "production"
+    mode: "u=r,g=r,o=r"

@@ -1,4 +1,0 @@
----
-- name: packages present
-  ansible.builtin.apt:
-    name: neovim

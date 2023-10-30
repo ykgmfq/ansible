@@ -4,6 +4,7 @@
     path: "/etc/sanoid/sanoid.conf"
     section: "backup/{{ role_name }}"
     option: use_template
+    mode: "u=r,g=r,o=r"
     value: production
 - name: Syncoid pull service active
   ansible.builtin.systemd_service:

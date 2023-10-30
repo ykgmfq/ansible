@@ -10,6 +10,9 @@
         - cloud
       local:
         - cloud-preview
-- import_tasks: files.yml
-- import_tasks: volumes.yml
-- import_tasks: service.yml
+- name: Import
+  ansible.builtin.import_tasks: files.yml
+- name: Import
+  ansible.builtin.import_tasks: volumes.yml
+- name: Import
+  ansible.builtin.import_tasks: service.yml

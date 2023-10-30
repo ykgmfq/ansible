@@ -3,16 +3,20 @@
   ansible.builtin.file:
     path: "{{ dir }}"
     state: directory
+    mode: "u=rwx,g=rx,o=rx"
 - name: Caddyfile present
   ansible.builtin.template:
     src: Caddyfile
     dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"
+    mode: "u=r,g=r,o=r"
 - name: Image builder present
   ansible.builtin.template:
     src: build.fish
     dest: "{{ dir }}/build.fish"
+    mode: "u=r,g=r,o=r"
 - name: Deployment present
   notify: "docs config changed"
   ansible.builtin.template:
     src: kube.yml.j2
     dest: "{{ dir }}/kube.yml"
+    mode: "u=r,g=r,o=r"

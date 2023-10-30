@@ -12,6 +12,7 @@
     argv:
       - "/usr/bin/fish"
       - "build.fish"
+  changed_when: true
 - name: Restart web server
   listen: "web config changed"
   ansible.builtin.systemd_service:

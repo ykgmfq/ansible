@@ -1,11 +1,11 @@
 ---
-- name: config directory for user present
+- name: Config directory for user present
   ansible.builtin.file:
     dest: /home/{{ user }}/{{ nvim_config_dir }}
     state: directory
     owner: "{{ user }}"
     mode: "u=rwx,g=rx,o=rx"
-- name: config for user present
+- name: Config for user present
   ansible.builtin.copy:
     src: init.vim
     dest: /home/{{ user }}/{{ nvim_config_dir }}

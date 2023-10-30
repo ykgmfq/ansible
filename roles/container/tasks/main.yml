@@ -3,6 +3,9 @@
   ansible.builtin.file:
     path: "/opt/container/"
     state: directory
-- import_tasks: debian.yml
+    mode: "u=rwx,g=rx,o=rx"
+- name: Import
+  ansible.builtin.import_tasks: debian.yml
   when: ansible_facts['os_family'] == "Debian"
-- import_tasks: systemd.yml
+- name: Import
+  ansible.builtin.import_tasks: systemd.yml

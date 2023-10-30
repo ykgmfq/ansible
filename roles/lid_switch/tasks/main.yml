@@ -1,5 +1,5 @@
 ---
-- name: logind.conf.d directory present
+- name: Logind conf directory present
   become: true
   ansible.builtin.file:
     dest: /etc/systemd/logind.conf.d

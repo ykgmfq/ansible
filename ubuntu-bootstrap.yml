@@ -12,7 +12,7 @@
       become: true
       ansible.posix.authorized_key:
         user: root
-        key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id.pub') }}"
+        key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id.pub') }}"
 - name: Ubuntu standard user disabled and unwanted features removed
   remote_user: root
   hosts: all
@@ -23,7 +23,7 @@
         state: absent
         force: true
     - name: Debian packages absent
-      apt:
+      ansible.builtin.apt:
         state: absent
         autoremove: true
         name:
@@ -35,7 +35,7 @@
           - irqbalance
           - cloud-init
     - name: Services disabled
-      systemd:
+      ansible.builtin.systemd_service:
         state: stopped
         enabled: false
         name: "{{ item }}"

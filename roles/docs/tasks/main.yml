@@ -2,6 +2,6 @@
 - name: User id set
   ansible.builtin.set_fact:
     id: "{{ users.vault }}"
-# - import_tasks: ../../shared/user/main.yml
-- import_tasks: server.yml
+- name: Import
+  ansible.builtin.import_tasks: server.yml
   when: not is_backup_sink

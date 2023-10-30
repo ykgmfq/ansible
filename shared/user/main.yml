@@ -1,14 +1,14 @@
 ---
 - name: User group present
-  group:
+  ansible.builtin.group:
     name: "{{ role_name }}"
     gid: "{{ id }}"
     system: true
 - name: User present
-  user:
+  ansible.builtin.user:
     name: "{{ role_name }}"
     comment: "{{ role_name }}"
     uid: "{{ id }}"
-    group: "{{ role_name }}"
+    ansible.builtin.group: "{{ role_name }}"
     system: true
     shell: "{{ user_shell }}"

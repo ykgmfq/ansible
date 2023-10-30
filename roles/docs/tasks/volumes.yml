@@ -5,7 +5,7 @@
       containers.podman.podman_volume:
         name: "{{ item }}"
         options:
-          - "device=data/{{ item | replace('-', '/')}}"
+          - "device=data/{{ item | replace('-', '/') }}"
           - "type=zfs"
       loop: "{{ volumes.zfs }}"
     - name: Local volumes

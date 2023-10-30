@@ -5,11 +5,13 @@
       - samba
       - smbclient
     install_recommends: false
-- import_tasks: smb_user.yml
+- name: Import
+  ansible.builtin.import_tasks: smb_user.yml
 - name: Samba config present
   ansible.builtin.template:
     src: smb.conf
     dest: /etc/samba/
+    mode: "u=r,g=r,o=r"
 - name: Network access allowed
   ansible.posix.firewalld:
     service: samba

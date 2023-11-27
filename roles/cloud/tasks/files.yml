@@ -5,17 +5,19 @@
     state: directory
     mode: "u=r,g=r,o=r"
 - name: Build sources present
+  notify: "cloud build changed"
   ansible.builtin.copy:
     src: src/
     dest: "{{ dir }}/src/"
     mode: "u=r,g=r,o=r"
 - name: Image builder present
+  notify: "cloud build changed"
   ansible.builtin.template:
     src: build.fish
     dest: "{{ dir }}/build.fish"
     mode: "u=r,g=r,o=r"
 - name: Deployment present
-  notify: "docs config changed"
+  notify: "cloud config changed"
   ansible.builtin.template:
     src: kube.yml.j2
     dest: "{{ dir }}/kube.yml"

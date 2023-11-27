@@ -18,6 +18,6 @@
 - name: Pihole
   remote_user: root
   hosts:
-    - pi.hole
+    - pihole.lan
   roles:
     - pihole

@@ -4,6 +4,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   annotations:
+    io.containers.autoupdate: registry
     io.containers.autoupdate/app: local
   labels:
     app: docs-pod
@@ -83,7 +84,7 @@ spec:
           name: docs-db-pvc
     - args:
         - redis-server
-      image: docker.io/library/redis:7-alpine
+      image: docker.io/library/redis:{{ versions.redis }}-alpine
       name: redis
       resources: {}
       livenessProbe:
@@ -106,7 +107,7 @@ spec:
           name: docs-redis-pvc
   enableServiceLinks: false
   hostname: docs
-  restartPolicy: Always
+  restartPolicy: OnFailure
   volumes:
     - hostPath:
         path: /srv/scan/inbox

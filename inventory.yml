@@ -6,12 +6,15 @@ headless:
           is_backup_sink: false
           user_shell: "/usr/sbin/nologin"
       vars:
-        pgver: 13
+        versions:
+          paperless: "1.17"
+          php: "8.1"
+          fedora: "38"
+          caddy: "2"
+          redis: "7"
         vault_port: 8087
         docs_port: 8000
         media_port: 8096
-        cloud_base: 36
-        cloud_php: "8.1"
         samba_users:
           - username: docs
             password: "{{ secrets.docs.samba }}"
@@ -19,7 +22,7 @@ headless:
           cloud: 8088
     rpi:
       hosts:
-        pi.hole:
+        pihole.lan:
           is_backup_sink: true
       vars:
         user_shell: "/usr/bin/nologin"

@@ -4,6 +4,11 @@
     path: "{{ dir }}"
     state: directory
     mode: "u=rwx,g=rx,o=rx"
+- name: Install script present
+  ansible.builtin.copy:
+    src: install.sh
+    dest: "{{ dir }}/"
+    mode: "u=r,g=r,o=r"
 - name: Deployment present
   notify: "media config changed"
   ansible.builtin.template:

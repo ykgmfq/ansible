@@ -19,3 +19,7 @@
       ansible.builtin.systemd_service:
         enabled: true
         name: "{{ service }}"
+    - name: Image build service enabled
+      ansible.builtin.systemd_service:
+        enabled: true
+        name: "image-build@{{ role_name }}"

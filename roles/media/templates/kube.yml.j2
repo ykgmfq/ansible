@@ -36,8 +36,6 @@ spec:
             - CAP_MKNOD
             - CAP_NET_RAW
             - CAP_AUDIT_WRITE
-        runAsUser: {{ id }}
-        runAsGroup: 996
       volumeMounts:
         - mountPath: /srv/media
           name: media-pvc

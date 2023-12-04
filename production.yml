@@ -3,6 +3,7 @@
   hosts: homeserver
   remote_user: root
   roles:
+    - caddy
     - cloud
     - docs
     - media

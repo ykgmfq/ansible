@@ -1,6 +1,11 @@
 {
 	admin off
 	auto_https off
+	log default {
+		output stdout
+		level warn
+		format console
+	}
 }
 :80 {
 	root * /srv/de.dm-poepperl.cloud/html

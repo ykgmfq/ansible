@@ -1,14 +1,13 @@
 #!/usr/bin/fish
 set tag (basename (pwd))
-set fedora {{ versions.fedora }}
-echo "Base Image  | $fedora"
+set alpine {{ versions.alpine }}
+echo "Base Image  | Alpine $alpine"
 echo "Tag         | $tag"
-set ctr (buildah from --pull quay.io/fedora/fedora:$fedora)
-and set script (cat install.sh | string collect)
+set ctr (buildah from --pull docker.io/alpine:$alpine)
 and buildah config \
 --port 8096 \
 --cmd /usr/bin/jellyfin \
 $ctr
-and buildah run $ctr /usr/bin/bash -c $script
+and buildah run $ctr /sbin/apk add --no-progress --no-cache jellyfin-web curl
 and buildah commit --rm $ctr $tag
 or exit 1

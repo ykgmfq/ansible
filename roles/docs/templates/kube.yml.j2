@@ -18,12 +18,12 @@ spec:
       name: app
       livenessProbe:
         httpGet:
-          port: {{ docs_port }}
+          port: {{ ports.docs }}
         initialDelaySeconds: 5
         periodSeconds: 60
       ports:
-        - containerPort: {{ docs_port }}
-          hostPort: {{ docs_port }}
+        - containerPort: {{ ports.docs }}
+          hostPort: {{ ports.docs }}
       resources: {}
       securityContext:
         capabilities:

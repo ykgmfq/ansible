@@ -16,7 +16,7 @@ spec:
         - name: ICON_CACHE_FOLDER
           value: {{ icons }}
         - name: ROCKET_PORT
-          value: "{{ vault_port }}"
+          value: "{{ ports.vault }}"
         - name: DATABASE_URL
           value: postgresql://vault@localhost/vault
       image: ghcr.io/dani-garcia/vaultwarden:alpine
@@ -24,13 +24,13 @@ spec:
       livenessProbe:
         httpGet:
           path: /alive
-          port: {{ vault_port }}
+          port: {{ ports.vault }}
         initialDelaySeconds: 5
         periodSeconds: 60
       ports:
         - name: vault
-          containerPort: {{ vault_port }}
-          hostPort: {{ vault_port }}
+          containerPort: {{ ports.vault }}
+          hostPort: {{ ports.vault }}
       resources: {}
       securityContext:
         capabilities:

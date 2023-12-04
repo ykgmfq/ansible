@@ -27,5 +27,5 @@ mv units/* /etc/systemd/system/
 mv alive.sh /usr/local/bin/
 rm -r *
 # Set system unit states
-systemctl disable $(ls /etc/systemd/system/multi-user.target.wants/) systemd-{userdb,login}d
-systemctl enable php-fpm $new_units
+systemctl set-default container.target
+systemctl enable $new_units

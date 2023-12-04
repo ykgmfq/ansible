@@ -1,16 +1,19 @@
 {
-  admin off
-  email free-software@dm-poepperl.de
-}
-(sts) {
-  header / Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+	admin off
+	email free-software@dm-poepperl.de
 }
 (stdheader) {
-  header / {
-      ?X-XSS-Protection "1; mode=block"
-      ?X-Content-Type-Options "nosniff"
-      ?X-Frame-Options "deny"
-      ?Referrer-Policy "no-referrer"
-  }
+	header {
+		Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+		-x-powered-by
+		-server
+	}
+	header {
+		?X-Frame-Options "sameorigin"
+		?Referrer-Policy "strict-origin"
+		?Content-Security-Policy "default-src https:"
+		?X-XSS-Protection "1; mode=block"
+		?X-Content-Type-Options "nosniff"
+	}
 }
 import sites/*

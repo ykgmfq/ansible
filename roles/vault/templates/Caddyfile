@@ -1,6 +1,7 @@
+# Mozilla Observatory A+
+# https://observatory.mozilla.org/analyze/{{ role_name }}.dm-poepperl.de
 {{ role_name }}.dm-poepperl.de {
   reverse_proxy localhost:{{ vault_port }}
-  # Mozilla Observatory B+
-  import sts
+  import stdheader
   encode zstd gzip
 }

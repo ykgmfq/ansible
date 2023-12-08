@@ -1,0 +1,39 @@
+[Unit]
+BindsTo=dev-conbee.device
+Wants=network-online.target
+After=network-online.target dev-conbee.device
+RequiresMountsFor=%t/containers
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=70
+ExecStartPre=/bin/rm \
+	-f %t/%n.ctr-id
+ExecStart=/usr/bin/podman container run \
+	--cidfile=%t/%n.ctr-id \
+	--cgroups=no-conmon \
+	--rm \
+	--sdnotify=conmon \
+	-d \
+	--replace \
+	--name home \
+	--network host \
+	--volume home-ha:/config \
+	--label podman_systemd_unit=container-home.service \
+	--label io.containers.autoupdate=local \
+	--device /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2130827-if00:/dev/conbee \
+	--health-cmd "nc -w 1 -vz localhost 8123" \
+	--health-on-failure=kill localhost/home-assistant
+ExecStop=/usr/bin/podman stop \
+	--ignore -t 10 \
+	--cidfile=%t/%n.ctr-id
+ExecStopPost=/usr/bin/podman rm \
+	-f \
+	--ignore -t 10 \
+	--cidfile=%t/%n.ctr-id
+Type=notify
+NotifyAccess=all
+
+[Install]
+WantedBy=default.target

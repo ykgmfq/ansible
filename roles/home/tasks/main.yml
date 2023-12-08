@@ -1,10 +1,5 @@
 ---
-- name: Fact
-  ansible.builtin.set_fact:
-    backup_dir: "/mnt/backup/de.dm-poepperl.{{ role_name }}"
-    id: "{{ users.home }}"
-- name: Import
-  ansible.builtin.import_tasks: ../../shared/user/main.yml
+
 - name: Import
   ansible.builtin.import_tasks: server.yml
   when: not is_backup_sink

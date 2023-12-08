@@ -1,7 +1,6 @@
 ---
-- name: Service restarted
-  listen: "home config changed"
+- name: Service enabled
   ansible.builtin.systemd_service:
-    state: restarted
+    enabled: true
     daemon_reload: true
     name: "container-{{ role_name }}"

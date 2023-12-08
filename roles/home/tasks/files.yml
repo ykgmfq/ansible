@@ -1,0 +1,18 @@
+---
+- name: Unit file present
+  notify: "home config changed"
+  ansible.builtin.copy:
+    src: container-home.service
+    dest: /etc/systemd/system
+    mode: "u=r,g=r,o=r"
+- name: Udev rule present
+  ansible.builtin.copy:
+    src: conbee.rules
+    dest: /etc/udev/rules.d
+    mode: "u=r,g=r,o=r"
+- name: Caddyfile present
+  notify: "web config changed"
+  ansible.builtin.template:
+    src: Caddyfile
+    dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"
+    mode: "u=r,g=r,o=r"

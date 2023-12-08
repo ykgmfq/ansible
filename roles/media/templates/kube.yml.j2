@@ -15,12 +15,6 @@ spec:
   containers:
     - image: localhost/media:latest
       name: app
-      livenessProbe:
-        httpGet:
-          path: /health
-          port: 8096
-        initialDelaySeconds: 5
-        periodSeconds: 60
       env:
         - name: JELLYFIN_CACHE_DIR
           value: {{ cache }}

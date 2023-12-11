@@ -3,37 +3,8 @@
   ansible.builtin.apt:
     name:
       - unbound
-- name: Network config present
-  ansible.builtin.copy:
-    src: 00-wired.network
-    dest: /etc/systemd/network
-    owner: root
-    group: root
-    mode: "u=r,g=r,o=r"
-- name: Unbound config present
-  notify: "unbound config changed"
-  ansible.builtin.copy:
-    src: unbound.conf
-    dest: /etc/unbound/unbound.conf.d/pi-hole.conf
-    owner: root
-    group: root
-    mode: "u=r,g=r,o=r"
-- name: Pihole config present
-  notify: "pihole config changed"
-  ansible.builtin.template:
-    src: setupVars.conf.j2
-    dest: /etc/pihole/setupVars.conf
-    owner: root
-    group: root
-    mode: "u=rw,g=r,o=r"
-- name: EDNS config present
-  notify: "pihole config changed"
-  ansible.builtin.copy:
-    content: "edns-packet-max=1232\n"
-    dest: /etc/dnsmasq.d/99-edns.conf
-    owner: root
-    group: root
-    mode: "u=r,g=r,o=r"
+- name: Import
+  ansible.builtin.import_tasks: files.yml
 - name: Network access allowed
   ansible.posix.firewalld:
     service: "{{ item }}"
@@ -43,16 +14,6 @@
     - dhcp
     - http
     - dns
-- name: Systemd units present
-  ansible.builtin.copy:
-    src: "pihole-up.{{ item }}"
-    dest: /etc/systemd/system/
-    owner: root
-    group: root
-    mode: "u=r,g=r,o=r"
-  loop:
-    - service
-    - timer
 - name: Systemd unit enabled
   ansible.builtin.systemd_service:
     name: pihole-up.timer
@@ -62,7 +23,6 @@
   ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: true
-    state: started
   loop:
     - unbound
     - pihole-FTL

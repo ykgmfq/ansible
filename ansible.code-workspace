@@ -8,6 +8,7 @@
 		"files.associations": {
 			"*.yml": "ansible"
 		},
+		"ansible.python.interpreterPath": "/bin/python",
 	},
 	"tasks": {
 		"version": "2.0.0",

@@ -7,7 +7,7 @@ headless:
           user_shell: "/usr/sbin/nologin"
       vars:
         versions:
-          paperless: "2.0"
+          paperless: "2.1"
           alpine: "3.19"
           php: "8.1"
           fedora: "38"

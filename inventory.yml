@@ -9,7 +9,7 @@ headless:
         versions:
           paperless: "2.1"
           alpine: "3.19"
-          php: "8.1"
+          php: "8.2"
           fedora: "38"
           caddy: "2"
           redis: "7"

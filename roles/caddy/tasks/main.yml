@@ -20,3 +20,12 @@
     owner: root
     group: root
     mode: "u=r,g=r,o=r"
+- name: Network access allowed
+  ansible.posix.firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+  loop:
+    - http
+    - http3
+    - https

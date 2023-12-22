@@ -33,3 +33,5 @@
     shell: /usr/bin/fish
 - name: Import
   ansible.builtin.import_tasks: pam.yml
+- name: Import
+  ansible.builtin.import_tasks: ubuntu-clean.yml

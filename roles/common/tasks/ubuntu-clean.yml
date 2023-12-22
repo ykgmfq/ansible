@@ -5,5 +5,9 @@
     enabled: false
     name: "{{ item }}"
   loop:
-    - wpa_supplicant
-    - snapd
+    - multipathd
+    - multipathd.socket
+- name: Snaps absent
+  community.general.snap:
+    name: lxd
+    state: absent

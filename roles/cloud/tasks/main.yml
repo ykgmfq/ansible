@@ -1,7 +1,14 @@
 ---
-- name: User id set
+- name: Facts set
   ansible.builtin.set_fact:
+    dir: "/opt/container/{{ role_name }}"
     id: "{{ users.cloud }}"
+    volumes:
+      zfs:
+        - cloud
+        - cloud-db
+      local:
+        - cloud-preview
 - name: Import
   ansible.builtin.import_tasks: ../../shared/user/main.yml
 - name: Import

@@ -3,7 +3,7 @@
   ansible.builtin.apt:
     name:
       - sanoid
-      - python3-venv
+      - python3-virtualenv
       - zfsutils-linux
     install_recommends: false
 - name: Questionary present
@@ -12,6 +12,11 @@
     state: present
     virtualenv: /opt/rollback
     virtualenv_site_packages: true
+- name: Pool imported
+  ansible.builtin.command: zpool import data
+  changed_when: false
+  register: zpool
+  failed_when: false
 - name: Import
   ansible.builtin.import_tasks: files.yml
 - name: Import

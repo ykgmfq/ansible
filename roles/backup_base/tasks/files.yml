@@ -1,4 +1,9 @@
 ---
+- name: Directory present
+  ansible.builtin.file:
+    path: /etc/sanoid
+    state: directory
+    mode: "u=rwx,g=rx,o="
 - name: Sanoid config present
   ansible.builtin.template:
     src: sanoid.conf

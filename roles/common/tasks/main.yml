@@ -8,6 +8,7 @@
       - gnupg
       - exa
       - bat
+      - firewalld
     install_recommends: false
 - name: Fish config directory present
   become: true

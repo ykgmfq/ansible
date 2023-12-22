@@ -16,11 +16,6 @@ spec:
         - /usr/local/bin/paperless_cmd.sh
       image: localhost/docs:latest
       name: app
-      livenessProbe:
-        httpGet:
-          port: {{ ports.docs }}
-        initialDelaySeconds: 5
-        periodSeconds: 60
       ports:
         - containerPort: {{ ports.docs }}
           hostPort: {{ ports.docs }}
@@ -65,12 +60,6 @@ spec:
         - name: POSTGRES_PASSWORD
           value: a
       image: docker.io/library/postgres:15-alpine
-      livenessProbe:
-        exec:
-          command:
-            - pg_isready
-        initialDelaySeconds: 5
-        periodSeconds: 60
       name: db
       resources: {}
       securityContext:
@@ -87,15 +76,6 @@ spec:
       image: docker.io/library/redis:{{ versions.redis }}-alpine
       name: redis
       resources: {}
-      livenessProbe:
-        exec:
-          command:
-            - redis-cli
-            - "--raw"
-            - incr
-            - ping
-        initialDelaySeconds: 5
-        periodSeconds: 60
       securityContext:
         capabilities:
           drop:

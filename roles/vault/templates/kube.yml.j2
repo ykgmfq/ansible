@@ -21,12 +21,6 @@ spec:
           value: postgresql://vault@localhost/vault
       image: ghcr.io/dani-garcia/vaultwarden:alpine
       name: app
-      livenessProbe:
-        httpGet:
-          path: /alive
-          port: {{ ports.vault }}
-        initialDelaySeconds: 5
-        periodSeconds: 60
       ports:
         - name: vault
           containerPort: {{ ports.vault }}
@@ -53,12 +47,6 @@ spec:
       image: docker.io/library/postgres:15-alpine
       name: db
       resources: {}
-      livenessProbe:
-        exec:
-          command:
-            - pg_isready
-        initialDelaySeconds: 5
-        periodSeconds: 60
       securityContext:
         capabilities:
           drop:

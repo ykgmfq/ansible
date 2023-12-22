@@ -1,11 +1,16 @@
 ---
+- name: Debian packages present
+  ansible.builtin.apt:
+    name:
+      - podman
+    install_recommends: false
 - name: Directory present
   ansible.builtin.file:
     path: "/opt/container/"
     state: directory
     mode: "u=rwx,g=rx,o=rx"
-- name: Import
-  ansible.builtin.import_tasks: debian.yml
-  when: ansible_facts['os_family'] == "Debian"
-- name: Import
-  ansible.builtin.import_tasks: systemd.yml
+- name: Unit files present
+  ansible.builtin.copy:
+    src: units/
+    dest: /etc/systemd/system
+    mode: "u=r,g=r,o=r"

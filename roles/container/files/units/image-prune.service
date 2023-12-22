@@ -1,0 +1,7 @@
+[Unit]
+After = network-online.target
+Requires = network-online.target
+On-Failure = notify-email@%N.service
+[Service]
+Type = oneshot
+ExecStart = /usr/bin/podman system prune --all --force

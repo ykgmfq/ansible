@@ -16,3 +16,8 @@
     src: Caddyfile
     dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"
     mode: "u=r,g=r,o=r"
+- name: Firewalld service present
+  ansible.builtin.copy:
+    src: homekit.xml
+    dest: /etc/firewalld/services
+    mode: "u=r,g=r,o=r"

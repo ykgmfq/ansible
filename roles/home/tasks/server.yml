@@ -5,3 +5,9 @@
   ansible.builtin.import_tasks: service.yml
 - name: Import
   ansible.builtin.import_tasks: volumes.yml
+- name: Network access allowed
+  ansible.posix.firewalld:
+    service: homekit
+    permanent: true
+    state: enabled
+    immediate: true

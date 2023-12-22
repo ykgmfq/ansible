@@ -10,6 +10,7 @@
     service: "{{ item }}"
     permanent: true
     state: enabled
+    immediate: true
   loop:
     - dhcp
     - http

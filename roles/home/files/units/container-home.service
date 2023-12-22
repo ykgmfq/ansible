@@ -19,7 +19,7 @@ ExecStart=/usr/bin/podman container run \
 	--replace \
 	--name home \
 	--network host \
-	--volume home-ha:/config \
+	--volume home:/config \
 	--label podman_systemd_unit=container-home.service \
 	--label io.containers.autoupdate=local \
 	--device /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2130827-if00:/dev/conbee \

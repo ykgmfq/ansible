@@ -2,14 +2,8 @@
 - name: Unit file present
   notify: "home config changed"
   ansible.builtin.copy:
-    src: container-home.service
-    dest: /etc/systemd/system
-    mode: "u=r,g=r,o=r"
-- name: Recorder file present
-  notify: "recorder config changed"
-  ansible.builtin.copy:
-    src: container-home-recorder.service
-    dest: /etc/systemd/system
+    src: units/
+    dest: /etc/systemd/system/
     mode: "u=r,g=r,o=r"
 - name: Udev rule present
   ansible.builtin.copy:

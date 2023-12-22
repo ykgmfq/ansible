@@ -8,6 +8,8 @@
       - gnupg
       - exa
       - bat
+      - htop
+      - rclone
       - firewalld
     install_recommends: false
 - name: Fish config directory present

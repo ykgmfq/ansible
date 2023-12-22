@@ -4,6 +4,7 @@
     name:
       - sanoid
       - python3-venv
+      - zfsutils-linux
     install_recommends: false
 - name: Questionary present
   ansible.builtin.pip:

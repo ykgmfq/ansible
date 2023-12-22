@@ -1,0 +1,12 @@
+{
+  "name": "container-nodered",
+  "dependencies": {
+    "node-red": "~3",
+    "node-red-contrib-sun-position": "~2.1",
+    "node-red-contrib-home-assistant-websocket": "*",
+    "node-red-contrib-spline-curve": "*",
+    "node-red-contrib-timed-counter": "*",
+    "passport-openidconnect": "*"
+  },
+  "license" : "MIT"
+}

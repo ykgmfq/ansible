@@ -1,0 +1,11 @@
+[Unit]
+After = network-online.target dev-disk-by\x2dlabel-backup.device
+Requires = network-online.target dev-disk-by\x2dlabel-backup.device
+
+[Service]
+User = syncoid
+Type = oneshot
+Restart = on-failure
+RestartSec = 5min
+TimeoutStartSec = 1h
+ExecStart = /usr/sbin/syncoid --preserve-recordsize --recursive --no-sync-snap --no-privilege-elevation --compress none server:data backup/data

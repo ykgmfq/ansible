@@ -1,0 +1,9 @@
+---
+- name: User present
+  ansible.builtin.user:
+    name: "{{ role_name }}"
+    comment: "{{ role_name }}"
+    uid: "{{ id }}"
+    group: "{{ role_name }}"
+    system: true
+    shell: "{{ user_shell }}"

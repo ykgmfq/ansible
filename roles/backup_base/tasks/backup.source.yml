@@ -1,1 +1,11 @@
 ---
+- name: Pool imported
+  ansible.builtin.command: zpool import data
+  changed_when: false
+  register: zpool
+  failed_when: false
+- name: Source pool allowlist
+  community.general.zfs_delegate_admin:
+    name: data
+    users: syncoid
+    permissions: send,hold

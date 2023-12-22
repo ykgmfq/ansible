@@ -12,13 +12,10 @@
     state: present
     virtualenv: /opt/rollback
     virtualenv_site_packages: true
-- name: Pool imported
-  ansible.builtin.command: zpool import data
-  changed_when: false
-  register: zpool
-  failed_when: false
 - name: Import
   ansible.builtin.import_tasks: files.yml
+- name: Import
+  ansible.builtin.import_tasks: syncoid.yml
 - name: Import
   ansible.builtin.import_tasks: backup.sink.yml
   when: is_backup_sink

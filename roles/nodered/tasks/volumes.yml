@@ -1,0 +1,9 @@
+---
+- name: ZFS volumes
+  containers.podman.podman_volume:
+    name: '{{ item | replace("/", "-") }}'
+    options:
+      - "device=data/{{ item }}"
+      - "type=zfs"
+  loop:
+    - home/nodered

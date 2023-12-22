@@ -1,0 +1,6 @@
+---
+- name: Restart Vault
+  listen: "nodered config changed"
+  ansible.builtin.systemd_service:
+    name: "{{ service }}"
+    state: restarted

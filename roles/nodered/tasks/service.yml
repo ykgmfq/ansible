@@ -1,0 +1,21 @@
+---
+- name: Service enabled
+  block:
+    - name: Kube file escaped
+      register: escape
+      check_mode: false
+      changed_when: false
+      ansible.builtin.command:
+        argv:
+          - "/usr/bin/systemd-escape"
+          - "{{ dir }}/kube.yml"
+    - name: Service name set
+      ansible.builtin.set_fact:
+        service: "podman-kube@{{ escape.stdout }}"
+    - name: Service name
+      ansible.builtin.debug:
+        msg: "{{ service }}"
+    - name: Service enabled
+      ansible.builtin.systemd_service:
+        enabled: true
+        name: "{{ service }}"

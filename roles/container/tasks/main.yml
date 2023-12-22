@@ -3,6 +3,8 @@
   ansible.builtin.apt:
     name:
       - podman
+      - buildah
+      - catatonit
     install_recommends: false
 - name: Directory present
   ansible.builtin.file:

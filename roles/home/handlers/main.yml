@@ -5,3 +5,9 @@
     state: restarted
     daemon_reload: true
     name: "container-{{ role_name }}"
+- name: Service restarted
+  listen: "recorder config changed"
+  ansible.builtin.systemd_service:
+    state: restarted
+    daemon_reload: true
+    name: "container-{{ role_name }}-recorder"

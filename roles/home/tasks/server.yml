@@ -7,7 +7,10 @@
   ansible.builtin.import_tasks: volumes.yml
 - name: Network access allowed
   ansible.posix.firewalld:
-    service: homekit
+    service: '{{ item }}'
     permanent: true
     state: enabled
     immediate: true
+  loop:
+    - homekit
+    - mdns

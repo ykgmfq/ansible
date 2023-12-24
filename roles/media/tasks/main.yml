@@ -6,3 +6,8 @@
 - name: Import
   ansible.builtin.import_tasks: server.yml
   when: not is_backup_sink
+- name: Network access allowed
+  ansible.posix.firewalld:
+    service: jellyfin
+    permanent: true
+    state: enabled

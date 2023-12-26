@@ -1,0 +1,7 @@
+[Unit]
+After=cloud-upgrade.service
+
+[Service]
+User=cloud
+ExecStart=/usr/bin/php occ preview:generate-all --verbose
+WorkingDirectory=/srv/de.dm-poepperl.cloud/html

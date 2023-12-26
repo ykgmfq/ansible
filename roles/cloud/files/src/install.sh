@@ -6,13 +6,11 @@ echo "Using ID $1 for cloud user and group. Installing PHP version $2."
 echo "This is Fedora $fedora."
 cd /tmp
 # Configure extra repositories
-f install \
-https://rpms.remirepo.net/fedora/remi-release-$fedora.rpm \
-https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$fedora.noarch.rpm
+f install https://rpms.remirepo.net/fedora/remi-release-$fedora.rpm
 f module enable php:remi-$2
 # Package management
-f install systemd ffmpeg ImageMagick-heic fcgi jq \
-php{,-{cli,bcmath,gmp,fpm,xml,process,gd,mbstring,intl,opcache,json,zip,pgsql,sodium,pecl-{apcu,imagick-im7}}}
+f install systemd fcgi jq \
+php{,-{cli,bcmath,gmp,fpm,xml,process,gd,mbstring,intl,opcache,json,zip,pgsql,sodium,pecl-apcu}}
 #f reinstall tzdata
 f clean all
 # Create user and matching group

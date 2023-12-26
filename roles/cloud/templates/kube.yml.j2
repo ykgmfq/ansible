@@ -61,6 +61,14 @@ spec:
       volumeMounts:
         - mountPath: /var/lib/postgresql/data
           name: cloud-db-pvc
+    - image: docker.io/nextcloud/aio-imaginary
+      name: imaginary
+      securityContext:
+        capabilities:
+          drop:
+            - CAP_MKNOD
+            - CAP_NET_RAW
+            - CAP_AUDIT_WRITE
   enableServiceLinks: false
   restartPolicy: OnFailure
   volumes:

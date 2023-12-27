@@ -2,6 +2,7 @@
 
 [Service]
 User=cloud
+Type=oneshot
 ExecCondition=/usr/bin/php occ status -e
-ExecStart=/usr/bin/php occ preview:generate-all --verbose
+ExecStart=/usr/bin/php occ db:add-missing-indices
 WorkingDirectory=/srv/de.dm-poepperl.cloud/html

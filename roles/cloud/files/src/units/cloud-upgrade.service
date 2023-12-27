@@ -1,5 +1,4 @@
 [Unit]
-Description=Cloud upgrade
 
 [Service]
 User=cloud

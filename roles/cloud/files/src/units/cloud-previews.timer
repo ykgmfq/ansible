@@ -1,8 +1,7 @@
 [Unit]
-BindsTo=php-fpm.service
 
 [Timer]
-OnUnitActiveSec=10min
+OnCalendar=Sun
 
 [Install]
 WantedBy=php-fpm.service

@@ -1,5 +1,4 @@
 [Unit]
-Description=Cloud upgrade
 
 [Timer]
 OnCalendar=04:00

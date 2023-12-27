@@ -4,19 +4,16 @@ fedora=$(rpm -E %fedora)
 function f { dnf --{assumeyes,nodocs,setopt=install_weak_deps=0} $@; }
 echo "Using ID $1 for cloud user and group. Installing PHP version $2."
 echo "This is Fedora $fedora."
-cd /tmp
-# Configure extra repositories
-f install https://rpms.remirepo.net/fedora/remi-release-$fedora.rpm
-f module enable php:remi-$2
 # Package management
 f install systemd fcgi jq \
-php{,-{cli,bcmath,gmp,fpm,xml,process,gd,mbstring,intl,opcache,json,zip,pgsql,sodium,pecl-apcu}}
+php{,-{cli,bcmath,gmp,fpm,xml,process,gd,mbstring,intl,opcache,json,zip,pgsql,sodium,redis,pecl-{apcu,imagick}}}
 #f reinstall tzdata
 f clean all
 # Create user and matching group
 echo u cloud $1 | systemd-sysusers -
 # Place PHP Config files
 rm /etc/php-fpm.d/*
+cd /tmp
 mv php/fpm.ini /etc/php-fpm.d/cloud.conf
 mv php/php.ini /etc/php.d/99-nextcloud.ini
 # Place system unit files

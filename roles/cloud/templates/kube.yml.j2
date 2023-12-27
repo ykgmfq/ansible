@@ -69,6 +69,20 @@ spec:
             - CAP_MKNOD
             - CAP_NET_RAW
             - CAP_AUDIT_WRITE
+    - args:
+        - redis-server
+      image: docker.io/library/redis:{{ versions.redis }}-alpine
+      name: redis
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+            - CAP_MKNOD
+            - CAP_NET_RAW
+            - CAP_AUDIT_WRITE
+      volumeMounts:
+        - mountPath: /data
+          name: cloud-redis-pvc
   enableServiceLinks: false
   restartPolicy: OnFailure
   volumes:

@@ -1,15 +1,4 @@
 ---
-- name: Facts set
-  ansible.builtin.set_fact:
-    pool_dir: "/srv/de.dm-poepperl.cloud"
-    id: "{{ users.cloud }}"
-    dir: "/opt/container/{{ role_name }}"
-    volumes:
-      zfs:
-        - cloud-db
-        - cloud
-      local:
-        - cloud-preview
 - name: Import
   ansible.builtin.import_tasks: files.yml
 - name: Import

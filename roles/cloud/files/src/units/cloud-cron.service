@@ -1,8 +1,9 @@
 [Unit]
-After=cloud-upgrade.service
 
 [Service]
 User=cloud
 Type=oneshot
-ExecStart=/usr/bin/php -f cron.php
+KillMode=process
+ExecCondition=/usr/bin/php occ status -e
+ExecStart=/usr/bin/php cron.php
 WorkingDirectory=/srv/de.dm-poepperl.cloud/html

@@ -9,6 +9,7 @@
         - cloud-db
       local:
         - cloud-preview
+        - cloud-redis
 - name: Import
   ansible.builtin.import_tasks: ../../shared/user/main.yml
 - name: Import

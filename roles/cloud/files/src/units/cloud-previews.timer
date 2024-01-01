@@ -4,4 +4,4 @@
 OnCalendar=Sun
 
 [Install]
-WantedBy=php-fpm.service
+WantedBy=default.target

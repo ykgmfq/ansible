@@ -5,4 +5,4 @@ BindsTo=php-fpm.service
 OnCalendar=*:0/5
 
 [Install]
-WantedBy=php-fpm.service
+WantedBy=default.target

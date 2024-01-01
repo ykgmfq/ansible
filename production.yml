@@ -1,14 +1,4 @@
 ---
-- name: Service providers
-  hosts: homeserver
-  remote_user: root
-  roles:
-    - home
-    - caddy
-    - cloud
-    - docs
-    - media
-    - vault
 - name: Common headless functionality present
   hosts: headless
   remote_user: root
@@ -16,10 +6,23 @@
     - apt
     - common
     - vim
-    - lid_switch
+    - backup_base
 - name: Pihole
   remote_user: root
   hosts:
     - pihole.lan
   roles:
     - pihole
+- name: Service providers
+  hosts: homeserver
+  remote_user: root
+  roles:
+    - caddy
+    - container
+    - samba
+    - nodered
+    - home
+    - cloud
+    - docs
+    - media
+    - vault

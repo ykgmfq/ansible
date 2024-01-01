@@ -9,6 +9,7 @@
       local:
         - docs-redis
         - docs-thumbnails
+        - docs-scan
 - name: Import
   ansible.builtin.import_tasks: files.yml
 - name: Import

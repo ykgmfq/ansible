@@ -1,0 +1,17 @@
+---
+- name: Rebuild image
+  listen: "samba build changed"
+  notify: "samba config changed"
+  ansible.builtin.systemd_service:
+    name: "image-build@{{ role_name }}"
+    state: started
+- name: Restart deployment
+  listen: "samba config changed"
+  ansible.builtin.systemd_service:
+    name: "{{ service }}"
+    state: restarted
+- name: Restart deployment
+  listen: "avahi services changed"
+  ansible.builtin.systemd_service:
+    name: avahi-daemon
+    state: restarted

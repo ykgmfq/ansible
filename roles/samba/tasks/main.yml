@@ -1,20 +1,20 @@
 ---
-- name: Debian scan packages present
+- name: Facts set
+  ansible.builtin.set_fact:
+    dir: "/opt/container/{{ role_name }}"
+- name: Debian packages present
   ansible.builtin.apt:
     name:
-      - samba
-      - smbclient
+      - avahi-daemon
     install_recommends: false
 - name: Import
-  ansible.builtin.import_tasks: smb_user.yml
-- name: Samba config present
-  ansible.builtin.template:
-    src: smb.conf
-    dest: /etc/samba/
-    mode: "u=r,g=r,o=r"
+  ansible.builtin.import_tasks: files.yml
 - name: Network access allowed
   ansible.posix.firewalld:
-    service: samba
+    service: "{{ item }}"
     permanent: true
     state: enabled
     immediate: true
+  loop:
+    - samba
+    - mdns

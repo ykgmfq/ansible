@@ -32,7 +32,7 @@ headless:
     u2f_key: TEST
     users:
       vault: 844
-      scan: 835
+      scan: 879
       cloud: 832
       home: 865
       docs: 879

@@ -10,6 +10,7 @@
     dest: "/etc/caddy/avail/de.dm-poepperl.{{ role_name }}"
     mode: "u=r,g=r,o=r"
 - name: Image builder present
+  notify: "docs build changed"
   ansible.builtin.template:
     src: build.fish
     dest: "{{ dir }}/build.fish"

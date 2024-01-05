@@ -18,6 +18,7 @@
 - name: Systemd unit enabled
   ansible.builtin.systemd_service:
     name: pihole-up.timer
+    state: started
     enabled: true
     daemon-reload: true
 - name: Service up

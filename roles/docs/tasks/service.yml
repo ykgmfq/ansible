@@ -26,4 +26,5 @@
 - name: Image build timer enabled
   ansible.builtin.systemd_service:
     enabled: true
+    state: started
     name: "image-build@{{ role_name }}.timer"

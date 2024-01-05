@@ -2,7 +2,7 @@
 set -eu
 fedora=$(rpm -E %fedora)
 function f { dnf --{assumeyes,nodocs,setopt=install_weak_deps=0} $@; }
-echo "Using ID $1 for cloud user and group. Installing PHP version $2."
+echo "Using ID $1 for cloud user and group."
 echo "This is Fedora $fedora."
 # Package management
 f install systemd fcgi jq \

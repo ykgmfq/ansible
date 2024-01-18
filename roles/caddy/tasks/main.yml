@@ -1,4 +1,13 @@
 ---
+# https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes
+- name: UDP buffer size set
+  ansible.posix.sysctl:
+    name: "net.core.{{ item }}"
+    value: 2500000
+    sysctl_set: true
+  loop:
+    - wmem_max
+    - rmem_max
 - name: Package installed
   ansible.builtin.apt:
     name: caddy

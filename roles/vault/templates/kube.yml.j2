@@ -17,8 +17,36 @@ spec:
           value: {{ icons }}
         - name: ROCKET_PORT
           value: "{{ ports.vault }}"
+        - name: LOG_LEVEL
+          value: warn
         - name: DATABASE_URL
           value: postgresql://vault@localhost/vault
+        - name: INVITATION_ORG_NAME
+          value: Lauras and Dennis' Cloud
+        - name: PASSWORD_HINTS_ALLOWED
+          value: false
+        - name: SIGNUPS_ALLOWED
+          value: false
+        - name: DOMAIN
+          value: https://vault.dm-poepperl.de
+        - name: IP_HEADER
+          value: X-Forwarded-For
+        - name: SMTP_HOST
+          value: smtp.strato.de
+        - name: SMTP_SECURITY
+          value: force_tls
+        - name: SMTP_PORT
+          value: 465
+        - name: SMTP_FROM
+          value: cloud@dm-poepperl.de
+        - name: SMTP_USERNAME
+          value: cloud@dm-poepperl.de
+        - name: SMTP_FROM_NAME
+          value: L&D Cloud
+        - name: SMTP_PASSWORD
+          value: Yt58jcKyaMMxPbWYU9VQ
+        - name: TRASH_AUTO_DELETE_DAYS
+          value: 1000
       image: ghcr.io/dani-garcia/vaultwarden:alpine
       name: app
       ports:
@@ -27,11 +55,6 @@ spec:
           hostPort: {{ ports.vault }}
       resources: {}
       securityContext:
-        capabilities:
-          drop:
-            - CAP_MKNOD
-            - CAP_NET_RAW
-            - CAP_AUDIT_WRITE
         runAsGroup: {{ users.vault }}
         runAsUser: {{ users.vault }}
       volumeMounts:
@@ -47,18 +70,10 @@ spec:
       image: docker.io/library/postgres:15-alpine
       name: db
       resources: {}
-      securityContext:
-        capabilities:
-          drop:
-            - CAP_MKNOD
-            - CAP_NET_RAW
-            - CAP_AUDIT_WRITE
       volumeMounts:
         - mountPath: /var/lib/postgresql/data
           name: vault-db-pvc
   enableServiceLinks: false
-  hostname: vault
-  restartPolicy: OnFailure
   volumes:
     - name: vault-pvc
       persistentVolumeClaim:

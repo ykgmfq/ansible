@@ -18,6 +18,7 @@
   remote_user: root
   roles:
     - caddy
+    - monitor
     - container
     - samba
     - nodered

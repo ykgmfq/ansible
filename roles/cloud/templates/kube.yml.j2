@@ -18,12 +18,6 @@ spec:
         - name: web
           containerPort: 80
           hostPort: {{ ports.cloud }}
-      securityContext:
-        capabilities:
-          drop:
-            - CAP_MKNOD
-            - CAP_NET_RAW
-            - CAP_AUDIT_WRITE
       volumeMounts:
         - mountPath: /srv/de.dm-poepperl.cloud
           name: cloud-pvc
@@ -33,17 +27,18 @@ spec:
           readOnly: true
     - image: localhost/cloud:latest
       name: app
-      securityContext:
-        capabilities:
-          drop:
-            - CAP_MKNOD
-            - CAP_NET_RAW
-            - CAP_AUDIT_WRITE
       volumeMounts:
         - mountPath: /srv/de.dm-poepperl.cloud
           name: cloud-pvc
         - mountPath: /srv/de.dm-poepperl.cloud/data/appdata_och5khtk0i0u/preview
           name: cloud-preview-pvc
+      livenessProbe:
+        exec:
+          command:
+          - /usr/bin/bash
+          - /usr/local/bin/alive.sh
+        initialDelaySeconds: 10
+        periodSeconds: 60
     - image: docker.io/library/postgres:15-alpine
       name: db
       args:
@@ -52,39 +47,19 @@ spec:
         - name: POSTGRES_PASSWORD
           value: a
       resources: {}
-      securityContext:
-        capabilities:
-          drop:
-            - CAP_MKNOD
-            - CAP_NET_RAW
-            - CAP_AUDIT_WRITE
       volumeMounts:
         - mountPath: /var/lib/postgresql/data
           name: cloud-db-pvc
     - image: docker.io/nextcloud/aio-imaginary
       name: imaginary
-      securityContext:
-        capabilities:
-          drop:
-            - CAP_MKNOD
-            - CAP_NET_RAW
-            - CAP_AUDIT_WRITE
     - args:
         - redis-server
       image: docker.io/library/redis:{{ versions.redis }}-alpine
       name: redis
       resources: {}
-      securityContext:
-        capabilities:
-          drop:
-            - CAP_MKNOD
-            - CAP_NET_RAW
-            - CAP_AUDIT_WRITE
       volumeMounts:
         - mountPath: /data
           name: cloud-redis-pvc
-  enableServiceLinks: false
-  restartPolicy: OnFailure
   volumes:
 {% for vols in volumes.values() %}
 {% for vol in vols %}

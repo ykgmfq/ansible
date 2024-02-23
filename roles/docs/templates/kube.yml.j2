@@ -20,12 +20,11 @@ spec:
         - containerPort: {{ ports.docs }}
           hostPort: {{ ports.docs }}
       resources: {}
-      securityContext:
-        capabilities:
-          drop:
-            - CAP_MKNOD
-            - CAP_NET_RAW
-            - CAP_AUDIT_WRITE
+      livenessProbe:
+        httpGet:
+          port: 8000
+        initialDelaySeconds: 20
+        periodSeconds: 60
       env:
         - name: PAPERLESS_URL
           value: https://docs.dm-poepperl.de
@@ -62,12 +61,6 @@ spec:
       image: docker.io/library/postgres:15-alpine
       name: db
       resources: {}
-      securityContext:
-        capabilities:
-          drop:
-            - CAP_MKNOD
-            - CAP_NET_RAW
-            - CAP_AUDIT_WRITE
       volumeMounts:
         - mountPath: /var/lib/postgresql/data
           name: docs-db-pvc
@@ -76,18 +69,9 @@ spec:
       image: docker.io/library/redis:{{ versions.redis }}-alpine
       name: redis
       resources: {}
-      securityContext:
-        capabilities:
-          drop:
-            - CAP_MKNOD
-            - CAP_NET_RAW
-            - CAP_AUDIT_WRITE
       volumeMounts:
         - mountPath: /data
           name: docs-redis-pvc
-  enableServiceLinks: false
-  hostname: docs
-  restartPolicy: OnFailure
   volumes:
 {% for vols in volumes.values() %}
 {% for vol in vols %}

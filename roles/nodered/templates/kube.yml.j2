@@ -19,18 +19,16 @@ spec:
     - containerPort: 1880
       hostPort: 1880
     securityContext:
-      capabilities:
-        drop:
-        - CAP_MKNOD
-        - CAP_NET_RAW
-        - CAP_AUDIT_WRITE
       runAsGroup: 0
       runAsUser: 110
     volumeMounts:
     - mountPath: /data
       name: home-nodered-pvc
-  enableServiceLinks: false
-  restartPolicy: Always
+    livenessProbe:
+      httpGet:
+        port: 1880
+      initialDelaySeconds: 20
+      periodSeconds: 60
   volumes:
   - name: home-nodered-pvc
     persistentVolumeClaim:

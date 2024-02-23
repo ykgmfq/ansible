@@ -9,7 +9,7 @@ headless:
         versions:
           paperless: "2.5"
           alpine: "3.19"
-          fedora: "38"
+          fedora: "39"
           caddy: "2"
           redis: "7"
         samba_users:

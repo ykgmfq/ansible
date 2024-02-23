@@ -3,7 +3,7 @@
   ansible.builtin.file:
     path: /etc/sanoid
     state: directory
-    mode: "u=rwx,g=rx,o="
+    mode: "u=rwx,g=rx,o=rx"
 - name: Sanoid config present
   ansible.builtin.template:
     src: sanoid.conf

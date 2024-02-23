@@ -20,6 +20,7 @@ mv php/php.ini /etc/php.d/99-nextcloud.ini
 new_units=$(ls units/)
 mv units/* /etc/systemd/system/
 mv alive.sh /usr/local/bin/
+chmod o+x /usr/local/bin/*
 rm -r *
 # Set system unit states
 systemctl set-default container.target

@@ -4,7 +4,7 @@ Description=Image build
 [Timer]
 OnCalendar = Fri 23:00
 Persistent = true
-RandomizedDelaySec = 10min
+RandomizedDelaySec = 15min
 
 [Install]
 WantedBy = podman-auto-update.timer

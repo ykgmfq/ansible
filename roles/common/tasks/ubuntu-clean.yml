@@ -3,11 +3,11 @@
   ansible.builtin.systemd_service:
     state: stopped
     enabled: false
+    masked: true
     name: "{{ item }}"
   loop:
     - multipathd
     - multipathd.socket
-- name: Snaps absent
-  community.general.snap:
-    name: lxd
-    state: absent
+    - snapd
+    - snapd.socket
+    - cron

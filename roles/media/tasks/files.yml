@@ -23,6 +23,6 @@
     mode: "u=r,g=r,o=r"
 - name: Firewall file present
   ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/jellyfin/jellyfin/master/fedora/jellyfin-firewalld.xml
+    url: https://raw.githubusercontent.com/rpmfusion/jellyfin/master/jellyfin-firewalld.xml
     dest: /etc/firewalld/services/jellyfin.xml
     mode: "u=r,g=r,o=r"

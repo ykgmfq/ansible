@@ -1,11 +1,9 @@
 ---
-- name: Facts set
-  ansible.builtin.set_fact:
-    id: "{{ users.media }}"
-    dir: "/opt/container/{{ role_name }}"
-- name: Import
-  ansible.builtin.import_tasks: server.yml
-  when: not is_backup_sink
+- name: Firewall file present
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/rpmfusion/jellyfin/master/jellyfin-firewalld.xml
+    dest: /etc/firewalld/services/jellyfin.xml
+    mode: "u=r,g=r,o=r"
 - name: Network access allowed
   ansible.posix.firewalld:
     service: jellyfin

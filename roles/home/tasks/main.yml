@@ -1,8 +1,21 @@
 ---
 
-- name: Import
-  ansible.builtin.import_tasks: server.yml
-  when: not is_backup_sink
-- name: Import
-  ansible.builtin.import_tasks: ../../shared/backup-sink/main.yml
-  when: is_backup_sink
+- name: Firewalld service present
+  ansible.builtin.copy:
+    src: homekit.xml
+    dest: /etc/firewalld/services
+    mode: "u=r,g=r,o=r"
+- name: Udev rule present
+  ansible.builtin.copy:
+    src: conbee.rules
+    dest: /etc/udev/rules.d
+    mode: "u=r,g=r,o=r"
+- name: Network access allowed
+  ansible.posix.firewalld:
+    service: '{{ item }}'
+    permanent: true
+    state: enabled
+    immediate: true
+  loop:
+    - homekit
+    - mdns

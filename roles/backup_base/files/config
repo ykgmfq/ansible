@@ -1,6 +1,6 @@
 Host server
-  User backup
-  HostName server.lan
+  User syncoid
+  HostName dmpoepperl.de
 
 Host *
   HashKnownHosts no

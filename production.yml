@@ -7,23 +7,10 @@
     - common
     - vim
     - backup_base
-- name: Pihole
-  remote_user: root
-  hosts:
-    - pihole.lan
-  roles:
-    - pihole
 - name: Service providers
   hosts: homeserver
   remote_user: root
   roles:
-    - caddy
-    - monitor
     - container
-    - samba
-    - nodered
     - home
-    - cloud
-    - docs
     - media
-    - vault

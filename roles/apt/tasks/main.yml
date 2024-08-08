@@ -1,11 +1,9 @@
 ---
-- name: Aptitude and unattented-upgrades installed
+- name: Aptitude installed
   ansible.builtin.apt:
     name:
       - aptitude
-      - unattended-upgrades
     install_recommends: false
-
 - name: Unattended Upgrades config file present
   ansible.builtin.template:
     src: unattended_upgrades.conf

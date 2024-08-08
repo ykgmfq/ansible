@@ -1,3 +1,0 @@
-[Unit]
-Requires=php-fpm.service caddy.service icinga2.service icingadb.service
-After=php-fpm.service caddy.service icinga2.service icingadb.service

@@ -5,22 +5,6 @@ headless:
         dm-poepperl.de:
           is_backup_sink: false
           user_shell: "/usr/sbin/nologin"
-      vars:
-        versions:
-          paperless: "2.5"
-          alpine: "3.19"
-          fedora: "39"
-          caddy: "2"
-          redis: "7"
-        samba_users:
-          - username: docs
-            password: "{{ secrets.docs.samba }}"
-        ports:
-          cloud: 8088
-          vault: 8087
-          docs: 8000
-          media: 8096
-          monitor: 8089
     rpi:
       hosts:
         pihole.lan:

@@ -35,6 +35,10 @@ if status is-interactive
     else
         alias g="grep"
     end
+    function syncds --description 'Sync dataset to backup'
+        set ds $argv[1]
+        systemd-run --pty --collect --service-type=oneshot --unit=syncds-$ds /usr/sbin/syncoid --preserve-recordsize --no-sync-snap --compress=none --recursive data/$ds backup/$ds
+    end
     function cd-vol --description 'Go to volume mount'
         set dir (cat /etc/mtab|g "data/$argv(\s+)"|awk '{ print $2 }')
         cd $dir

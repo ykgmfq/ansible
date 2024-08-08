@@ -1,8 +1,0 @@
-[Unit]
-Description=Home upgrade
-After=network-online.target
-Requires=network-online.target
-
-[Service]
-ExecStart=/usr/bin/bash -c 'set -euo pipefail && /usr/bin/podman pull ghcr.io/home-assistant/home-assistant && /usr/bin/podman tag ghcr.io/home-assistant/home-assistant home-assistant'
-Type=oneshot

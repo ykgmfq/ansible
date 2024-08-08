@@ -1,9 +1,0 @@
-[Unit]
-Description=Home upgrade
-
-[Timer]
-OnCalendar=Fri *-*~07/1 22:00
-Persistent=True
-
-[Install]
-WantedBy=container-home.service

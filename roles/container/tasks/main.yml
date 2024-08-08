@@ -6,11 +6,6 @@
       - buildah
       - catatonit
     install_recommends: false
-- name: Directory present
-  ansible.builtin.file:
-    path: "/opt/container/"
-    state: directory
-    mode: "u=rwx,g=rx,o=rx"
 - name: Unit files present
   ansible.builtin.copy:
     src: units/

@@ -1,6 +1,0 @@
----
-- name: Restart Caddy
-  listen: "caddy config changed"
-  ansible.builtin.systemd_service:
-    name: "{{ role_name }}"
-    state: restarted

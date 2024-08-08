@@ -1,7 +1,0 @@
----
-- name: User id set
-  ansible.builtin.set_fact:
-    id: "{{ users.vault }}"
-- name: Import
-  ansible.builtin.import_tasks: server.yml
-  when: not is_backup_sink

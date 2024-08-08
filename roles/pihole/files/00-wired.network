@@ -1,8 +1,0 @@
-[Match]
-Type = ether
-
-[Network]
-Address=192.168.178.2/24
-Gateway=192.168.178.1
-DNS=127.0.0.1
-DNS=9.9.9.9

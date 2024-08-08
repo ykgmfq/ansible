@@ -5,6 +5,7 @@ headless:
         dm-poepperl.de:
           is_backup_sink: false
           user_shell: "/usr/sbin/nologin"
+          auto_reboot: false
     rpi:
       hosts:
         pihole.lan:

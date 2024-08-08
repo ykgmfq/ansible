@@ -9,10 +9,10 @@
     - service
 - name: Syncoid timer enabled
   ansible.builtin.systemd_service:
-    state: enabled
+    state: started
     enabled: true
     daemon_reload: true
     name: "syncoid@{{ item }}.timer"
   loop:
-    - data
+    - persist
     - media

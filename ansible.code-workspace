@@ -64,6 +64,9 @@
 				"label": "playbook",
 				"type": "process",
 				"command": "ansible-playbook",
+				"presentation": {
+					"focus": true,
+				},
 				"args": [
 					"production.yml",
 					"-i=inventory.yml",

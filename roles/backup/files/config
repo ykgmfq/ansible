@@ -1,5 +1,5 @@
 Host server
-  HostName dmpoepperl.de
+  HostName dm-poepperl.de
 
 Host *
   HashKnownHosts no

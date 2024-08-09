@@ -1,14 +1,16 @@
 ---
 - name: Common headless functionality present
   hosts: headless
+  serial: 1
   remote_user: root
   roles:
     - apt
     - common
     - vim
-    - backup_base
+    - backup
 - name: Service providers
   hosts: homeserver
+  serial: 1
   remote_user: root
   roles:
     - container

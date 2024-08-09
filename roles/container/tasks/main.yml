@@ -3,11 +3,34 @@
   ansible.builtin.apt:
     name:
       - podman
+      - aardvark-dns
       - buildah
       - catatonit
     install_recommends: false
 - name: Unit files present
+  notify: "system config changed"
   ansible.builtin.copy:
     src: units/
     dest: /etc/systemd/system
     mode: "u=r,g=r,o=r"
+- name: Service definitions present # noqa: latest
+  notify: "system config changed"
+  ansible.builtin.git:
+    repo: 'git@github.com:ykgmfq/services.git'
+    dest: /opt/services
+- name: Service definitions linked
+  notify: "system config changed"
+  ansible.builtin.file:
+    src: /opt/services/systemd
+    dest: /etc/containers/systemd
+    state: link
+- name: Prod is default target
+  ansible.builtin.file:
+    src: /etc/systemd/system/prod.target
+    dest: /etc/systemd/system/default.target
+    state: link
+- name: Default target started
+  ansible.builtin.systemd_service:
+    name: default.target
+    state: started
+    daemon_reload: true

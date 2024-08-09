@@ -4,7 +4,7 @@ After = network-online.target
 Requires = network-online.target
 
 [Service]
-WorkingDirectory = /opt/container/%i
+WorkingDirectory = /opt/services/images/%i
 ExecStart = /usr/bin/fish build.fish
 Restart=on-failure
 RestartSec=1h

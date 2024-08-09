@@ -1,0 +1,5 @@
+---
+- name: Systemd config up-to-date
+  listen: "system config changed"
+  ansible.builtin.systemd_service:
+    daemon_reload: true

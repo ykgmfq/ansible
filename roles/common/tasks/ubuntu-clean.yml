@@ -9,3 +9,8 @@
     - multipathd
     - multipathd.socket
     - cron
+- name: Ubuntu user absent
+  ansible.builtin.user:
+    name: ubuntu
+    state: absent
+    force: true

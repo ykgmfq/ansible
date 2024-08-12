@@ -1,47 +1,14 @@
 ---
 - name: Ubuntu root user bootstrap
-  remote_user: ubuntu
+  remote_user: dmp
   hosts: all
   tasks:
-    - name: Root password set
-      become: true
-      ansible.builtin.user:
-        name: root
-        password: "{{ secrets.sys.root_pw | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
     - name: SSH key trusted
       become: true
-      ansible.posix.authorized_key:
-        user: root
-        key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id.pub') }}"
-- name: Ubuntu standard user disabled and unwanted features removed
-  remote_user: root
-  hosts: all
-  tasks:
-    - name: Ubuntu user absent
-      ansible.builtin.user:
-        name: ubuntu
-        state: absent
-        force: true
-    - name: Debian packages absent
-      ansible.builtin.apt:
-        state: absent
-        autoremove: true
-        name:
-          - rsyslog
-          - snapd
-          - modemmanager
-          - pi-bluetooth
-          - udisks2
-          - irqbalance
-          - cloud-init
-    - name: Services disabled
-      ansible.builtin.systemd_service:
-        state: stopped
-        enabled: false
-        name: "{{ item }}"
-      loop:
-        - cron
-        - wpa_supplicant
-        - snap.lxd.activate
-        - multipathd
-        - multipathd.socket
+      ansible.builtin.copy:
+        src: "/home/{{ ansible_user_id }}/.ssh/authorized_keys"
+        dest: "/root/.ssh/authorized_keys"
+        remote_src: true
+        mode: "u=r,go="
+        owner: root
+        group: root

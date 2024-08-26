@@ -1,15 +1,4 @@
 ---
-- name: SSH config directory present
-  ansible.builtin.file:
-    dest: /home/syncoid/.ssh/
-    state: directory
-    owner: syncoid
-    mode: "u=rwx,g=,o="
-- name: SSH config present
-  ansible.builtin.copy:
-    src: config
-    dest: /home/syncoid/.ssh/
-    mode: "u=r,g=r,o=r"
 - name: Unit files present
   ansible.builtin.copy:
     src: "syncoid@.{{ item }}"

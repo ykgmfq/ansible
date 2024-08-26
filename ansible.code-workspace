@@ -8,7 +8,7 @@
 		"files.associations": {
 			"*.yml": "ansible"
 		},
-		"ansible.python.interpreterPath": "/bin/python",
+		"ansible.python.interpreterPath": "/home/linuxbrew/.linuxbrew/bin/python3",
 	},
 	"tasks": {
 		"version": "2.0.0",

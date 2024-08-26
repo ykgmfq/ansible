@@ -8,6 +8,7 @@
     - common
     - vim
     - backup
+    - lid_switch
 - name: Service providers
   hosts: homeserver
   serial: 1

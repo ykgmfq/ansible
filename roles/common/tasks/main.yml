@@ -5,11 +5,11 @@
       - fish
       - ripgrep
       - fd-find
-      - gnupg
       - bat
       - htop
       - rclone
       - firewalld
+      - tlp
     install_recommends: false
 - name: Fish config directory present
   become: true
@@ -35,6 +35,14 @@
   ansible.builtin.user:
     name: root
     password: "{{ secrets.sys.root_pw | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
+- name: TLP config set
+  become: true
+  notify: "tlp config changed"
+  ansible.builtin.copy:
+    src: tlp.conf
+    dest: /etc/tlp.d/00-ansible.conf
+    owner: root
+    mode: "u=r,g=r,o=r"
 - name: Import
   ansible.builtin.import_tasks: pam.yml
 - name: Import

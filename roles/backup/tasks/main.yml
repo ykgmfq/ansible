@@ -4,6 +4,7 @@
     ds: "{{ 'backup' if is_backup_sink else 'data' }}"
     permissions: "{{ 'compression,mountpoint,create,mount,receive,rollback,destroy' if is_backup_sink else 'send,hold' }}"
     autosnap: "{{ 'false' if is_backup_sink else 'true' }}"
+    home: "/mnt/{{ 'backup/syncoid-home-sink' if is_backup_sink else 'persist/syncoid-home-source' }}"
 - name: Debian packages present
   ansible.builtin.apt:
     name:
@@ -21,6 +22,7 @@
 - name: User present
   ansible.builtin.user:
     name: "syncoid"
+    home: "{{ home }}"
     comment: "from Ansible"
     system: true
     shell: "/bin/sh"
@@ -36,6 +38,11 @@
     users: syncoid
     name: "{{ ds }}"
     permissions: "{{ permissions }}"
+- name: Srub timer enabled
+  ansible.builtin.systemd_service:
+    state: started
+    enabled: true
+    name: "zfs-scrub-monthly@{{ ds }}.timer"
 - name: Syncoid on backup system
   when: is_backup_sink
   ansible.builtin.import_tasks: syncoid.yml

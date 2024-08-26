@@ -3,18 +3,18 @@ headless:
     homeserver:
       hosts:
         dm-poepperl.de:
-          is_backup_sink: false
-          user_shell: "/usr/sbin/nologin"
           auto_reboot: false
-    rpi:
-      hosts:
-        pihole.lan:
-          is_backup_sink: true
       vars:
-        user_shell: "/usr/bin/nologin"
+        is_backup_sink: false
+    backup:
+      hosts:
+        backup-dmp-main:
+      vars:
+        is_backup_sink: true
         auto_reboot: true
   vars:
     u2f_key: TEST
+    user_shell: "/usr/bin/nologin"
     users:
       vault: 844
       scan: 879

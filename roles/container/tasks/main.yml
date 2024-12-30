@@ -18,6 +18,8 @@
   ansible.builtin.git:
     repo: 'git@github.com:ykgmfq/services.git'
     dest: /opt/services
+    accept_newhostkey: true
+    update: false
 - name: Service definitions linked
   notify: "system config changed"
   ansible.builtin.file:

@@ -8,4 +8,4 @@ Type = oneshot
 Restart = on-failure
 RestartSec = 5min
 TimeoutStartSec = 1h
-ExecStart = /usr/sbin/syncoid --preserve-recordsize --recursive --no-sync-snap --no-privilege-elevation --compress=none --source-bwlimit=3m server:data/%i backup/%i
+ExecStart = /usr/sbin/syncoid --preserve-recordsize --recursive --no-sync-snap --no-privilege-elevation --compress=zstd-fast server:data/%i backup/%i

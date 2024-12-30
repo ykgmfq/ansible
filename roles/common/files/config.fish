@@ -4,6 +4,10 @@ if status is-interactive
     systemctl list-units --failed
     printf "\nFailed Timers:\n"
     systemctl list-timers --failed
+    printf "\nHealth:\n"
+    sanoid --monitor-snapshots
+    sanoid --monitor-health
+    printf "\n"
     set --export EDITOR nvim
     set --export BAT_THEME OneHalfLight
     set --export VISUAL $EDITOR

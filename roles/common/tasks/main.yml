@@ -6,6 +6,7 @@
       - ripgrep
       - fd-find
       - bat
+      - eza
       - htop
       - rclone
       - firewalld

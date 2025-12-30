@@ -7,5 +7,5 @@ User = syncoid
 Type = oneshot
 Restart = on-failure
 RestartSec = 5min
-TimeoutStartSec = 1h
+TimeoutStartSec = 2h
 ExecStart = /usr/sbin/syncoid --preserve-recordsize --recursive --no-sync-snap --no-privilege-elevation --compress=zstd-fast server:data/%i backup/%i

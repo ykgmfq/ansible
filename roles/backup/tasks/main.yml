@@ -1,48 +1,39 @@
 ---
 - name: Set facts
   ansible.builtin.set_fact:
-    ds: "{{ 'backup' if is_backup_sink else 'data' }}"
-    permissions: "{{ 'compression,mountpoint,create,mount,receive,rollback,destroy' if is_backup_sink else 'send,hold' }}"
-    autosnap: "{{ 'false' if is_backup_sink else 'true' }}"
-    home: "/mnt/{{ 'backup/syncoid-home-sink' if is_backup_sink else 'persist/syncoid-home-source' }}"
-- name: Debian packages present
-  ansible.builtin.apt:
-    name:
-      - sanoid
-      - python3-virtualenv
-      - python3-pip
-      - zfsutils-linux
-    install_recommends: false
-- name: Questionary present
-  ansible.builtin.pip:
-    name: questionary
-    state: present
-    virtualenv: /opt/rollback
-    virtualenv_site_packages: true
+    backup_ds: "{{ 'backup' if is_backup_sink else 'data' }}"
+    backup_permissions: "{{ 'compression,mountpoint,create,mount,receive,rollback,destroy' if is_backup_sink else 'send,hold' }}"
+    backup_autosnap: "{{ 'false' if is_backup_sink else 'true' }}"
+    backup_home: "/mnt/{{ 'backup/syncoid-home-sink' if is_backup_sink else 'persist/syncoid-home-source' }}"
 - name: User present
   ansible.builtin.user:
     name: "syncoid"
-    home: "{{ home }}"
+    home: "{{ backup_home }}"
     comment: "from Ansible"
     system: true
     shell: "/bin/sh"
 - name: Import
   ansible.builtin.import_tasks: files.yml
 - name: Pool imported
-  ansible.builtin.command: "zpool import {{ ds }}"
+  ansible.builtin.command: "zpool import {{ backup_ds }}"
   changed_when: false
-  register: zpool
+  register: backup_zpool
   failed_when: false
 - name: Pool allowlist
   community.general.zfs_delegate_admin:
     users: syncoid
-    name: "{{ ds }}"
-    permissions: "{{ permissions }}"
+    name: "{{ backup_ds }}"
+    permissions: "{{ backup_permissions }}"
 - name: Srub timer enabled
   ansible.builtin.systemd_service:
     state: started
     enabled: true
-    name: "zfs-scrub-monthly@{{ ds }}.timer"
+    name: "zfs-scrub-monthly@{{ backup_ds }}.timer"
+- name: Sanoid timer enabled
+  ansible.builtin.systemd_service:
+    state: started
+    enabled: true
+    name: sanoid.timer
 - name: Syncoid on backup system
   when: is_backup_sink
   ansible.builtin.import_tasks: syncoid.yml

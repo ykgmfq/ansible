@@ -6,7 +6,8 @@
 	],
 	"settings": {
 		"files.associations": {
-			"*.yml": "ansible"
+			"*.yml": "ansible",
+			"*.butane": "yaml"
 		},
 		"ansible.python.interpreterPath": "/usr/bin/python3",
 	},

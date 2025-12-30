@@ -1,0 +1,14 @@
+{
+  "name": "ansible and butane",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "redhat.vscode-yaml",
+        "redhat.ansible"
+      ]
+    }
+  }
+}

@@ -1,0 +1,12 @@
+---
+- name: Buildah installed
+  become: true
+  community.general.rpm_ostree_pkg:
+    name: buildah
+- name: Register secrets
+  changed_when: false
+  ansible.builtin.command:
+    argv:
+      - /usr/bin/fish
+      - register.fish
+    chdir: /var/mnt/persist/podman-secrets

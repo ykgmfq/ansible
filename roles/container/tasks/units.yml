@@ -1,0 +1,19 @@
+---
+- name: Unit files present
+  notify: "system config changed"
+  ansible.builtin.copy:
+    src: units/
+    dest: /etc/systemd/system
+    mode: "u=r,g=r,o=r"
+- name: Service definitions synced
+  delegate_to: "{{ inventory_hostname }}"
+  ansible.posix.synchronize:
+    src: /var/mnt/ephemeral/services/systemd
+    dest: /etc/containers/systemd
+    delete: true
+- name: Prod is default target
+  notify: "system config changed"
+  ansible.builtin.file:
+    src: /etc/systemd/system/prod.target
+    dest: /etc/systemd/system/default.target
+    state: link

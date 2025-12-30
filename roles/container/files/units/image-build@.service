@@ -3,9 +3,9 @@ After = network-online.target
 Requires = network-online.target
 
 [Service]
-WorkingDirectory = /opt/services/images/%i
+WorkingDirectory = /var/mnt/ephemeral/services/images/%i
 ExecStart = /usr/bin/fish build.fish
-LoadCredential = secrets:/mnt/persist/secrets.fish
+LoadCredential = secrets:/var/mnt/persist/secrets.fish
 Restart = on-failure
 RestartSec = 1h
 Type = oneshot

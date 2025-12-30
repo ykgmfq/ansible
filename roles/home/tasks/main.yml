@@ -1,10 +1,14 @@
 ---
-
 - name: Firewalld service present
   ansible.builtin.copy:
     src: homekit.xml
     dest: /etc/firewalld/services
     mode: "u=r,g=r,o=r"
+- name: Restart firewalld
+  changed_when: false
+  ansible.builtin.systemd:
+    name: firewalld
+    state: restarted
 - name: Udev rule present
   ansible.builtin.copy:
     src: conbee.rules
@@ -14,8 +18,8 @@
   ansible.posix.firewalld:
     service: '{{ item }}'
     permanent: true
-    state: enabled
     immediate: true
+    state: enabled
   loop:
     - homekit
     - mdns

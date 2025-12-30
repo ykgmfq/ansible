@@ -2,7 +2,8 @@
 - name: Common headless functionality present
   hosts: headless
   serial: 1
-  remote_user: root
+  remote_user: dmp
+  become: true
   roles:
     - apt
     - common
@@ -12,7 +13,8 @@
 - name: Service providers
   hosts: homeserver
   serial: 1
-  remote_user: root
+  remote_user: dmp
+  become: true
   roles:
     - container
     - home

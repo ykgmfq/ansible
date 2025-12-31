@@ -1,23 +1,21 @@
 INVENTORY := "inventory.yml"
-SECRETS := "secrets.yml"
-VAULT := "pw.txt"
 PLAYBOOK := "production.yml"
 
 # Playbook Check
 playbook-check:
-    ansible-playbook {{PLAYBOOK}} -i={{INVENTORY}} --extra-vars=@{{SECRETS}} --vault-password-file={{VAULT}} --diff --check
+    ansible-playbook {{PLAYBOOK}} -i={{INVENTORY}} --diff --check
 
 # Playbook Check Verbose
 playbook-check-verbose:
-    ansible-playbook {{PLAYBOOK}} -i={{INVENTORY}} --extra-vars=@{{SECRETS}} --vault-password-file={{VAULT}} --diff --check -vvv
+    ansible-playbook {{PLAYBOOK}} -i={{INVENTORY}} --diff --check -vvv
 
 # Playbook Verbose
 playbook-verbose:
-    ansible-playbook {{PLAYBOOK}} -i={{INVENTORY}} --extra-vars=@{{SECRETS}} --vault-password-file={{VAULT}} --diff -vvv
+    ansible-playbook {{PLAYBOOK}} -i={{INVENTORY}} --diff -vvv
 
 # Playbook Normal
 playbook:
-    ansible-playbook {{PLAYBOOK}} -i={{INVENTORY}} --extra-vars=@{{SECRETS}} --vault-password-file={{VAULT}} --diff
+    ansible-playbook {{PLAYBOOK}} -i={{INVENTORY}} --diff
 
 # Run butane to generate ignition file
 butane:

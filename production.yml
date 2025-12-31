@@ -4,6 +4,8 @@
   serial: 1
   remote_user: dmp
   become: true
+  vars_files:
+    - secrets.yml
   roles:
     - apt
     - common
@@ -15,6 +17,8 @@
   serial: 1
   remote_user: dmp
   become: true
+  vars_files:
+    - secrets.yml
   roles:
     - container
     - home

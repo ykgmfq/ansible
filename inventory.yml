@@ -12,13 +12,3 @@ headless:
       vars:
         is_backup_sink: true
         auto_reboot: true
-  vars:
-    u2f_key: TEST
-    user_shell: "/usr/bin/nologin"
-    users:
-      vault: 844
-      scan: 879
-      cloud: 832
-      home: 865
-      docs: 879
-      media: 997

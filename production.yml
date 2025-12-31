@@ -8,7 +8,7 @@
     - secrets.yml
   roles:
     - common
-    - backup
+    - zfspool
     - lid_switch
 - name: Service providers
   hosts: homeserver

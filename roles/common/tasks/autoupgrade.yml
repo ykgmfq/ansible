@@ -1,0 +1,13 @@
+---
+- name: Update policy is apply
+  community.general.ini_file:
+    path: /etc/rpm-ostreed.conf
+    section: Daemon
+    option: AutomaticUpdatePolicy
+    value: apply
+    mode: "ugo=r"
+- name: Upgrade timer active
+  ansible.builtin.systemd_service:
+    name: rpm-ostreed-automatic.timer
+    enabled: true
+    state: started

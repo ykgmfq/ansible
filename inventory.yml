@@ -3,12 +3,10 @@ headless:
     homeserver:
       hosts:
         dm-poepperl.de:
-          auto_reboot: false
-      vars:
+                vars:
         is_backup_sink: false
     backup:
       hosts:
         backup-dmp-main:
       vars:
         is_backup_sink: true
-        auto_reboot: true

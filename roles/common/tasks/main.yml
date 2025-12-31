@@ -18,3 +18,5 @@
     dest: /root/.config/fish/config.fish
     owner: root
     mode: "u=rw,g=,o="
+- name: Auto upgrade
+  ansible.builtin.import_tasks: autoupgrade.yml

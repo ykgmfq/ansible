@@ -3,10 +3,14 @@ headless:
     homeserver:
       hosts:
         dm-poepperl.de:
-                vars:
+      vars:
         is_backup_sink: false
+        dataset: data
+        syncoid_home: /var/mnt/persist/syncoid-home-source
     backup:
       hosts:
-        backup-dmp-main:
+        # backup-dmp-main:
       vars:
         is_backup_sink: true
+        dataset: backup
+        syncoid_home: /var/mnt/backup/syncoid-home-sink

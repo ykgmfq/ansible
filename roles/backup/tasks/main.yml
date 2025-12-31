@@ -1,34 +1,28 @@
 ---
-- name: Set facts
-  ansible.builtin.set_fact:
-    backup_ds: "{{ 'backup' if is_backup_sink else 'data' }}"
-    backup_permissions: "{{ 'compression,mountpoint,create,mount,receive,rollback,destroy' if is_backup_sink else 'send,hold' }}"
-    backup_autosnap: "{{ 'false' if is_backup_sink else 'true' }}"
-    backup_home: "/mnt/{{ 'backup/syncoid-home-sink' if is_backup_sink else 'persist/syncoid-home-source' }}"
 - name: User present
   ansible.builtin.user:
     name: "syncoid"
-    home: "{{ backup_home }}"
+    home: "{{ syncoid_home }}"
     comment: "from Ansible"
     system: true
     shell: "/bin/sh"
 - name: Import
   ansible.builtin.import_tasks: files.yml
 - name: Pool imported
-  ansible.builtin.command: "zpool import {{ backup_ds }}"
+  ansible.builtin.command: "zpool import {{ dataset }}"
   changed_when: false
   register: backup_zpool
   failed_when: false
 - name: Pool allowlist
   community.general.zfs_delegate_admin:
     users: syncoid
-    name: "{{ backup_ds }}"
-    permissions: "{{ backup_permissions }}"
+    name: "{{ dataset }}"
+    permissions: "{{ 'compression,mountpoint,create,mount,receive,rollback,destroy' if is_backup_sink else 'send,hold' }}"
 - name: Srub timer enabled
   ansible.builtin.systemd_service:
     state: started
     enabled: true
-    name: "zfs-scrub-monthly@{{ backup_ds }}.timer"
+    name: "zfs-scrub-monthly@{{ dataset }}.timer"
 - name: Sanoid timer enabled
   ansible.builtin.systemd_service:
     state: started
@@ -37,7 +31,7 @@
 - name: SELinux-compatible attributes on dataset
   become: true
   community.general.zfs:
-    name: "{{ backup_ds }}"
+    name: "{{ dataset }}"
     state: present
     extra_zfs_properties:
       xattr: "on" # or "sa" if supported

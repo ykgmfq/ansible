@@ -1,9 +1,18 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v6.0.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
       - id: check-yaml
         exclude: secrets.yml
+        files: (\.ya?ml|\.butane)$
       - id: sort-simple-yaml
+        files: (\.ya?ml|\.butane)$
+  - repo: local
+    hooks:
+      - id: ansible-lint
+        name: Ansible Lint local
+        entry: ansible-lint
+        language: system
+        types: [yaml]

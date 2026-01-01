@@ -5,7 +5,7 @@
     dest: /etc/systemd/logind.conf.d
     state: directory
     owner: root
-    mode: "u=rx,g=rx,o=rx"
+    mode: "ugo=rx"
 - name: Logind switch config present
   notify: "logind config changed"
   community.general.ini_file:
@@ -14,4 +14,4 @@
     option: HandleLidSwitch
     value: ignore
     owner: root
-    mode: "u=rx,g=r,o=r"
+    mode: "u=rx,go=r"

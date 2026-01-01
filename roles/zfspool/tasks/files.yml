@@ -3,11 +3,11 @@
   ansible.builtin.file:
     path: /etc/sanoid
     state: directory
-    mode: "u=rwx,g=rx,o=rx"
+    mode: "u=rwx,go=rx"
 - name: Sanoid config present
   ansible.builtin.template:
     src: sanoid.conf
     dest: /etc/sanoid/sanoid.conf
     owner: root
     group: root
-    mode: "u=r,g=r,o=r"
+    mode: "ugo=r"

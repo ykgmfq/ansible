@@ -3,7 +3,7 @@
   ansible.builtin.copy:
     src: "syncoid@.{{ item }}"
     dest: /etc/systemd/system/
-    mode: "u=r,g=r,o=r"
+    mode: "ugo=r"
   loop:
     - timer
     - service

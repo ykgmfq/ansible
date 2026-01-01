@@ -4,7 +4,7 @@
   ansible.builtin.copy:
     src: units/
     dest: /etc/systemd/system
-    mode: "u=r,g=r,o=r"
+    mode: "ugo=r"
 - name: Service definitions synced
   delegate_to: "{{ inventory_hostname }}"
   ansible.posix.synchronize:

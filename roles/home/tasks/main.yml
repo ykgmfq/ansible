@@ -3,7 +3,7 @@
   ansible.builtin.copy:
     src: homekit.xml
     dest: /etc/firewalld/services
-    mode: "u=r,g=r,o=r"
+    mode: "ugo=r"
 - name: Restart firewalld
   changed_when: false
   ansible.builtin.systemd:
@@ -13,7 +13,7 @@
   ansible.builtin.copy:
     src: conbee.rules
     dest: /etc/udev/rules.d
-    mode: "u=r,g=r,o=r"
+    mode: "ugo=r"
 - name: Network access allowed
   ansible.posix.firewalld:
     service: '{{ item }}'

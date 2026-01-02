@@ -1,6 +1,7 @@
 ---
-- name: TLP config up-to-date
-  listen: "tlp config changed"
+- name: Upgrade timer restarted
+  listen: Upgrade timer changed
   ansible.builtin.systemd_service:
-    name: tlp.service
-    state: reloaded
+    name: rpm-ostreed-automatic.timer
+    state: restarted
+    daemon_reload: true

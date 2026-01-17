@@ -1,0 +1,6 @@
+[Unit]
+Description=Image build queue
+
+[Slice]
+# Excess jobs will wait in the queue until a slot opens.
+ConcurrencySoftMax=2

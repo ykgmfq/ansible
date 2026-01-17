@@ -20,7 +20,7 @@
     mode: "u=rw,go="
 - name: Tuned active
   ansible.builtin.systemd_service:
-    name: tuned.servce
+    name: tuned.service
     enabled: true
     state: started
 - name: Auto upgrade

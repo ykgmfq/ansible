@@ -22,3 +22,12 @@
     name: podman-auto-update.timer
     enabled: true
     state: started
+- name: Quadlet generator dryrun
+  ansible.builtin.command: /usr/lib/systemd/system-generators/podman-system-generator -dryrun
+  register: generator_result
+  changed_when: false
+- name: Quadlet files valid
+  ansible.builtin.assert:
+    that:
+      - generator_result.rc == 0
+    fail_msg: "{{ generator_result.stdout }}"

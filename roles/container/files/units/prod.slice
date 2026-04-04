@@ -1,0 +1,4 @@
+[Slice]
+MemoryMax=30G
+MemorySwapMax=5G
+ManagedOOMMemoryPressure=kill

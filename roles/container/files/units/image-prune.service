@@ -5,3 +5,4 @@ Requires = network-online.target
 [Service]
 Type = oneshot
 ExecStart = /usr/bin/podman system prune --all --force
+Slice=prod-builders.slice

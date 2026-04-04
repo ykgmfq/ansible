@@ -4,3 +4,4 @@ Requires = network.target
 [Service]
 ExecStart = /usr/bin/fish -c "function build; systemctl start image-build@%I.service; and echo 'Bootstrapped image.'; end; podman image exists localhost/%I; or build"
 Type = oneshot
+Slice=prod.slice

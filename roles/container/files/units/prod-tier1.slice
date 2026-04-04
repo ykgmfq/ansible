@@ -1,0 +1,5 @@
+[Slice]
+MemoryMax=20G
+MemorySwapMax=5G
+ManagedOOMMemoryPressure=kill
+CPUQuota=300%

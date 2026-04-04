@@ -18,10 +18,13 @@
     dest: /root/.config/fish/config.fish
     owner: root
     mode: "u=rw,go="
-- name: Tuned active
+- name: Services active
   ansible.builtin.systemd_service:
-    name: tuned.service
+    name: "{{ item }}.service"
     enabled: true
     state: started
+  loop:
+    - tuned
+    - systemd-oomd
 - name: Auto upgrade
   ansible.builtin.import_tasks: autoupgrade.yml

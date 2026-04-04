@@ -9,4 +9,4 @@ LoadCredential = secrets:/var/mnt/persist/secrets.fish
 Restart = on-failure
 RestartSec = 1h
 Type = oneshot
-Slice=image-builders.slice
+Slice=prod-builders.slice

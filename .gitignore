@@ -1,3 +1,4 @@
 pw.txt
 *.ign
 .ansible/
+__pycache__/

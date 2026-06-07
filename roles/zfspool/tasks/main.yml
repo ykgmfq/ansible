@@ -6,8 +6,6 @@
     comment: "from Ansible"
     system: true
     shell: "/bin/sh"
-- name: Import
-  ansible.builtin.import_tasks: files.yml
 - name: Pool imported
   ansible.builtin.command: "zpool import {{ dataset }}"
   changed_when: false

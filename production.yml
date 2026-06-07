@@ -7,7 +7,6 @@
   roles:
     - common
     - zfspool
-    - lid_switch
 - name: Service providers
   hosts: homeserver
   serial: 1

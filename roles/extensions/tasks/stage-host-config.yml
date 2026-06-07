@@ -1,0 +1,11 @@
+---
+- name: Host-config base files synced
+  ansible.posix.synchronize:
+    src: extensions/host-config/
+    dest: /var/lib/confexts/host-config/
+    delete: true
+- name: Sanoid config rendered
+  ansible.builtin.template:
+    src: host-config/etc/sanoid/sanoid.conf.j2
+    dest: /var/lib/confexts/host-config/etc/sanoid/sanoid.conf
+    mode: "ugo=r"

@@ -94,7 +94,8 @@
 		"recommendations": [
 			"redhat.vscode-yaml",
 			"wholroyd.jinja",
-			"redhat.ansible"
+			"redhat.ansible",
+			"anthropic.claude-code"
 		]
 	}
 }

@@ -24,7 +24,6 @@ sudo coreos-installer install /dev/nvme0n1 --insecure-ignition --ignition-url ht
 
 ### 3. Run Ansible Playbook
 
-Put the master password in `pw.txt`.
 Once the host is running, execute the Ansible playbook to complete the configuration and deploy application services:
 
 ```sh

@@ -19,7 +19,7 @@ playbook:
 
 # Run butane to generate ignition file
 butane:
-    butane --out-file=server.ign server.butane
+    butane --output=server.ign server.butane
 
 # Install Galaxy Collections
 galaxy:

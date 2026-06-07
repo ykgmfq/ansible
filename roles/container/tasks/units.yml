@@ -7,5 +7,4 @@
 - name: Upgrade timer active
   ansible.builtin.systemd_service:
     name: podman-auto-update.timer
-    enabled: true
     state: started

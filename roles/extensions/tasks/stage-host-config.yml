@@ -4,23 +4,10 @@
     src: extensions/host-config/
     dest: /var/lib/confexts/host-config/
     delete: true
+    rsync_opts:
+      - "--exclude=.ansible"
 - name: Sanoid config rendered
   ansible.builtin.template:
     src: host-config/etc/sanoid/sanoid.conf.j2
     dest: /var/lib/confexts/host-config/etc/sanoid/sanoid.conf
     mode: "ugo=r"
-- name: Syncoid timer wants directory present
-  when: is_backup_sink
-  ansible.builtin.file:
-    path: /var/lib/confexts/host-config/etc/systemd/system/timers.target.wants
-    state: directory
-    mode: "ugo=rx,u+w"
-- name: Syncoid timer instances enabled
-  when: is_backup_sink
-  ansible.builtin.file:
-    src: ../syncoid@.timer
-    dest: "/var/lib/confexts/host-config/etc/systemd/system/timers.target.wants/syncoid@{{ item }}.timer"
-    state: link
-  loop:
-    - persist
-    - media

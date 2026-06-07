@@ -1,11 +1,15 @@
 [Unit]
 After = network-online.target dev-disk-by\x2dlabel-backup.device
 Requires = network-online.target dev-disk-by\x2dlabel-backup.device
+# Retry every 10 min on failure, up to 3 times per hour; timer resets the limit each cycle
+StartLimitIntervalSec = 1h
+StartLimitBurst = 3
 
 [Service]
 User = syncoid
 Type = oneshot
 Restart = on-failure
-RestartSec = 5min
-TimeoutStartSec = 2h
+# Wait 10 min before retrying; allow up to 12 h for a full sync to complete
+RestartSec = 10min
+TimeoutStartSec = 12h
 ExecStart = /usr/sbin/syncoid --preserve-recordsize --recursive --no-sync-snap --no-privilege-elevation --compress=zstd-fast server:data/%i backup/%i

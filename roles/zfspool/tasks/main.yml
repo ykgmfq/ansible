@@ -17,7 +17,7 @@
   community.general.zfs_delegate_admin:
     users: syncoid
     name: "{{ dataset }}"
-    permissions: "{{ 'compression,mountpoint,create,mount,receive,rollback,destroy' if is_backup_sink else 'send,hold' }}"
+    permissions: "{{ 'compression,mountpoint,create,mount,receive,rollback,recordsize,destroy' if is_backup_sink else 'send,hold' }}"
 - name: Srub timer enabled
   ansible.builtin.systemd_service:
     state: started

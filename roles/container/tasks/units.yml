@@ -1,33 +1,11 @@
 ---
-- name: Unit files present
-  notify: "system config changed"
-  ansible.builtin.copy:
-    src: units/
-    dest: /etc/systemd/system
-    mode: "ugo=r"
-- name: Service definitions synced
-  delegate_to: "{{ inventory_hostname }}"
-  ansible.posix.synchronize:
-    src: /var/mnt/ephemeral/services/systemd
-    dest: /etc/containers/systemd
-    delete: true
-- name: Prod is default target
-  notify: "system config changed"
-  ansible.builtin.file:
-    src: /etc/systemd/system/prod.target
-    dest: /etc/systemd/system/default.target
-    state: link
+- name: Services confext synced
+  ansible.builtin.command:
+    cmd: fish sync.fish
+    chdir: /var/mnt/ephemeral/services
+  changed_when: false
 - name: Upgrade timer active
   ansible.builtin.systemd_service:
     name: podman-auto-update.timer
     enabled: true
     state: started
-- name: Quadlet generator dryrun
-  ansible.builtin.command: /usr/lib/systemd/system-generators/podman-system-generator -dryrun
-  register: generator_result
-  changed_when: false
-- name: Quadlet files valid
-  ansible.builtin.assert:
-    that:
-      - generator_result.rc == 0
-    fail_msg: "{{ generator_result.stdout }}"

@@ -4,20 +4,6 @@
   community.general.rpm_ostree_pkg:
     name: fish
     state: present
-- name: Fish config directory present
-  become: true
-  ansible.builtin.file:
-    dest: /root/.config/fish
-    state: directory
-    owner: root
-    mode: "u=rwx,g=rx,o=x"
-- name: Shell environment templates for root present
-  become: true
-  ansible.builtin.copy:
-    src: config.fish
-    dest: /root/.config/fish/config.fish
-    owner: root
-    mode: "u=rw,go="
 - name: Services active
   ansible.builtin.systemd_service:
     name: "{{ item }}.service"

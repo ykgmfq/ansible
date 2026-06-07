@@ -27,3 +27,6 @@
 - name: Sysext merged
   ansible.builtin.command: systemd-sysext refresh
   changed_when: false
+- name: Daemon reloaded
+  ansible.builtin.systemd_service:
+    daemon_reload: true

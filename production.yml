@@ -6,6 +6,7 @@
   become: false
   roles:
     - common
+    - extensions
     - zfspool
 - name: Service providers
   hosts: homeserver
@@ -13,6 +14,5 @@
   remote_user: root
   become: false
   roles:
-    - extensions
     - container
     - home

@@ -34,6 +34,3 @@
     extra_zfs_properties:
       xattr: "on" # or "sa" if supported
       acltype: posixacl
-- name: Syncoid on backup system
-  when: is_backup_sink
-  ansible.builtin.import_tasks: syncoid.yml

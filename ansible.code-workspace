@@ -9,7 +9,6 @@
 			"*.yml": "ansible",
 			"*.butane": "yaml"
 		},
-		"ansible.python.interpreterPath": "/usr/bin/python3",
 	},
 	"tasks": {
 		"version": "2.0.0",

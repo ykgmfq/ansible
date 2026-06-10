@@ -9,10 +9,6 @@ passwd:
         - wheel
     - name: root
       ssh_authorized_keys:
-storage:
-  directories:
-    - path: /etc/ucore-autorebase
-      mode: 0754
 systemd:
   units:
     - name: ucore-unsigned-autorebase.service
@@ -20,16 +16,13 @@ systemd:
       contents: |
         [Unit]
         Description=uCore autorebase to unsigned OCI and reboot
-        ConditionPathExists=!/etc/ucore-autorebase/unverified
-        ConditionPathExists=!/etc/ucore-autorebase/signed
         After=network-online.target
         Wants=network-online.target
         [Service]
         Type=oneshot
         StandardOutput=journal+console
+        ExecCondition=/usr/bin/bash -c "! rpm-ostree status -b | grep -qF ucore"
         ExecStart=/usr/bin/rpm-ostree rebase --bypass-driver ostree-unverified-registry:ghcr.io/ublue-os/ucore-minimal:stable
-        ExecStart=/usr/bin/touch /etc/ucore-autorebase/unverified
-        ExecStart=/usr/bin/systemctl disable ucore-unsigned-autorebase.service
         ExecStart=/usr/bin/systemctl reboot
         [Install]
         WantedBy=multi-user.target
@@ -38,16 +31,13 @@ systemd:
       contents: |
         [Unit]
         Description=uCore autorebase to signed OCI and reboot
-        ConditionPathExists=/etc/ucore-autorebase/unverified
-        ConditionPathExists=!/etc/ucore-autorebase/signed
         After=network-online.target
         Wants=network-online.target
         [Service]
         Type=oneshot
         StandardOutput=journal+console
+        ExecCondition=/usr/bin/bash -c "rpm-ostree status -b | grep -qF ucore-minimal"
         ExecStart=/usr/bin/rpm-ostree rebase --bypass-driver ostree-image-signed:docker://ghcr.io/ublue-os/ucore-hci:stable
-        ExecStart=/usr/bin/touch /etc/ucore-autorebase/signed
-        ExecStart=/usr/bin/systemctl disable ucore-signed-autorebase.service
         ExecStart=/usr/bin/systemctl reboot
         [Install]
         WantedBy=multi-user.target

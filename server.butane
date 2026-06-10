@@ -7,6 +7,8 @@ passwd:
       password_hash:
       groups:
         - wheel
+    - name: root
+      ssh_authorized_keys:
 storage:
   directories:
     - path: /etc/ucore-autorebase

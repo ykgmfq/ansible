@@ -5,19 +5,23 @@
     name: fish
     state: present
 - name: Fish config directory present
-  become: true
   ansible.builtin.file:
-    dest: /root/.config/fish
+    dest: /etc/fish/conf.d
     state: directory
     owner: root
-    mode: "u=rwx,g=rx,o=x"
-- name: Shell environment templates for root present
-  become: true
+    mode: "u=rwx,go=rx"
+- name: Shell environment present
   ansible.builtin.copy:
     src: config.fish
-    dest: /root/.config/fish/config.fish
+    dest: /etc/fish/conf.d/config.fish
     owner: root
-    mode: "u=rw,go="
+    mode: "ugo=r"
+- name: Interactive shells switch to fish
+  ansible.builtin.copy:
+    src: fishswitch.sh
+    dest: /etc/profile.d/fishswitch.sh
+    owner: root
+    mode: "ugo=r"
 - name: Services active
   ansible.builtin.systemd_service:
     name: "{{ item }}.service"

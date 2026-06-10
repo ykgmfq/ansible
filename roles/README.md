@@ -1,15 +1,16 @@
 # Roles
-## zfspol
-Configures ZFS backup and snapshot management, including setting up the syncoid user, delegating ZFS permissions, and managing automated snapshots via Sanoid and Syncoid.
 
 ## common
-Installs and configures the Fish shell with shell environment configuration for the root user.
+Base configuration for all headless hosts: Fish shell, system services, and automatic OS upgrades.
 
-## container
-Sets up container infrastructure including Podman and Buildah installation, systemd units for automated image building and pruning, and firewall rules.
-
-## home
-Configures Home Assistant integration by setting up firewall rules for HomeKit and mDNS services, and installing udev rules for ConBee device access.
+## zfspool
+ZFS pool management: user setup, pool import, permissions, scrub/snapshot timers, and (on backup sinks) replication via Syncoid.
 
 ## lid_switch
-Configures system behavior when the laptop lid is closed by disabling the default suspend action via systemd logind settings.
+Disables the default lid-close suspend action via systemd logind settings — headless server in a laptop chassis.
+
+## container
+Container infrastructure: Buildah, Podman secrets, systemd units for image building and pruning, Quadlet service sync, auto-update timer, firewall rules, and helper scripts.
+
+## home
+Home Assistant integration: firewall rules for HomeKit and mDNS services, udev rule for ConBee device access.

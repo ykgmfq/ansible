@@ -1,0 +1,6 @@
+---
+- name: Scripts present
+  ansible.builtin.copy:
+    src: scripts/
+    dest: /usr/local/bin
+    mode: "ugo=rx,u+w"

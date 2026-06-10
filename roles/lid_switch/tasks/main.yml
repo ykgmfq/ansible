@@ -1,0 +1,17 @@
+---
+- name: Logind conf directory present
+  become: true
+  ansible.builtin.file:
+    dest: /etc/systemd/logind.conf.d
+    state: directory
+    owner: root
+    mode: "ugo=rx"
+- name: Logind switch config present
+  notify: "logind config changed"
+  community.general.ini_file:
+    path: "/etc/systemd/logind.conf.d/lid-switch.conf"
+    section: Login
+    option: HandleLidSwitch
+    value: ignore
+    owner: root
+    mode: "u=rx,go=r"

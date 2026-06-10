@@ -1,0 +1,12 @@
+---
+- name: Firewall open
+  ansible.posix.firewalld:
+    permanent: true
+    immediate: true
+    service: "{{ item }}"
+    state: enabled
+  loop:
+    - http
+    - https
+    - http3
+    - samba

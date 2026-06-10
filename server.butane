@@ -7,62 +7,27 @@ passwd:
       password_hash:
       groups:
         - wheel
-    - name: root
-      ssh_authorized_keys:
 storage:
-  links:
-    # Enablement symlinks must live in base /etc (present before sysext/confext
-    # merge) — confext .wants are invisible when systemd builds the boot
-    # transaction. These units' files are in base /usr, so they resolve early.
-    - path: /etc/systemd/system/multi-user.target.wants/tuned.service
-      target: /usr/lib/systemd/system/tuned.service
-    - path: /etc/systemd/system/multi-user.target.wants/systemd-oomd.service
-      target: /usr/lib/systemd/system/systemd-oomd.service
-    - path: /etc/systemd/system/timers.target.wants/sanoid.timer
-      target: /usr/lib/systemd/system/sanoid.timer
-    - path: /etc/systemd/system/timers.target.wants/rpm-ostreed-automatic.timer
-      target: /usr/lib/systemd/system/rpm-ostreed-automatic.timer
-    - path: /etc/systemd/system/timers.target.wants/podman-auto-update.timer
-      target: /usr/lib/systemd/system/podman-auto-update.timer
-    - path: /etc/systemd/system/timers.target.wants/zfs-scrub-monthly@data.timer
-      target: /usr/lib/systemd/system/zfs-scrub-monthly@.timer
+  directories:
+    - path: /etc/ucore-autorebase
+      mode: 0754
 systemd:
   units:
-    - name: systemd-sysext.service
-      enabled: true
-    - name: systemd-confext.service
-      enabled: true
-    # prod.target (sysext) and its Quadlet services (confext) only become
-    # loadable after the extensions merge at sysinit — too late for the boot
-    # transaction. This oneshot re-reads them post-merge and starts the stack.
-    - name: prod-autostart.service
-      enabled: true
-      contents: |
-        [Unit]
-        Description=Activate prod.target after sysext/confext merge
-        After=systemd-sysext.service systemd-confext.service
-        Wants=systemd-sysext.service systemd-confext.service
-        [Service]
-        Type=oneshot
-        RemainAfterExit=yes
-        ExecStart=/usr/bin/systemctl daemon-reload
-        # --no-block: we run inside multi-user.target's startup, so blocking on
-        # prod.target's job would deadlock. Enqueue and return.
-        ExecStart=/usr/bin/systemctl --no-block start prod.target
-        [Install]
-        WantedBy=multi-user.target
     - name: ucore-unsigned-autorebase.service
       enabled: true
       contents: |
         [Unit]
         Description=uCore autorebase to unsigned OCI and reboot
+        ConditionPathExists=!/etc/ucore-autorebase/unverified
+        ConditionPathExists=!/etc/ucore-autorebase/signed
         After=network-online.target
         Wants=network-online.target
         [Service]
         Type=oneshot
         StandardOutput=journal+console
-        ExecCondition=/usr/bin/bash -c "! rpm-ostree status -b | grep -qF ucore"
         ExecStart=/usr/bin/rpm-ostree rebase --bypass-driver ostree-unverified-registry:ghcr.io/ublue-os/ucore-minimal:stable
+        ExecStart=/usr/bin/touch /etc/ucore-autorebase/unverified
+        ExecStart=/usr/bin/systemctl disable ucore-unsigned-autorebase.service
         ExecStart=/usr/bin/systemctl reboot
         [Install]
         WantedBy=multi-user.target
@@ -71,13 +36,16 @@ systemd:
       contents: |
         [Unit]
         Description=uCore autorebase to signed OCI and reboot
+        ConditionPathExists=/etc/ucore-autorebase/unverified
+        ConditionPathExists=!/etc/ucore-autorebase/signed
         After=network-online.target
         Wants=network-online.target
         [Service]
         Type=oneshot
         StandardOutput=journal+console
-        ExecCondition=/usr/bin/bash -c "rpm-ostree status -b | grep -qF ucore-minimal"
         ExecStart=/usr/bin/rpm-ostree rebase --bypass-driver ostree-image-signed:docker://ghcr.io/ublue-os/ucore-hci:stable
+        ExecStart=/usr/bin/touch /etc/ucore-autorebase/signed
+        ExecStart=/usr/bin/systemctl disable ucore-signed-autorebase.service
         ExecStart=/usr/bin/systemctl reboot
         [Install]
         WantedBy=multi-user.target

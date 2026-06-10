@@ -1,6 +1,0 @@
-[Unit]
-# Started by prod-autostart.service after the sysext/confext merge. Does NOT
-# Want multi-user.target: prod-autostart runs as part of multi-user, so a
-# back-dependency here would deadlock (multi-user waits on prod-autostart,
-# prod-autostart waits on prod.target, prod.target waits on multi-user).
-Wants=timers.target

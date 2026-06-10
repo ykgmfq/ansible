@@ -2,17 +2,21 @@
 - name: Common headless functionality present
   hosts: headless
   serial: 1
-  remote_user: root
-  become: false
+  remote_user: dmp
+  become: true
+  vars_files:
+    - secrets.yml
   roles:
     - common
-    - extensions
     - zfspool
+    - lid_switch
 - name: Service providers
   hosts: homeserver
   serial: 1
-  remote_user: root
-  become: false
+  remote_user: dmp
+  become: true
+  vars_files:
+    - secrets.yml
   roles:
     - container
     - home

@@ -1,0 +1,7 @@
+---
+- name: Upgrade timer restarted
+  listen: Upgrade timer changed
+  ansible.builtin.systemd_service:
+    name: rpm-ostreed-automatic.timer
+    state: restarted
+    daemon_reload: true

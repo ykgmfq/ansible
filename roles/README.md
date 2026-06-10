@@ -1,16 +1,15 @@
 # Roles
+## zfspol
+Configures ZFS backup and snapshot management, including setting up the syncoid user, delegating ZFS permissions, and managing automated snapshots via Sanoid and Syncoid.
 
 ## common
-Base configuration for all headless hosts: Fish shell, system services, and automatic OS upgrades.
-
-## zfspool
-ZFS pool management: user setup, pool import, permissions, scrub/snapshot timers, and (on backup sinks) replication via Syncoid.
-
-## extensions
-Deploys sysext and confext trees to the host and activates them via `systemd-sysext` and `systemd-confext`.
+Installs and configures the Fish shell with shell environment configuration for the root user.
 
 ## container
-Container infrastructure: Buildah, Podman secrets, Quadlet service sync, auto-update timer, and firewall rules.
+Sets up container infrastructure including Podman and Buildah installation, systemd units for automated image building and pruning, and firewall rules.
 
 ## home
-Restarts firewalld to apply confext-provided firewall zones and services.
+Configures Home Assistant integration by setting up firewall rules for HomeKit and mDNS services, and installing udev rules for ConBee device access.
+
+## lid_switch
+Configures system behavior when the laptop lid is closed by disabling the default suspend action via systemd logind settings.

@@ -1,5 +1,24 @@
 ---
+- name: Update policy is apply
+  community.general.ini_file:
+    path: /etc/rpm-ostreed.conf
+    section: Daemon
+    option: AutomaticUpdatePolicy
+    value: apply
+    mode: "ugo=r"
+- name: Override directory present
+  ansible.builtin.file:
+    state: directory
+    mode: "ug=rwx,o=rx"
+    dest: /etc/systemd/system/rpm-ostreed-automatic.timer.d
+- name: Override dropin present
+  notify: Upgrade timer changed
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/rpm-ostreed-automatic.timer.d/override.conf
+    src: saturday.timer
+    mode: "ugo=r"
 - name: Upgrade timer active
   ansible.builtin.systemd_service:
     name: rpm-ostreed-automatic.timer
+    enabled: true
     state: started

@@ -8,7 +8,8 @@
       "extensions": [
         "redhat.vscode-yaml",
         "redhat.ansible",
-        "nefrob.vscode-just-syntax"
+        "nefrob.vscode-just-syntax",
+        "Anthropic.claude-code"
       ]
     }
   }

@@ -8,16 +8,26 @@ if status is-interactive
     sanoid --monitor-snapshots
     sanoid --monitor-health
     printf "\n"
-    set --export EDITOR nvim
+
+    if type --quiet nvim
+        set editor nvim
+    else if type --quiet vim
+        set editor vim
+    else
+        set editor vi
+    end
+    set --export EDITOR $editor
+    set --export VISUAL $editor
     set --export BAT_THEME OneHalfLight
-    set --export VISUAL $EDITOR
     set --export LESS -RSMsi
     alias mkdir="mkdir --parents"
     alias cp="cp --recursive"
 
-    alias f=fdfind
+    if type --quiet fdfind
+        alias f=fdfind
+    end
 
-    if type --quiet (which exa)
+    if type --quiet exa
         alias ls="exa"
         alias ll="exa -al --time-style long-iso"
         alias llg="exa -al --time-style long-iso --group"
@@ -30,27 +40,26 @@ if status is-interactive
         alias tl="tree -ugpCL"
     end
 
-    if type --quiet (which batcat)
+    if type --quiet batcat
         alias c="batcat --paging=never --plain"
     end
 
-    if type --quiet (which rg)
+    if type --quiet rg
         alias g="rg"
     else
         alias g="grep"
     end
+
     function syncds --description 'Sync dataset to backup'
         set ds $argv[1]
         systemd-run --pty --collect --service-type=oneshot --unit=syncds-$ds /usr/sbin/syncoid --preserve-recordsize --no-sync-snap --compress=none --recursive data/$ds backup/$ds
     end
-    function cd-vol --description 'Go to volume mount'
-        set dir (cat /etc/mtab|g "data/$argv[1]\s"|awk '{ print $2 }')
-        cd $dir
-    end
+
     function eng --description 'Run with english locale'
         set --local --export LANG "en_US.utf8"
         eval $argv
     end
+
     function last-boot-errors --description 'Print errors from last boot'
         journalctl --no-pager --boot -1 --priority=err | g --invert-match sshd
     end

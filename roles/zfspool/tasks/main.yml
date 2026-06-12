@@ -8,15 +8,16 @@
     shell: "/bin/sh"
 - name: Import
   ansible.builtin.import_tasks: files.yml
-- name: Pool import state
-  ansible.builtin.command: "zpool list {{ dataset }}"
-  changed_when: false
-  failed_when: false
-  register: zpool_listed
 - name: Pool imported
-  ansible.builtin.command: "zpool import {{ dataset }}"
-  when: zpool_listed.rc != 0
-  changed_when: true
+  block:
+    - name: Pool import state
+      ansible.builtin.command: "zpool list {{ dataset }}"
+      changed_when: false
+      check_mode: false
+  rescue:
+    - name: Pool import
+      ansible.builtin.command: "zpool import {{ dataset }}"
+      changed_when: true
 - name: Pool allowlist
   community.general.zfs_delegate_admin:
     users: syncoid

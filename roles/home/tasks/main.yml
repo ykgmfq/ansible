@@ -1,14 +1,13 @@
 ---
 - name: Firewalld service present
+  notify: "firewalld config changed"
   ansible.builtin.copy:
     src: homekit.xml
     dest: /etc/firewalld/services
     mode: "ugo=r"
-- name: Restart firewalld
-  changed_when: false
-  ansible.builtin.systemd:
-    name: firewalld
-    state: restarted
+# New service definitions must be loaded before "Network access allowed" can enable them
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
 - name: Udev rule present
   ansible.builtin.copy:
     src: conbee.rules

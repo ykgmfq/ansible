@@ -8,17 +8,21 @@
     shell: "/bin/sh"
 - name: Import
   ansible.builtin.import_tasks: files.yml
+- name: Pool import state
+  ansible.builtin.command: "zpool list {{ dataset }}"
+  changed_when: false
+  failed_when: false
+  register: zpool_listed
 - name: Pool imported
   ansible.builtin.command: "zpool import {{ dataset }}"
-  changed_when: false
-  register: backup_zpool
-  failed_when: false
+  when: zpool_listed.rc != 0
+  changed_when: true
 - name: Pool allowlist
   community.general.zfs_delegate_admin:
     users: syncoid
     name: "{{ dataset }}"
     permissions: "{{ 'compression,mountpoint,create,mount,receive,rollback,recordsize,destroy' if is_backup_sink else 'send,hold' }}"
-- name: Srub timer enabled
+- name: Scrub timer enabled
   ansible.builtin.systemd_service:
     state: started
     enabled: true

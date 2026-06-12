@@ -17,6 +17,7 @@
     src: /etc/systemd/system/prod.target
     dest: /etc/systemd/system/default.target
     state: link
+    force: true # src does not exist yet in check mode on a fresh host
 - name: Upgrade timer active
   ansible.builtin.systemd_service:
     name: podman-auto-update.timer
@@ -26,8 +27,9 @@
   ansible.builtin.command: /usr/lib/systemd/system-generators/podman-system-generator -dryrun
   register: generator_result
   changed_when: false
+  failed_when: false
 - name: Quadlet files valid
   ansible.builtin.assert:
     that:
       - generator_result.rc == 0
-    fail_msg: "{{ generator_result.stdout }}"
+    fail_msg: "{{ generator_result.stdout }}\n{{ generator_result.stderr }}"

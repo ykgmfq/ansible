@@ -1,0 +1,6 @@
+---
+- name: Reload firewalld
+  listen: "firewalld config changed"
+  ansible.builtin.systemd_service:
+    name: firewalld
+    state: reloaded

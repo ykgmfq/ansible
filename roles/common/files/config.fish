@@ -44,7 +44,7 @@ if status is-interactive
         systemd-run --pty --collect --service-type=oneshot --unit=syncds-$ds /usr/sbin/syncoid --preserve-recordsize --no-sync-snap --compress=none --recursive data/$ds backup/$ds
     end
     function cd-vol --description 'Go to volume mount'
-        set dir (cat /etc/mtab|g "data/$argv(\s+)"|awk '{ print $2 }')
+        set dir (cat /etc/mtab|g "data/$argv[1]\s"|awk '{ print $2 }')
         cd $dir
     end
     function eng --description 'Run with english locale'

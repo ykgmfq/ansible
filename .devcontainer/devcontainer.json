@@ -9,7 +9,8 @@
         "redhat.vscode-yaml",
         "redhat.ansible",
         "nefrob.vscode-just-syntax",
-        "Anthropic.claude-code"
+        "Anthropic.claude-code",
+        "GitHub.vscode-github-actions"
       ]
     }
   }

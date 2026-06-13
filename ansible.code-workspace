@@ -94,7 +94,8 @@
 			"redhat.vscode-yaml",
 			"wholroyd.jinja",
 			"redhat.ansible",
-			"anthropic.claude-code"
+			"anthropic.claude-code",
+			"github.vscode-github-actions"
 		]
 	}
 }

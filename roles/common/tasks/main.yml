@@ -1,9 +1,22 @@
 ---
+- name: Adneos systempub COPR repo present
+  ansible.builtin.copy:
+    src: copr-adneos-systempub.repo
+    dest: /etc/yum.repos.d/copr-adneos-systempub.repo
+    owner: root
+    mode: "ugo=r"
+- name: Systempub installed
+  become: true
+  community.general.rpm_ostree_pkg:
+    name: systempub
+    state: present
+  notify: Layered package changed
 - name: Fish shell installed
   become: true
   community.general.rpm_ostree_pkg:
     name: fish
     state: present
+  notify: Layered package changed
 - name: Fish config directory present
   ansible.builtin.file:
     dest: /etc/fish/conf.d

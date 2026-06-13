@@ -5,3 +5,9 @@
     name: rpm-ostreed-automatic.timer
     state: restarted
     daemon_reload: true
+- name: Reboot notice
+  listen: Layered package changed
+  ansible.builtin.debug:
+    msg: >-
+      rpm-ostree staged a new deployment. Reboot the host (systemctl reboot)
+      to activate the newly layered package(s).

@@ -1,0 +1,7 @@
+---
+- name: Dyndns timer restarted
+  listen: Dyndns units changed
+  ansible.builtin.systemd_service:
+    name: strato-dyndns.timer
+    state: restarted
+    daemon_reload: true

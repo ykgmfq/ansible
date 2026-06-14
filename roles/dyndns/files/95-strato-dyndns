@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# NetworkManager dispatcher hook: refresh the Strato AAAA record whenever IPv6
+# connectivity changes, so a new prefix propagates without waiting for the timer.
+action="$2"
+
+case "$action" in
+    up | dhcp6-change | reapply | connectivity-change)
+        systemctl start --no-block strato-dyndns.service
+        ;;
+esac

@@ -1,0 +1,12 @@
+[Unit]
+Description=IPv6 ingress bridge on port %i (external IPv6 -> 127.0.0.1:%i)
+# Rootless Podman's rootlessport binds [::] but cannot forward IPv6 into the
+# IPv4-only container networks, so the ingress container is published on IPv4
+# only and this socket bridges inbound IPv6 to the working loopback port.
+
+[Socket]
+ListenStream=[::]:%i
+BindIPv6Only=ipv6-only
+
+[Install]
+WantedBy=sockets.target

@@ -14,3 +14,6 @@ Container infrastructure: Buildah, Podman secrets, systemd units for image build
 
 ## home
 Home Assistant integration: firewall rules for HomeKit and mDNS services, udev rule for ConBee device access.
+
+## dyndns
+IPv6 reachability for the host.

@@ -1,0 +1,12 @@
+[Unit]
+Description=Publish this host's IPv6 address to the DynDNS provider as an AAAA record
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/fish /usr/local/bin/dyndns.fish
+Environment=DYNDNS_ENDPOINT=https://dyndns.strato.com/nic/update
+Environment=DYNDNS_HOSTNAME=dm-poepperl.de
+LoadCredential=dyndns-password:/var/mnt/persist/secrets/secret-dyndns.txt
+StateDirectory=dyndns

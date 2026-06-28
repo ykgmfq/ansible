@@ -14,5 +14,6 @@
   remote_user: root
   become: false
   roles:
+    - dyndns
     - container
     - home

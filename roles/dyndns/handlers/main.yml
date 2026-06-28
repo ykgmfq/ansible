@@ -1,0 +1,11 @@
+---
+- name: DynDNS systemd reloaded
+  listen: "dyndns systemd config changed"
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+- name: NetworkManager reconnect notice
+  listen: "NetworkManager addressing changed"
+  ansible.builtin.debug:
+    msg: >-
+      IPv6 address-generation default changed. Reactivate the WAN connection
+      (nmcli connection up <name>) or reboot the host to apply EUI-64 addressing.

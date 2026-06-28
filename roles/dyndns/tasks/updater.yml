@@ -1,0 +1,23 @@
+---
+- name: DynDNS updater script present
+  ansible.builtin.copy:
+    src: dyndns.fish
+    dest: /usr/local/bin/dyndns.fish
+    owner: root
+    mode: "u=rwx,go=rx"
+- name: DynDNS service and timer present
+  notify: "dyndns systemd config changed"
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    mode: "ugo=r"
+  loop:
+    - dyndns.service
+    - dyndns.timer
+- name: DynDNS timer active
+  ansible.builtin.systemd_service:
+    name: dyndns.timer
+    enabled: true
+    state: started
+    daemon_reload: true

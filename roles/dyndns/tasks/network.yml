@@ -1,0 +1,25 @@
+---
+- name: NetworkManager drop-in directory present
+  ansible.builtin.file:
+    dest: /etc/NetworkManager/conf.d
+    state: directory
+    owner: root
+    mode: "u=rwx,go=rx"
+- name: IPv6 address generation is EUI-64
+  notify: "NetworkManager addressing changed"
+  community.general.ini_file:
+    path: /etc/NetworkManager/conf.d/ipv6-addr-gen.conf
+    section: connection
+    option: ipv6.addr-gen-mode
+    value: eui64
+    owner: root
+    mode: "ugo=r"
+- name: IPv6 privacy extensions disabled
+  notify: "NetworkManager addressing changed"
+  community.general.ini_file:
+    path: /etc/NetworkManager/conf.d/ipv6-addr-gen.conf
+    section: connection
+    option: ipv6.ip6-privacy
+    value: "0"
+    owner: root
+    mode: "ugo=r"

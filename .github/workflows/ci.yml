@@ -8,7 +8,7 @@ jobs:
   lint:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Install Ansible tooling
         run: |
           sudo apt-get update
@@ -19,7 +19,7 @@ jobs:
   butane:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Validate server.butane
         run: |
           curl -fsSL -o /usr/local/bin/butane \

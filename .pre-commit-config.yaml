@@ -15,4 +15,3 @@ repos:
         entry: ansible-lint
         language: system
         types: [yaml]
-        exclude: ^\.github/

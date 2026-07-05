@@ -12,9 +12,10 @@ jobs:
       - name: Install Ansible tooling
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends ansible-lint python3-pip python-is-python3
+          sudo apt-get install -y --no-install-recommends ansible-lint
           ansible-galaxy collection install -r roles/requirements.yml
-      - uses: pre-commit/action@v3.0.1
+      - name: Lint
+        run: ansible-lint
   butane:
     runs-on: ubuntu-slim
     steps:

@@ -3,6 +3,7 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
+  "runArgs": ["--network=dev6"],
   "customizations": {
     "vscode": {
       "extensions": [

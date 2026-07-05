@@ -16,9 +16,9 @@ NetworkManager otherwise defaults to a stable-privacy address, which is not the 
 The role sets EUI-64 as the connection default so the global address stays constant and matches the opened ports.
 Applying it requires reactivating the connection or rebooting, so the change only emits a reminder rather than bouncing the link mid-run.
 
-**IPv6 ingress bridge.** The reverse-proxy container runs under rootless Podman, which binds `[::]` but cannot forward inbound IPv6 into its IPv4-only container networks — connections are accepted and then hang.
-The container therefore stays published on IPv4 only, and a templated systemd socket-proxy instance per port listens on `[::]:<port>` (IPv6-only, coexisting with the container's IPv4 listener) and forwards to loopback.
-Because the proxy re-originates from loopback, the proxy sees the client as `127.0.0.1`; rootless ingress already does not preserve the real client IP, so this matches existing behaviour.
+**IPv6 ingress.** The reverse-proxy container is published on both IPv4 and IPv6 (`PublishPort=[::]:80:80` / `[::]:443:443`).
+Netavark only creates IPv6 DNAT rules when the container has an IPv6 address, so the container is attached to a dedicated `ingress.network` with `IPv6=true`.
+That network assigns the container a ULA IPv6 address and netavark installs the corresponding `dnat ip6 to [...]` rules, making both stacks reach Caddy directly without an intermediary proxy.
 
 **DynDNS updater.** A oneshot service reads the host's stable global address and publishes it as the `AAAA` record, driven by a timer that fires every few minutes but only contacts the provider when the address actually changed, to stay within DynDNS fair-use.
 The provider password is provisioned out of band and exposed to the service through systemd `LoadCredential`, so it never enters the environment or the process arguments; this role does not manage the secret.

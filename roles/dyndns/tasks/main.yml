@@ -1,7 +1,5 @@
 ---
 - name: IPv6 addressing
   ansible.builtin.import_tasks: network.yml
-- name: IPv6 ingress bridge
-  ansible.builtin.import_tasks: ingress.yml
 - name: DynDNS updater
   ansible.builtin.import_tasks: updater.yml

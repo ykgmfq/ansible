@@ -9,13 +9,10 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.x"
-          cache: pip
       - name: Install Ansible tooling
         run: |
-          pip install ansible-core ansible-lint
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ansible-lint python3-pip python-is-python3
           ansible-galaxy collection install -r roles/requirements.yml
       - uses: pre-commit/action@v3.0.1
   butane:

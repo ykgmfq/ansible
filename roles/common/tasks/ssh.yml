@@ -1,0 +1,8 @@
+---
+- name: SSH key exchange dropin present
+  notify: "sshd config changed"
+  ansible.builtin.copy:
+    src: sshd-kex.conf
+    dest: /etc/ssh/sshd_config.d/10-kex.conf
+    owner: root
+    mode: "ugo=r"

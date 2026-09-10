@@ -21,3 +21,8 @@
   ansible.builtin.systemd_service:
     name: NetworkManager.service
     state: restarted
+- name: Sshd reloaded
+  listen: "sshd config changed"
+  ansible.builtin.systemd_service:
+    name: sshd.service
+    state: reloaded

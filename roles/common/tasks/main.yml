@@ -47,3 +47,5 @@
   ansible.builtin.import_tasks: autoupgrade.yml
 - name: DNS
   ansible.builtin.import_tasks: dns.yml
+- name: SSH
+  ansible.builtin.import_tasks: ssh.yml

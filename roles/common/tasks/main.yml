@@ -45,3 +45,5 @@
     - systemd-oomd
 - name: Auto upgrade
   ansible.builtin.import_tasks: autoupgrade.yml
+- name: DNS
+  ansible.builtin.import_tasks: dns.yml

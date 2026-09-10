@@ -1,0 +1,29 @@
+---
+- name: Resolved override directory present
+  ansible.builtin.file:
+    state: directory
+    mode: "ug=rwx,o=rx"
+    dest: /etc/systemd/resolved.conf.d
+- name: Quad9 resolved dropin present
+  notify: "resolved config changed"
+  ansible.builtin.copy:
+    src: dot-resolved.conf
+    dest: /etc/systemd/resolved.conf.d/dot.conf
+    mode: "ugo=r"
+- name: Quad9 NetworkManager dropin present
+  notify: "NetworkManager config changed"
+  ansible.builtin.copy:
+    src: dot-networkmanager.conf
+    dest: /etc/NetworkManager/conf.d/dot.conf
+    mode: "ugo=r"
+- name: Systemd-resolved active
+  ansible.builtin.systemd_service:
+    name: systemd-resolved.service
+    enabled: true
+    state: started
+- name: Resolv.conf points at systemd-resolved stub
+  ansible.builtin.file:
+    src: /run/systemd/resolve/stub-resolv.conf
+    dest: /etc/resolv.conf
+    state: link
+    force: true

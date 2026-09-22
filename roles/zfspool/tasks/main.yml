@@ -44,3 +44,6 @@
 - name: Syncoid on backup system
   when: is_backup_sink
   ansible.builtin.import_tasks: syncoid.yml
+- name: SELinux contexts for pool mounts
+  when: not is_backup_sink
+  ansible.builtin.import_tasks: selinux.yml

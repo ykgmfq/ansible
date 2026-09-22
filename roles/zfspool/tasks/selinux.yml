@@ -1,0 +1,12 @@
+---
+- name: Configure persistent SELinux contexts for the data pool
+  become: true
+  community.general.sefcontext:
+    target: "{{ item }}"
+    setype: container_file_t
+    state: present
+  loop:
+    - '/mnt/persist(/.*)?'
+    - '/mnt/ephemeral(/.*)?'
+    - '/mnt/media(/.*)?'
+  notify: "pool SELinux contexts changed"

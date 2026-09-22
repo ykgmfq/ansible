@@ -1,0 +1,11 @@
+---
+- name: Apply pool SELinux contexts to existing files
+  listen: "pool SELinux contexts changed"
+  become: true
+  ansible.builtin.command:
+    cmd: "restorecon -R {{ item }}"
+  loop:
+    - /mnt/persist
+    - /mnt/ephemeral
+    - /mnt/media
+  changed_when: true

@@ -12,6 +12,6 @@
     path: "/etc/systemd/logind.conf.d/lid-switch.conf"
     section: Login
     option: HandleLidSwitch
-    value: ignore
+    value: "{{ lid_switch_handle_lid_switch }}"
     owner: root
     mode: "u=rx,go=r"

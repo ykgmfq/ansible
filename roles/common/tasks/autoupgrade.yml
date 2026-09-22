@@ -13,7 +13,7 @@
     dest: /etc/systemd/system/rpm-ostreed-automatic.timer.d
 - name: Override dropin present
   notify: Upgrade timer changed
-  ansible.builtin.copy:
+  ansible.builtin.template:
     dest: /etc/systemd/system/rpm-ostreed-automatic.timer.d/override.conf
     src: saturday.timer
     mode: "ugo=r"

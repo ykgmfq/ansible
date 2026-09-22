@@ -40,9 +40,7 @@
     name: "{{ item }}.service"
     enabled: true
     state: started
-  loop:
-    - tuned
-    - systemd-oomd
+  loop: "{{ common_services_enabled }}"
 - name: Auto upgrade
   ansible.builtin.import_tasks: autoupgrade.yml
 - name: DNS

@@ -5,8 +5,4 @@
     immediate: true
     service: "{{ item }}"
     state: enabled
-  loop:
-    - http
-    - https
-    - http3
-    - samba
+  loop: "{{ container_firewall_services }}"

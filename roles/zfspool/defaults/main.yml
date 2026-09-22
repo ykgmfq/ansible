@@ -1,0 +1,20 @@
+---
+zfspool_syncoid_user: syncoid
+zfspool_syncoid_shell: /bin/sh
+
+# One entry per dataset under {{ dataset }}, shared between the sanoid
+# retention template and the per-dataset syncoid timers on backup sinks -
+# both used to hardcode "persist"/"media" separately.
+zfspool_datasets:
+  - name: persist
+    hourly: 36
+    daily: 30
+    monthly: 6
+    recursive: true
+  - name: media
+    hourly: 6
+    daily: 3
+    monthly: 1
+
+zfspool_permissions_source: send,hold
+zfspool_permissions_sink: compression,mountpoint,create,mount,receive,rollback,recordsize,destroy

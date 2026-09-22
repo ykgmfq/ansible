@@ -12,7 +12,7 @@
     state: started
     enabled: true
     daemon_reload: true
-    name: "syncoid@{{ item }}.timer"
-  loop:
-    - persist
-    - media
+    name: "syncoid@{{ item.name }}.timer"
+  loop: "{{ zfspool_datasets }}"
+  loop_control:
+    label: "{{ item.name }}"

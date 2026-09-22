@@ -6,7 +6,7 @@
     dest: /etc/systemd/resolved.conf.d
 - name: Quad9 resolved dropin present
   notify: "resolved config changed"
-  ansible.builtin.copy:
+  ansible.builtin.template:
     src: dot-resolved.conf
     dest: /etc/systemd/resolved.conf.d/dot.conf
     mode: "ugo=r"

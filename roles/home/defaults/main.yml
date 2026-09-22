@@ -1,0 +1,4 @@
+---
+home_firewalld_services:
+  - homekit
+  - mdns

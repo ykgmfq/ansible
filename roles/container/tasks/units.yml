@@ -8,8 +8,8 @@
 - name: Service definitions synced
   delegate_to: "{{ inventory_hostname }}"
   ansible.posix.synchronize:
-    src: /var/mnt/ephemeral/services/systemd
-    dest: /etc/containers/systemd
+    src: "{{ container_ephemeral_services_src }}"
+    dest: "{{ container_quadlet_dest }}"
     delete: true
 - name: Prod is default target
   notify: "system config changed"

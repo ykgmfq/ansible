@@ -19,6 +19,4 @@
     permanent: true
     immediate: true
     state: enabled
-  loop:
-    - homekit
-    - mdns
+  loop: "{{ home_firewalld_services }}"

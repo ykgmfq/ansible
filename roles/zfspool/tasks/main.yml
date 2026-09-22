@@ -1,11 +1,11 @@
 ---
 - name: User present
   ansible.builtin.user:
-    name: "syncoid"
+    name: "{{ zfspool_syncoid_user }}"
     home: "{{ syncoid_home }}"
     comment: "from Ansible"
     system: true
-    shell: "/bin/sh"
+    shell: "{{ zfspool_syncoid_shell }}"
 - name: Import
   ansible.builtin.import_tasks: files.yml
 - name: Pool imported
@@ -20,9 +20,9 @@
       changed_when: true
 - name: Pool allowlist
   community.general.zfs_delegate_admin:
-    users: syncoid
+    users: "{{ zfspool_syncoid_user }}"
     name: "{{ dataset }}"
-    permissions: "{{ 'compression,mountpoint,create,mount,receive,rollback,recordsize,destroy' if is_backup_sink else 'send,hold' }}"
+    permissions: "{{ zfspool_permissions_sink if is_backup_sink else zfspool_permissions_source }}"
 - name: Scrub timer enabled
   ansible.builtin.systemd_service:
     state: started

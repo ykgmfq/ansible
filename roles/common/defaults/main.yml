@@ -1,0 +1,16 @@
+---
+common_services_enabled:
+  - tuned
+  - systemd-oomd
+
+common_autoupgrade_schedule: "Sat 05:00"
+
+# Same Quad9 DoT resolvers as roles/dns_over_tls, expressed the way
+# systemd-resolved wants them ("address#tls-server-name").
+common_dns_servers:
+  - "2620:fe::fe#dns.quad9.net"
+  - "2620:fe::9#dns.quad9.net"
+
+# Post-quantum key exchange preferred, with a Curve25519 fallback for older
+# clients (e.g. the PuTTY-based Shelly iOS client, which lacks ML-KEM).
+common_ssh_kex_algorithms: "mlkem768x25519-sha256,curve25519-sha256,curve25519-sha256@libssh.org"

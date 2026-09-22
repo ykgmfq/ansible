@@ -1,0 +1,10 @@
+---
+container_firewall_services:
+  - http
+  - https
+  - http3
+  - samba
+
+# ZFS datasets, mounted outside this repo's control (see roles/CLAUDE.md).
+container_ephemeral_services_src: /var/mnt/ephemeral/services/systemd
+container_quadlet_dest: /etc/containers/systemd

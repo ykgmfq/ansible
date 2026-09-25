@@ -1,21 +1,21 @@
 INVENTORY := "inventory.yml"
-PLAYBOOK := "production.yml"
+PLAYBOOKS := "playbooks"
 
 # Playbook Check
-playbook-check: lint
-    ansible-playbook {{PLAYBOOK}} -i={{INVENTORY}} --diff --check
+playbook-check target: lint
+    ansible-playbook {{PLAYBOOKS}}/{{target}}.yml -i={{INVENTORY}} --diff --check
 
 # Playbook Check Verbose
-playbook-check-verbose: lint
-    ansible-playbook {{PLAYBOOK}} -i={{INVENTORY}} --diff --check -vvv
+playbook-check-verbose target: lint
+    ansible-playbook {{PLAYBOOKS}}/{{target}}.yml -i={{INVENTORY}} --diff --check -vvv
 
 # Playbook Verbose
-playbook-verbose: lint
-    ansible-playbook {{PLAYBOOK}} -i={{INVENTORY}} --diff -vvv
+playbook-verbose target: lint
+    ansible-playbook {{PLAYBOOKS}}/{{target}}.yml -i={{INVENTORY}} --diff -vvv
 
 # Playbook Normal
-playbook: lint
-    ansible-playbook {{PLAYBOOK}} -i={{INVENTORY}} --diff
+playbook target: lint
+    ansible-playbook {{PLAYBOOKS}}/{{target}}.yml -i={{INVENTORY}} --diff
 
 # Run butane to generate ignition file
 butane:

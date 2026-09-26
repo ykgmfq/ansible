@@ -25,3 +25,10 @@ The host key is recorded per address, so after the go-live cutover moves the rou
 ## Common commands
 
 Run `just -l` to list all available commands.
+
+## Devcontainer
+
+*Reopen in Container* offers two configurations:
+
+- **local build** — builds the image from `.devcontainer/Dockerfile` on your machine
+- **prebuilt** — pulls `ghcr.io/ykgmfq/ansible`

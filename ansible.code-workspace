@@ -6,8 +6,11 @@
 	],
 	"settings": {
 		"files.associations": {
-			"*.yml": "ansible",
-			"*.butane": "yaml"
+			"*.butane": "yaml",
+			"inventory.yml": "ansible",
+			"playbooks/**/*.yml": "ansible",
+			"roles/**/*.yml": "ansible",
+			"group_vars/**/*.yml": "ansible"
 		},
 	},
 	"tasks": {

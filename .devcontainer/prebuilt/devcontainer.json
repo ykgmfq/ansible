@@ -1,0 +1,5 @@
+{
+  "name": "ansible and butane (prebuilt)",
+  "image": "ghcr.io/ykgmfq/ansible:latest",
+  "runArgs": ["--network=dev6"]
+}

@@ -1,12 +1,16 @@
 {
-  "name": "ansible and butane",
+  "name": "ansible and butane (local build)",
   "build": {
-    "dockerfile": "Dockerfile",
+    "dockerfile": "../Dockerfile",
+    "context": "..",
     "args": {
-      "DEBIAN_TAG": "13"
+      "DEBIAN_TAG": "13",
+      "BUILDKIT_INLINE_CACHE": "1"
     }
   },
-  "runArgs": ["--network=dev6"],
+  "runArgs": [
+    "--network=dev6"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [

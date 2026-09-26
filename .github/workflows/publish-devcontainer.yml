@@ -1,0 +1,66 @@
+---
+name: Publish DevContainer
+on:
+  schedule:
+    - cron: "0 5 1 * *"
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths: [".devcontainer/**", ".github/workflows/publish-devcontainer.yml"]
+  pull_request:
+    paths: [".devcontainer/**", ".github/workflows/publish-devcontainer.yml"]
+permissions: {}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+jobs:
+  publish:
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Log in to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Compute tags
+        id: tags
+        run: echo "tags=latest,$(date -u +%Y-%m),sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+      - name: Build, test and push
+        uses: devcontainers/ci@v0.3
+        with:
+          configFile: .devcontainer/local/devcontainer.json
+          imageName: ${{ env.IMAGE }}
+          imageTag: ${{ steps.tags.outputs.tags }}
+          cacheFrom: ${{ env.IMAGE }}:latest
+          # Scheduled/manual runs rebuild from scratch to pick up base image and package updates
+          noCache: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+          runCmd: ansible --version && ansible-lint --version && butane --version && just --version
+          push: filter
+          refFilterForPush: refs/heads/master
+          eventFilterForPush: push,schedule,workflow_dispatch
+      - name: Resolve digest
+        id: digest
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+        run: |
+          digest=$(docker buildx imagetools inspect "$IMAGE:sha-${GITHUB_SHA::7}" --format '{{json .Manifest}}' | jq --raw-output .digest)
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"
+      - name: Attest build provenance
+        if: steps.digest.outputs.digest != ''
+        uses: actions/attest@v4
+        with:
+          subject-name: ${{ env.IMAGE }}
+          subject-digest: ${{ steps.digest.outputs.digest }}
+          push-to-registry: true
+          create-storage-record: false

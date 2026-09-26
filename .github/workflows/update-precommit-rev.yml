@@ -1,0 +1,24 @@
+---
+name: Update pre-commit hooks
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+jobs:
+  update-rev:
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v7
+      - name: Update .pre-commit-config.yaml if needed
+        run: ./.github/scripts/update-precommit.sh
+        id: update_precommit
+      - name: Create Pull Request
+        if: steps.update_precommit.outputs.result == 'updated'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          branch: precommit-autoupdate
+          title: Update pre-commit hook revisions
+          commit-message: Update pre-commit hook revisions

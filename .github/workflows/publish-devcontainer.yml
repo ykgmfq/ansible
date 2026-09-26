@@ -51,7 +51,10 @@ jobs:
           runCmd: ansible --version && ansible-lint --version && butane --version && just --version
           push: filter
           refFilterForPush: refs/heads/master
-          eventFilterForPush: push,schedule,workflow_dispatch
+          eventFilterForPush: |
+            push
+            schedule
+            workflow_dispatch
       - name: Resolve digest
         id: digest
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'

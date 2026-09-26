@@ -1,7 +1,10 @@
 {
   "name": "ansible and butane",
   "build": {
-    "dockerfile": "Dockerfile"
+    "dockerfile": "Dockerfile",
+    "args": {
+      "DEBIAN_TAG": "13"
+    }
   },
   "runArgs": ["--network=dev6"],
   "customizations": {

@@ -1,0 +1,25 @@
+---
+name: Update DevContainer
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+jobs:
+  update-tag:
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v7
+      - name: Update devcontainer.json if needed
+        run: ./.github/scripts/update-devcontainer.sh
+        id: update_devcontainer
+      - name: Create Pull Request
+        if: steps.update_devcontainer.outputs.result == 'updated'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          branch: devcontainer-debian-${{ steps.update_devcontainer.outputs.tag }}
+          title: Update devcontainer to Debian ${{ steps.update_devcontainer.outputs.tag }}
+          body: https://mcr.microsoft.com/en-us/artifact/mar/devcontainers/base/tags
+          commit-message: Update devcontainer to Debian ${{ steps.update_devcontainer.outputs.tag }}

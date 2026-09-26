@@ -1,0 +1,39 @@
+---
+- name: LAN address matches the active router's subnet
+  notify: "router lan changed"
+  community.openwrt.uci:
+    command: set
+    key: network.lan.ipaddr
+    value: "{{ router_lan_ipaddr }}"
+
+- name: LAN netmask set
+  notify: "router lan changed"
+  community.openwrt.uci:
+    command: set
+    key: network.lan.netmask
+    value: "{{ router_lan_netmask }}"
+
+- name: LAN DHCPv4 pool present
+  notify: "router lan changed"
+  community.openwrt.uci:
+    command: set
+    key: "dhcp.lan.{{ item.key }}"
+    value: "{{ item.value }}"
+  loop:
+    - { key: start, value: "{{ router_lan_dhcp_start }}" }
+    - { key: limit, value: "{{ router_lan_dhcp_limit }}" }
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: LAN IPv6 is SLAAC only
+  notify: "router lan changed"
+  community.openwrt.uci:
+    command: set
+    key: "dhcp.lan.{{ item.key }}"
+    value: "{{ item.value }}"
+  loop:
+    - { key: ra, value: server }
+    - { key: dhcpv6, value: disabled }
+    - { key: ra_flags, value: none }
+  loop_control:
+    label: "{{ item.key }}"

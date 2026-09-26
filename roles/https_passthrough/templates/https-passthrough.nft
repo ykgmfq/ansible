@@ -1,0 +1,6 @@
+# Managed by Ansible (roles/https_passthrough) - do not edit by hand.
+#
+# Lets inbound HTTP(S) through to the homeserver, matched on its stable
+# EUI-64 interface identifier rather than a routed (and rotating) GUA
+# prefix. See roles/https_passthrough/README.md for why.
+ip6 daddr and ::ffff:ffff:ffff:ffff == ::{{ https_passthrough_homeserver_ipv6_iid }} tcp dport { 80, 443 } accept comment "https-passthrough-homeserver"

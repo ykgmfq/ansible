@@ -1,0 +1,22 @@
+---
+# Bare rules are only valid inside a chain; fw4 auto-includes /etc/nftables.d/*.nft at table level
+- name: HTTPS passthrough nftables snippet present
+  notify: "https passthrough changed"
+  community.openwrt.template:
+    src: https-passthrough.nft
+    dest: /etc/https-passthrough.nft
+    mode: "u=rw,go=r"
+
+- name: HTTPS passthrough snippet included in forward_wan
+  notify: "https passthrough changed"
+  community.openwrt.uci:
+    command: section
+    config: firewall
+    type: include
+    find:
+      path: /etc/https-passthrough.nft
+    value:
+      path: /etc/https-passthrough.nft
+      type: nftables
+      position: chain-pre
+      chain: forward_wan

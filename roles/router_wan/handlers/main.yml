@@ -1,0 +1,10 @@
+---
+- name: UCI network changes committed
+  listen: "router wan changed"
+  community.openwrt.uci:
+    command: commit
+- name: Network reloaded
+  listen: "router wan changed"
+  community.openwrt.service:
+    name: network
+    state: reloaded

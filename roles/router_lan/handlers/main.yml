@@ -1,0 +1,20 @@
+---
+- name: UCI network/dhcp changes committed
+  listen: "router lan changed"
+  community.openwrt.uci:
+    command: commit
+- name: Network reloaded
+  listen: "router lan changed"
+  community.openwrt.service:
+    name: network
+    state: reloaded
+- name: DHCP/DNS reloaded
+  listen: "router lan changed"
+  community.openwrt.service:
+    name: dnsmasq
+    state: reloaded
+- name: Router advertisements reloaded
+  listen: "router lan changed"
+  community.openwrt.service:
+    name: odhcpd
+    state: reloaded

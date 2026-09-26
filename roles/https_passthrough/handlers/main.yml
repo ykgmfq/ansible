@@ -1,0 +1,10 @@
+---
+- name: HTTPS passthrough UCI changes committed
+  listen: "https passthrough changed"
+  community.openwrt.uci:
+    command: commit
+- name: HTTPS passthrough firewall reloaded
+  listen: "https passthrough changed"
+  community.openwrt.service:
+    name: firewall
+    state: reloaded

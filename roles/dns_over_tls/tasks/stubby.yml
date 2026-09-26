@@ -1,0 +1,42 @@
+---
+- name: Stubby present
+  community.openwrt.apk:
+    name: stubby
+    state: present
+
+- name: Stubby uses UCI config, not the packaged default
+  notify: "dns over tls changed"
+  community.openwrt.uci:
+    command: set
+    key: stubby.global.manual
+    value: "0"
+
+- name: Stubby transport is TLS only, no TCP/UDP fallback
+  notify: "dns over tls changed"
+  community.openwrt.uci:
+    command: set
+    key: stubby.global.dns_transport
+    value: "{{ dns_over_tls_transport }}"
+
+- name: Stubby TLS authentication is strict
+  notify: "dns over tls changed"
+  community.openwrt.uci:
+    command: set
+    key: stubby.global.tls_authentication
+    value: "{{ dns_over_tls_strict_auth }}"
+
+- name: Stubby upstreams are Quad9 over IPv6 only
+  notify: "dns over tls changed"
+  community.openwrt.uci:
+    command: section
+    config: stubby
+    type: resolver
+    name: "{{ item.name }}"
+    value:
+      address: "{{ item.address }}"
+      tls_auth_name: "{{ dns_over_tls_tls_auth_name }}"
+      tls_port: "{{ dns_over_tls_tls_port }}"
+    replace: true
+  loop: "{{ dns_over_tls_resolvers }}"
+  loop_control:
+    label: "{{ item.name }}"

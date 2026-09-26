@@ -1,0 +1,19 @@
+---
+- name: WAN gets a plain DHCPv4 lease from the modem
+  notify: "router wan changed"
+  community.openwrt.uci:
+    command: set
+    key: network.wan.proto
+    value: dhcp
+
+- name: WAN requests a prefix delegation over DHCPv6
+  notify: "router wan changed"
+  community.openwrt.uci:
+    command: set
+    key: "network.wan6.{{ item.key }}"
+    value: "{{ item.value }}"
+  loop:
+    - { key: proto, value: dhcpv6 }
+    - { key: reqprefix, value: "{{ router_wan_reqprefix }}" }
+  loop_control:
+    label: "{{ item.key }}"

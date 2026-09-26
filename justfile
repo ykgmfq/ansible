@@ -3,19 +3,19 @@ PLAYBOOKS := "playbooks"
 
 # Playbook Check
 playbook-check target: lint
-    ansible-playbook {{PLAYBOOKS}}/{{target}}.yml -i={{INVENTORY}} --diff --check
+    ansible-playbook {{PLAYBOOKS}}/{{target}}.yml -i={{INVENTORY}} --diff --check {{ if target == "network" { "--vault-password-file=.vault-pass" } else if target == "router_prep" { "--vault-password-file=.vault-pass" } else { "" } }}
 
 # Playbook Check Verbose
 playbook-check-verbose target: lint
-    ansible-playbook {{PLAYBOOKS}}/{{target}}.yml -i={{INVENTORY}} --diff --check -vvv
+    ansible-playbook {{PLAYBOOKS}}/{{target}}.yml -i={{INVENTORY}} --diff --check -vvv {{ if target == "network" { "--vault-password-file=.vault-pass" } else if target == "router_prep" { "--vault-password-file=.vault-pass" } else { "" } }}
 
 # Playbook Verbose
 playbook-verbose target: lint
-    ansible-playbook {{PLAYBOOKS}}/{{target}}.yml -i={{INVENTORY}} --diff -vvv
+    ansible-playbook {{PLAYBOOKS}}/{{target}}.yml -i={{INVENTORY}} --diff -vvv {{ if target == "network" { "--vault-password-file=.vault-pass" } else if target == "router_prep" { "--vault-password-file=.vault-pass" } else { "" } }}
 
 # Playbook Normal
 playbook target: lint
-    ansible-playbook {{PLAYBOOKS}}/{{target}}.yml -i={{INVENTORY}} --diff
+    ansible-playbook {{PLAYBOOKS}}/{{target}}.yml -i={{INVENTORY}} --diff {{ if target == "network" { "--vault-password-file=.vault-pass" } else if target == "router_prep" { "--vault-password-file=.vault-pass" } else { "" } }}
 
 # Run butane to generate ignition file
 butane:

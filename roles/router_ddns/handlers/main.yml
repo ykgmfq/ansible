@@ -1,0 +1,10 @@
+---
+- name: Router DynDNS UCI changes committed
+  listen: "router ddns changed"
+  community.openwrt.uci:
+    command: commit
+- name: Router DynDNS service restarted
+  listen: "router ddns changed"
+  community.openwrt.service:
+    name: ddns
+    state: restarted

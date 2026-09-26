@@ -1,0 +1,118 @@
+---
+- name: WireGuard packages present
+  community.openwrt.apk:
+    name: luci-proto-wireguard
+    state: present
+
+- name: WireGuard interface section present
+  notify: "wireguard changed"
+  community.openwrt.uci:
+    command: section
+    config: network
+    type: interface
+    name: wg0
+
+- name: Router WireGuard private key presence checked
+  community.openwrt.command:
+    cmd: uci get network.wg0.private_key
+  register: wg_privkey_check
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Router WireGuard private key generated
+  when: wg_privkey_check.rc != 0
+  community.openwrt.command:
+    cmd: wg genkey
+  register: wg_genkey
+
+- name: Router WireGuard private key set
+  when: wg_privkey_check.rc != 0
+  notify: "wireguard changed"
+  community.openwrt.uci:
+    command: set
+    key: network.wg0.private_key
+    value: "{{ wg_genkey.stdout }}"
+
+- name: WireGuard interface configured
+  notify: "wireguard changed"
+  community.openwrt.uci:
+    command: set
+    key: "network.wg0.{{ item.key }}"
+    value: "{{ item.value }}"
+  loop:
+    - { key: proto, value: wireguard }
+    - { key: listen_port, value: "{{ wireguard_listen_port }}" }
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: WireGuard tunnel address assigned
+  notify: "wireguard changed"
+  community.openwrt.uci:
+    command: add_list
+    key: network.wg0.addresses
+    value: "{{ wireguard_address }}"
+    unique: true
+
+- name: WireGuard peers present
+  notify: "wireguard changed"
+  community.openwrt.uci:
+    command: section
+    config: network
+    type: wireguard_wg0
+    find:
+      public_key: "{{ item.public_key }}"
+    value:
+      public_key: "{{ item.public_key }}"
+      allowed_ips: "{{ item.allowed_ips }}"
+      route_allowed_ips: "1"
+    replace: true
+  loop: "{{ wireguard_peers }}"
+  loop_control:
+    label: "{{ item.public_key }}"
+
+- name: WireGuard firewall zone present
+  notify: "wireguard changed"
+  community.openwrt.uci:
+    command: section
+    config: firewall
+    type: zone
+    find:
+      name: wg
+    value:
+      name: wg
+      network: wg0
+      input: ACCEPT
+      output: ACCEPT
+      forward: ACCEPT
+    replace: true
+
+- name: WireGuard zone forwards to LAN
+  notify: "wireguard changed"
+  community.openwrt.uci:
+    command: section
+    config: firewall
+    type: forwarding
+    find:
+      src: wg
+      dest: lan
+    value:
+      src: wg
+      dest: lan
+    replace: true
+
+- name: WireGuard port open on WAN
+  notify: "wireguard changed"
+  community.openwrt.uci:
+    command: section
+    config: firewall
+    type: rule
+    find:
+      name: Allow-WireGuard
+    value:
+      name: Allow-WireGuard
+      src: wan
+      proto: udp
+      dest_port: "{{ wireguard_listen_port }}"
+      target: ACCEPT
+    replace: true

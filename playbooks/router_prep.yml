@@ -1,0 +1,14 @@
+---
+# For a new/replacement router still at OpenWRT's factory-default address.
+- name: Router prep
+  hosts: router
+  serial: 1
+  remote_user: root
+  become: false
+  gather_facts: false
+  roles:
+    - router_wan
+    - router_firewall
+    - wireguard
+    - https_passthrough
+    - dns_over_tls

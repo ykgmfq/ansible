@@ -1,0 +1,15 @@
+---
+- name: Router
+  hosts: router
+  serial: 1
+  remote_user: root
+  become: false
+  gather_facts: false
+  roles:
+    - router_wan
+    - router_firewall
+    - wireguard
+    - https_passthrough
+    - dns_over_tls
+    - router_lan
+    - router_ddns

@@ -1,0 +1,15 @@
+---
+- name: WireGuard UCI changes committed
+  listen: "wireguard changed"
+  community.openwrt.uci:
+    command: commit
+- name: WireGuard network reloaded
+  listen: "wireguard changed"
+  community.openwrt.service:
+    name: network
+    state: reloaded
+- name: WireGuard firewall reloaded
+  listen: "wireguard changed"
+  community.openwrt.service:
+    name: firewall
+    state: reloaded

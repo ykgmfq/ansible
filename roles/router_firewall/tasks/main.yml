@@ -1,0 +1,16 @@
+---
+- name: Blanket wan->lan forward rules discovered
+  community.openwrt.uci:
+    command: find_all
+    config: firewall
+    type: rule
+    find: "{{ router_firewall_absent_rules_match }}"
+  register: router_firewall_absent_rules
+
+# Reversed: deleting @rule[N] renumbers every later rule, so go back to front.
+- name: Blanket wan->lan forward rules absent
+  notify: "router firewall changed"
+  community.openwrt.uci:
+    command: absent
+    key: "firewall.{{ item }}"
+  loop: "{{ router_firewall_absent_rules.result_list | default([]) | reverse | list }}"

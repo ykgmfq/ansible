@@ -1,0 +1,10 @@
+---
+- name: Router firewall UCI changes committed
+  listen: "router firewall changed"
+  community.openwrt.uci:
+    command: commit
+- name: Router firewall reloaded
+  listen: "router firewall changed"
+  community.openwrt.service:
+    name: firewall
+    state: reloaded

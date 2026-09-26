@@ -1,0 +1,4 @@
+---
+router_firewall_absent_rules_match:
+  src: wan
+  dest: lan

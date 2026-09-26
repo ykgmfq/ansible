@@ -7,7 +7,7 @@ repos:
       - id: check-yaml
         files: (\.ya?ml|\.butane)$
       - id: sort-simple-yaml
-        files: (\.ya?ml|\.butane)$
+        files: ^roles/requirements\.yml$
   - repo: local
     hooks:
       - id: ansible-lint

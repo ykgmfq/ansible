@@ -17,3 +17,24 @@ Home Assistant integration: firewall rules for HomeKit and mDNS services, udev r
 
 ## dyndns
 IPv6 reachability for the host.
+
+## router_wan
+IPv4/IPv6 WAN connectivity for the OpenWRT router, carried over from the router it replaces.
+
+## router_firewall
+Removes blanket wan→lan forwarding rules, such as OpenWRT's stock IPsec passthrough, found on the router itself.
+
+## router_lan
+Switches the OpenWRT router's LAN from its factory default onto the subnet owned by the router it replaces, DHCP pool included — the go-live step, run as part of `playbooks/network.yml`'s full stack.
+
+## wireguard
+Road-warrior WireGuard endpoint on the router, including the firewall rule it needs to receive traffic.
+
+## router_ddns
+Keeps the router's own public DNS record pointed at its current IPv6 address.
+
+## https_passthrough
+Firewall rule letting inbound TLS (and ACME's plain HTTP) reach the homeserver directly through the router.
+
+## dns_over_tls
+Strict DNS-over-TLS for the router's own resolution, with no plaintext fallback.

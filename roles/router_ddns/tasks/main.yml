@@ -1,0 +1,53 @@
+---
+- name: Router DynDNS password provided
+  ansible.builtin.assert:
+    that:
+      - router_ddns_password is defined
+      - router_ddns_password != "CHANGEME"
+    fail_msg: >-
+      router_ddns_password is not set (or still the group_vars/router/vault.yml
+      placeholder). Set it with `ansible-vault edit --vault-password-file=.vault-pass
+      group_vars/router/vault.yml` before running this role (see
+      roles/router_ddns/README.md).
+
+- name: Ddns-scripts present
+  community.openwrt.apk:
+    name: ddns-scripts
+    state: present
+
+- name: Router DynDNS service section present
+  notify: "router ddns changed"
+  community.openwrt.uci:
+    command: section
+    config: ddns
+    type: service
+    name: router
+
+- name: Router DynDNS service configured
+  notify: "router ddns changed"
+  community.openwrt.uci:
+    command: set
+    key: "ddns.router.{{ item.key }}"
+    value: "{{ item.value }}"
+  loop:
+    - { key: enabled, value: "1" }
+    - { key: domain, value: "{{ router_ddns_domain }}" }
+    - { key: lookup_host, value: "{{ router_ddns_domain }}" }
+    - { key: username, value: "{{ router_ddns_domain }}" }
+    - { key: update_url, value: "https://dyndns.strato.com/nic/update?hostname=[DOMAIN]&myip=[IP6ADDR]" }
+    - { key: use_ipv6, value: "1" }
+    - { key: ip_source, value: network }
+    - { key: ip_network, value: wan6 }
+    # ddns-scripts' hotplug hook only starts services whose `interface`
+    # matches the interface that just came up.
+    - { key: interface, value: wan6 }
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Router DynDNS password set
+  notify: "router ddns changed"
+  no_log: true
+  community.openwrt.uci:
+    command: set
+    key: ddns.router.password
+    value: "{{ router_ddns_password }}"

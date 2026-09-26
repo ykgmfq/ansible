@@ -1,0 +1,8 @@
+---
+# Punycode for pöpperl.eu: the router's busybox nslookup can't resolve the UTF-8 form.
+router_ddns_domain: xn--ppperl-wxa.eu
+
+# The homeserver's stable EUI-64 interface identifier (lower 64 bits of its
+# LAN GUA), independent of whatever prefix the ISP currently delegates.
+# Read live from the homeserver with: ip -6 addr show scope global
+https_passthrough_homeserver_ipv6_iid: "56bf:64ff:fe72:627b"

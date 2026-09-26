@@ -1,4 +1,6 @@
 headless:
+  vars:
+    ansible_user: root
   children:
     homeserver:
       hosts:
@@ -14,3 +16,8 @@ headless:
         is_backup_sink: true
         dataset: backup
         syncoid_home: /var/mnt/backup/syncoid-home-sink
+    router:
+      hosts:
+        openwrt-router:
+          # ansible_host: 192.168.1.1 #factory default
+          ansible_host: 192.168.178.1

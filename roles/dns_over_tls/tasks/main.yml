@@ -1,0 +1,5 @@
+---
+- name: Stubby configured
+  ansible.builtin.import_tasks: stubby.yml
+- name: Dnsmasq wired to stubby only
+  ansible.builtin.import_tasks: dnsmasq.yml

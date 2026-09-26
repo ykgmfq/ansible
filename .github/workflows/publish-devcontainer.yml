@@ -37,6 +37,8 @@ jobs:
       - name: Compute tags
         id: tags
         run: echo "tags=latest,$(date -u +%Y-%m),sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+      - name: Create dev network
+        run: docker network inspect dev6 >/dev/null 2>&1 || docker network create dev6
       - name: Build, test and push
         uses: devcontainers/ci@v0.3
         with:

@@ -11,6 +11,12 @@
   "runArgs": [
     "--network=dev6"
   ],
+  "mounts": [
+    "source=rbw-config,target=/home/vscode/.config/rbw,type=volume",
+    "source=rbw-data,target=/home/vscode/.local/share/rbw,type=volume"
+  ],
+  // Fresh named volumes are root-owned.
+  "postCreateCommand": "sudo chown vscode: /home/vscode/.config/rbw /home/vscode/.local/share/rbw",
   "customizations": {
     "vscode": {
       "extensions": [

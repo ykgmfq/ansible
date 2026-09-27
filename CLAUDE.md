@@ -32,5 +32,6 @@ Run `just -l` to list all available commands. Playbook recipes take the playbook
 
 - **Always use `just` commands** instead of invoking tools directly.
 - **Keep CLAUDE.md and README files general** — describe purpose and scope, not implementation details.
+- **Comment only what is truly non-obvious** — keep comments short and don't restate values, paths, or names defined elsewhere, since those drift.
 - **Do not run `just playbook servers`, `just playbook network`, or `just playbook router_prep`** without explicit user confirmation — all three target production hosts, and `network`'s first run against a new device additionally switches the live subnet and DNS ownership.
 - **`server.butane`** only takes effect on a fresh install; use Ansible roles for changes to a running host.

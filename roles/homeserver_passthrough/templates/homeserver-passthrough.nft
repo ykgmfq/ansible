@@ -1,0 +1,8 @@
+# Managed by Ansible.
+#
+# Lets inbound HTTP(S), HTTP/3 and SSH through to the homeserver, matched on
+# its stable EUI-64 interface identifier.
+ip6 daddr and ::ffff:ffff:ffff:ffff == ::{{ homeserver_passthrough_ipv6_iid }} tcp dport { 80, 443 } accept comment "homeserver-passthrough-https"
+ip6 daddr and ::ffff:ffff:ffff:ffff == ::{{ homeserver_passthrough_ipv6_iid }} udp dport 443 accept comment "homeserver-passthrough-http3"
+ip6 daddr and ::ffff:ffff:ffff:ffff == ::{{ homeserver_passthrough_ipv6_iid }} tcp dport 22 ct state new meter homeserver_ssh_ratelimit { ip6 saddr limit rate over {{ homeserver_passthrough_ssh_rate }} burst {{ homeserver_passthrough_ssh_burst }} packets } drop comment "homeserver-passthrough-ssh-ratelimit"
+ip6 daddr and ::ffff:ffff:ffff:ffff == ::{{ homeserver_passthrough_ipv6_iid }} tcp dport 22 accept comment "homeserver-passthrough-ssh"

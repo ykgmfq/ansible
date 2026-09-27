@@ -1,0 +1,3 @@
+---
+homeserver_passthrough_ssh_rate: 5/minute
+homeserver_passthrough_ssh_burst: 5

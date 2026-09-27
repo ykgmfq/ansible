@@ -9,7 +9,7 @@
     - router_wan
     - router_firewall
     - wireguard
-    - https_passthrough
+    - homeserver_passthrough
     - dns_over_tls
     - router_lan
     - router_ddns

@@ -17,7 +17,7 @@ repos:
         types: [yaml]
       - id: nft-lint
         name: nftables syntax check
-        entry: .github/scripts/nft-lint.py
+        entry: python3 .github/scripts/nft-lint.py
         language: system
         files: (\.nft|defaults/main\.yml|group_vars/router/main\.yml)$
         pass_filenames: false

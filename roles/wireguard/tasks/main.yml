@@ -1,4 +1,15 @@
 ---
+- name: WireGuard peers complete
+  ansible.builtin.assert:
+    that:
+      - item.public_key is string and item.public_key | length > 0
+      - item.ip is string and item.ip | length > 0
+    fail_msg: every peer needs a public key and IP
+    quiet: true
+  loop: "{{ wireguard_peers }}"
+  loop_control:
+    label: "{{ item.public_key | default('?') }}"
+
 - name: WireGuard packages present
   community.openwrt.apk:
     name: luci-proto-wireguard
@@ -12,27 +23,13 @@
     type: interface
     name: wg0
 
-- name: Router WireGuard private key presence checked
-  community.openwrt.command:
-    cmd: uci get network.wg0.private_key
-  register: wg_privkey_check
-  changed_when: false
-  failed_when: false
-  check_mode: false
-
-- name: Router WireGuard private key generated
-  when: wg_privkey_check.rc != 0
-  community.openwrt.command:
-    cmd: wg genkey
-  register: wg_genkey
-
 - name: Router WireGuard private key set
-  when: wg_privkey_check.rc != 0
   notify: "wireguard changed"
+  no_log: true
   community.openwrt.uci:
     command: set
     key: network.wg0.private_key
-    value: "{{ wg_genkey.stdout }}"
+    value: "{{ wireguard_private_key }}"
 
 - name: WireGuard interface configured
   notify: "wireguard changed"
@@ -64,7 +61,7 @@
       public_key: "{{ item.public_key }}"
     value:
       public_key: "{{ item.public_key }}"
-      allowed_ips: "{{ item.allowed_ips }}"
+      allowed_ips: "{{ item.ip }}"
       route_allowed_ips: "1"
     replace: true
   loop: "{{ wireguard_peers }}"

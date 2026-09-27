@@ -1,15 +1,4 @@
 ---
-- name: Router DynDNS password provided
-  ansible.builtin.assert:
-    that:
-      - router_ddns_password is defined
-      - router_ddns_password != "CHANGEME"
-    fail_msg: >-
-      router_ddns_password is not set (or still the group_vars/router/vault.yml
-      placeholder). Set it with `ansible-vault edit --vault-password-file=.vault-pass
-      group_vars/router/vault.yml` before running this role (see
-      roles/router_ddns/README.md).
-
 - name: Ddns-scripts present
   community.openwrt.apk:
     name: ddns-scripts

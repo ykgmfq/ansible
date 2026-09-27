@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Write a WireGuard client config built from Vaultwarden (via rbw) and the router's vars."""
+"""Write every WireGuard client's config, built from Vaultwarden (via rbw) and the router's vars."""
 import argparse
 import ipaddress
 import json
@@ -30,17 +30,19 @@ def router_vars() -> dict:
     return {k: v for d in (*roles, load(ROOT / "group_vars/router/main.yml")) for k, v in d.items()}
 
 
+def rbw(*args) -> list | dict:
+    """Run rbw and return its parsed JSON output."""
+    return json.loads(subprocess.run(["rbw", *args], check=True, capture_output=True, text=True).stdout)
+
+
 def rbw_entry(*args) -> dict:
     """Return an entry's password and custom fields."""
-    raw = json.loads(subprocess.run(["rbw", "get", "--raw", *args], check=True, capture_output=True, text=True).stdout)
+    raw = rbw("get", "--raw", *args)
     return {"password": raw["data"]["password"], **{f["name"]: f["value"] for f in raw["fields"]}}
 
 
-def config(device, full_tunnel) -> str:
+def config(v, client, endpoint, full_tunnel) -> str:
     """Render the client config for one device."""
-    v = router_vars()
-    client = rbw_entry(ENTRY_CLIENT, device)
-    endpoint = rbw_entry(ENTRY_ENDPOINT)
     if full_tunnel:
         allowed = "0.0.0.0/0, ::/0"
     else:
@@ -64,20 +66,28 @@ def config(device, full_tunnel) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("device", help=f"username of the '{ENTRY_CLIENT}' entry, e.g. 'iphone Dennis'")
     parser.add_argument("--full-tunnel", action="store_true", help="route all traffic through home")
-    parser.add_argument("--qr", action="store_true", help="print as a terminal QR code for mobile import")
     args = parser.parse_args()
-    conf = config(args.device, args.full_tunnel)
-    # The file name becomes the interface name on import, so keep it short and plain.
-    path = OUTPUT / f"{re.sub(r'[^a-z0-9]+', '-', args.device.lower()).strip('-')}.conf"
+    v = router_vars()
+    endpoint = rbw_entry(ENTRY_ENDPOINT)
+    clients = [entry for entry in rbw("list", "--raw") if entry["name"].lower() == ENTRY_CLIENT.lower()]
     OUTPUT.mkdir(exist_ok=True)
-    path.touch(mode=0o600)
-    path.write_text(conf)
-    print(path.relative_to(ROOT))
-    if args.qr:
-        return subprocess.run(["qrencode", "-t", "ansiutf8"], input=conf, text=True, check=False).returncode
-    return 0
+    failed = 0
+    for entry in clients:
+        device = entry.get("user") or entry["id"]
+        client = rbw_entry(entry["id"])
+        if not client.get("password") or not client.get("IP"):
+            print(f"{device}: missing private key or IP, skipped", file=sys.stderr)
+            failed += 1
+            continue
+        conf = config(v, client, endpoint, args.full_tunnel)
+        # The file name becomes the interface name on import, so keep it short and plain.
+        path = OUTPUT / f"{re.sub(r'[^a-z0-9]+', '-', device.lower()).strip('-')}.conf"
+        path.touch(mode=0o600)
+        path.write_text(conf)
+        print(f"\n{device}: {path.relative_to(ROOT)}")
+        failed += subprocess.run(["qrencode", "-t", "ansiutf8"], input=conf, text=True, check=False).returncode != 0
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":

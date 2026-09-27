@@ -28,6 +28,11 @@ lint:
     ansible-lint
     python3 .github/scripts/nft-lint.py
 
+# Write every WireGuard client's config to output/ and print each as a QR code
+wireguard-client-config *flags:
+    rbw unlock
+    python3 .github/scripts/wireguard-client-config.py {{flags}}
+
 # Install Galaxy Collections
 galaxy:
     ansible-galaxy collection install -r=roles/requirements.yml

@@ -13,10 +13,15 @@
   ],
   "mounts": [
     "source=rbw-config,target=/home/vscode/.config/rbw,type=volume",
-    "source=rbw-data,target=/home/vscode/.local/share/rbw,type=volume"
+    "source=rbw-data,target=/home/vscode/.local/share/rbw,type=volume",
+    "source=claude-config,target=/home/vscode/.claude,type=volume"
   ],
+  // Keeps ~/.claude.json inside the persisted directory too.
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
+  },
   // Fresh named volumes are root-owned.
-  "postCreateCommand": "sudo chown vscode: /home/vscode/.config/rbw /home/vscode/.local/share/rbw",
+  "postCreateCommand": "sudo chown vscode: /home/vscode/.config/rbw /home/vscode/.local/share/rbw /home/vscode/.claude",
   "customizations": {
     "vscode": {
       "extensions": [

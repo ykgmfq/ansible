@@ -48,7 +48,7 @@ jobs:
           cacheFrom: ${{ env.IMAGE }}:latest
           # Scheduled/manual runs rebuild from scratch to pick up base image and package updates
           noCache: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
-          runCmd: ansible --version && ansible-lint --version && butane --version && just --version
+          runCmd: ansible --version && ansible-lint --version && butane --version && just --version && rbw --version
           push: filter
           refFilterForPush: refs/heads/master
           eventFilterForPush: |

@@ -24,6 +24,7 @@ butane:
 # Lint Ansible files and compile Butane
 lint:
     ansible-lint
+    .github/scripts/nft-lint.py
 
 # Install Galaxy Collections
 galaxy:

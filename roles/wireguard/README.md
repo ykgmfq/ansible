@@ -10,4 +10,4 @@ Lets road-warrior clients (phone, laptop) tunnel into the home network from anyw
 
 **Private key supplied, not generated.** The router's own private key (`wireguard_private_key`, required) comes from outside the role, so a replacement router takes over the same identity and peers keep working without re-enrollment. Only peers' *public* keys (non-secret) are tracked here, via the `wireguard_peers` list.
 
-**Minimal firewall footprint.** The `wg` zone forwards to `lan` and the router accepts the tunnel's own traffic, but nothing is masqueraded — IPv4 clients reach the LAN directly through the tunnel's private subnet, no NAT layered on top.
+**Narrow NAT.** The `wg` zone forwards to `lan` and the router accepts the tunnel's own traffic. Only tunnel-sourced traffic leaving via `lan` is masqueraded: some LAN devices (e.g. FRITZ!Box) refuse logins from addresses outside their own subnet, and masquerading also removes the need for return routes on them.

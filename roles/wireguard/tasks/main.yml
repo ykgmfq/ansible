@@ -98,6 +98,22 @@
       dest: lan
     replace: true
 
+# LAN devices like the FRITZ!Box reject logins from outside their own subnet.
+- name: WireGuard clients masqueraded onto LAN
+  notify: "wireguard changed"
+  community.openwrt.uci:
+    command: section
+    config: firewall
+    type: nat
+    find:
+      name: WireGuard-to-LAN
+    value:
+      name: WireGuard-to-LAN
+      src: lan
+      src_ip: "{{ wireguard_address | ansible.utils.ipaddr('network/prefix') }}"
+      target: MASQUERADE
+    replace: true
+
 - name: WireGuard port open on WAN
   notify: "wireguard changed"
   community.openwrt.uci:

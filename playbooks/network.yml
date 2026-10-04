@@ -10,6 +10,6 @@
     - router_firewall
     - wireguard
     - homeserver_passthrough
-    - dns_over_tls
+    - https_dns_proxy
     - router_lan
     - router_ddns

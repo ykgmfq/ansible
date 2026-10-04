@@ -12,6 +12,7 @@ homeserver_passthrough_ipv6_iid: "56bf:64ff:fe72:627b"
 # take over without re-enrolling peers.
 wireguard_private_key: "{{ lookup('ansible.builtin.pipe', 'rbw get \"WireGuard Endpoint\"') }}"
 router_ddns_password: "{{ lookup('ansible.builtin.pipe', 'rbw get DYNDNS') }}"
+https_dns_proxy_device_id: "{{ lookup('ansible.builtin.pipe', 'rbw get \"AdGuard DNS Home\" --field username') }}"
 
 # Every "Wireguard Client" entry is a peer, so devices are added and removed in
 # Vaultwarden, not here.

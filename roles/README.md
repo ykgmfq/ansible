@@ -36,5 +36,5 @@ Keeps the router's own public DNS record pointed at its current IPv6 address.
 ## homeserver_passthrough
 Firewall rules letting inbound web and SSH traffic reach the homeserver directly through the router.
 
-## dns_over_tls
-Strict DNS-over-TLS for the router's own resolution, with no plaintext fallback.
+## https_dns_proxy
+Encrypted DNS-over-HTTPS for the router's own resolution, with no plaintext fallback, via a personal AdGuard DNS endpoint.

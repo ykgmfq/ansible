@@ -1,0 +1,16 @@
+---
+- name: HTTPS DNS proxy UCI changes committed
+  listen: "https dns proxy changed"
+  community.openwrt.uci:
+    command: commit
+- name: HTTPS DNS proxy restarted
+  listen: "https dns proxy changed"
+  community.openwrt.service:
+    name: https-dns-proxy
+    state: restarted
+    enabled: true
+- name: Dnsmasq reloaded
+  listen: "https dns proxy changed"
+  community.openwrt.service:
+    name: dnsmasq
+    state: reloaded

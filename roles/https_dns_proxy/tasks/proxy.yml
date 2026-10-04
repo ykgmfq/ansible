@@ -1,0 +1,54 @@
+---
+- name: HTTPS DNS proxy present
+  community.openwrt.apk:
+    name: luci-app-https-dns-proxy
+    state: present
+
+# We manage dnsmasq's upstreams ourselves (see dnsmasq.yml).
+- name: Proxy leaves dnsmasq's config and clients' DNS alone
+  notify: "https dns proxy changed"
+  community.openwrt.uci:
+    command: section
+    config: https-dns-proxy
+    type: main
+    name: config
+    value:
+      dnsmasq_config_update: "-"
+      force_dns: "0"
+      force_ip_family: ipv6
+
+- name: Packaged default instances discovered
+  community.openwrt.uci:
+    command: find_all
+    config: https-dns-proxy
+    type: https-dns-proxy
+    find:
+      resolver_url: "{{ item }}"
+  loop: "{{ https_dns_proxy_default_resolver_urls }}"
+  register: https_dns_proxy_default_instances
+
+# Reversed: deleting @https-dns-proxy[N] renumbers every later one. Matched by
+# URL because find_all reports our own named instances as @...[N] too.
+- name: Packaged default instances absent
+  notify: "https dns proxy changed"
+  community.openwrt.uci:
+    command: absent
+    key: "https-dns-proxy.{{ item }}"
+  loop: "{{ https_dns_proxy_default_instances.results | map(attribute='result_list') | flatten | unique | sort(reverse=true) | list }}"
+
+- name: Proxy instances use the DoH resolver
+  notify: "https dns proxy changed"
+  community.openwrt.uci:
+    command: section
+    config: https-dns-proxy
+    type: https-dns-proxy
+    name: "{{ item.name }}"
+    value:
+      resolver_url: "{{ https_dns_proxy_resolver_url }}"
+      bootstrap_dns: "{{ https_dns_proxy_bootstrap_dns }}"
+      listen_addr: 127.0.0.1
+      listen_port: "{{ item.port }}"
+    replace: true
+  loop: "{{ https_dns_proxy_instances }}"
+  loop_control:
+    label: "{{ item.name }}"

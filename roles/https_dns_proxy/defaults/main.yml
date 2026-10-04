@@ -1,0 +1,14 @@
+---
+# Personal AdGuard DNS endpoint; the ID comes from Vaultwarden (see group_vars).
+https_dns_proxy_device_id: ""
+https_dns_proxy_resolver_url: "https://d.adguard-dns.com/dns-query/{{ https_dns_proxy_device_id }}"
+# Plain IPs the proxy uses once to resolve the resolver URL's hostname.
+https_dns_proxy_bootstrap_dns: "2620:fe::fe,2620:fe::9"
+
+https_dns_proxy_instances:
+  - { name: adguard, port: "5053" }
+
+# Shipped by the package; removed so only our instances run.
+https_dns_proxy_default_resolver_urls:
+  - https://dns.google/dns-query
+  - https://cloudflare-dns.com/dns-query

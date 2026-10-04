@@ -1,0 +1,5 @@
+---
+- name: HTTPS DNS proxy configured
+  ansible.builtin.import_tasks: proxy.yml
+- name: Dnsmasq wired to the proxy only
+  ansible.builtin.import_tasks: dnsmasq.yml

@@ -1,16 +1,15 @@
 ---
 - name: Dnsmasq ignores DHCP/resolv.conf-provided resolvers
-  notify: "dns over tls changed"
+  notify: "https dns proxy changed"
   community.openwrt.uci:
     command: set
     key: "dhcp.@dnsmasq[0].noresolv"
     value: "1"
 
-- name: Dnsmasq's only upstream is stubby
-  notify: "dns over tls changed"
+- name: Dnsmasq's only upstreams are the proxy instances
+  notify: "https dns proxy changed"
   community.openwrt.uci:
     command: set
     key: "dhcp.@dnsmasq[0].server"
     # dnsmasq's init script only reads `server` as a UCI list
-    value:
-      - "{{ dns_over_tls_stubby_listener }}"
+    value: "{{ https_dns_proxy_instances | map(attribute='port') | map('regex_replace', '^', '127.0.0.1#') | list }}"

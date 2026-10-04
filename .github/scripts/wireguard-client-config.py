@@ -49,19 +49,19 @@ def config(v, client, endpoint, full_tunnel) -> str:
         tunnel = ipaddress.ip_interface(v["wireguard_address"]).network
         lan = ipaddress.ip_interface(f"{v['router_lan_ipaddr']}/{v['router_lan_netmask']}").network
         allowed = f"{tunnel}, {lan}"
-    return (
-        "[Interface]\n"
-        f"PrivateKey = {client['password']}\n"
-        f"Address = {client['IP']}\n"
-        f"DNS = {v['router_lan_ipaddr']}\n"
-        "\n"
-        "[Peer]\n"
-        f"PublicKey = {endpoint['Public key']}\n"
-        f"Endpoint = {v['router_ddns_domain']}:{v['wireguard_listen_port']}\n"
-        f"AllowedIPs = {allowed}\n"
-        # Keeps NAT mappings on the client's side open so the router can reach it.
-        "PersistentKeepalive = 25\n"
-    )
+    # PersistentKeepalive keeps NAT mappings on the client's side open so the router can reach it.
+    return f"""\
+[Interface]
+PrivateKey = {client['password']}
+Address = {client['IP']}
+DNS = {v['router_lan_ipaddr']}
+
+[Peer]
+PublicKey = {endpoint['Public key']}
+Endpoint = {v['router_ddns_domain']}:{v['wireguard_listen_port']}
+AllowedIPs = {allowed}
+PersistentKeepalive = 25
+"""
 
 
 def main() -> int:

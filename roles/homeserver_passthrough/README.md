@@ -12,6 +12,6 @@ The homeserver terminates its own TLS (Caddy, per `roles/dyndns/README.md`) and 
 
 Instead, this role installs a small nftables snippet (`/etc/homeserver-passthrough.nft`, included by a UCI `firewall.include` section at the start of fw4's `forward_wan` chain) that matches on the destination address **masked down to its lower 64 bits** — the homeserver's EUI-64 interface identifier — regardless of which prefix is currently routed there. UCI's `firewall.rule` schema has no masked/suffix match, hence the raw nftables snippet instead of a UCI section. It must not go in `/etc/nftables.d/`: fw4 includes that directory at table level, where a bare rule is a syntax error that stops the entire firewall (including NAT) from loading.
 
-`homeserver_passthrough_ipv6_iid` (`group_vars/router/main.yml` — it identifies this specific deployment's homeserver, not a generic role default) is the homeserver's current interface identifier, read directly off the box with `ip -6 addr show scope global`. It only needs updating here if the homeserver's NIC (and therefore its MAC-derived EUI-64 suffix) ever changes.
+`homeserver_passthrough_ipv6_iid` (set in the personal inventory — it identifies this specific deployment's homeserver, not a generic role default) is the homeserver's current interface identifier, read directly off the box with `ip -6 addr show scope global`. It only needs updating here if the homeserver's NIC (and therefore its MAC-derived EUI-64 suffix) ever changes.
 
 The snippet lives in `/etc` because `/var` is tmpfs on OpenWRT and would not survive a reboot.

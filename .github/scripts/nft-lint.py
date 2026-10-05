@@ -10,7 +10,10 @@ import jinja2
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
-GROUP_VARS = ROOT / "group_vars/router/main.yml"
+PERSONAL = Path(os.environ.get("PERSONAL_DIR", ROOT / "personal"))
+GROUP_VARS = PERSONAL / "group_vars/router/main.yml"
+# Stand-ins so the templates render when the personal repo isn't checked out.
+PLACEHOLDERS = {"homeserver_passthrough_ipv6_iid": "1:2:3:4"}
 
 
 def load(path) -> dict:
@@ -24,7 +27,7 @@ def load(path) -> dict:
 def render(template) -> str:
     """Render a template into a standalone ruleset."""
     role = template.parent.parent
-    context = {**load(role / "defaults/main.yml"), **load(GROUP_VARS)}
+    context = {**PLACEHOLDERS, **load(role / "defaults/main.yml"), **load(GROUP_VARS)}
     env = jinja2.Environment(undefined=jinja2.StrictUndefined)
     rules = env.from_string(template.read_text()).render(context)
     # Snippets are included at chain level (fw4 chain-pre), so wrap them in a chain.

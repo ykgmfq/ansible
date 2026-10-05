@@ -7,6 +7,6 @@ Wants=network-online.target
 Type=oneshot
 ExecStart=/usr/bin/fish /usr/local/bin/dyndns.fish
 Environment=DYNDNS_ENDPOINT={{ dyndns_endpoint }}
-Environment=DYNDNS_HOSTNAME={{ dyndns_hostname }}
+Environment=DYNDNS_HOSTNAME={{ inventory_hostname }}
 LoadCredential=dyndns-password:{{ dyndns_password_credential_path }}
 StateDirectory=dyndns

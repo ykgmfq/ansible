@@ -1,6 +1,6 @@
 # router_ddns
 
-Keeps the router's own public DNS record (`pöpperl.eu`, apex) pointed at its current IPv6 address.
+Keeps the router's own public DNS record (`router_ddns_domain`, apex) pointed at its current IPv6 address.
 
 ## Purpose
 
@@ -8,4 +8,4 @@ The router — not the homeserver — now owns the address WireGuard clients con
 
 ## Rationale
 
-**Apex domain, not a subdomain.** `pöpperl.eu` itself is kept current, matching how the domain was used on the previously-active router.
+**Apex domain, not a subdomain.** The domain itself is kept current, matching how the domain was used on the previously-active router.

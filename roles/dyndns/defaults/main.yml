@@ -1,5 +1,3 @@
 ---
-# dyndns_hostname is this host's own identity, not a generic role default -
-# see group_vars/homeserver/main.yml.
 dyndns_endpoint: https://dyndns.strato.com/nic/update
 dyndns_password_credential_path: /var/mnt/persist/secrets/dyndns-password.txt

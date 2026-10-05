@@ -1,4 +1,6 @@
-INVENTORY := "inventory.yml"
+# Personal repo: inventory, group_vars and other device-specific values.
+export PERSONAL_DIR := env("PERSONAL_DIR", justfile_directory() / "personal")
+INVENTORY := PERSONAL_DIR / "inventory.yml"
 PLAYBOOKS := "playbooks"
 
 # Playbook Check
@@ -16,6 +18,7 @@ playbook target: lint (_playbook target "")
 # Router secrets come from Vaultwarden; the homeserver's live on its own pool.
 [private]
 _playbook target flags:
+    test -f {{INVENTORY}} || { echo "Personal repo missing at {{PERSONAL_DIR}}" >&2; exit 1; }
     {{ if target =~ "^(network|router_prep)$" { "rbw unlock" } else { "true" } }}
     ansible-playbook {{PLAYBOOKS}}/{{target}}.yml -i={{INVENTORY}} --diff {{flags}}
 

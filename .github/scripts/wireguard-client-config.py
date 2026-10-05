@@ -3,6 +3,7 @@
 import argparse
 import ipaddress
 import json
+import os
 import re
 import subprocess
 import sys
@@ -12,6 +13,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "output"
+PERSONAL = Path(os.environ.get("PERSONAL_DIR", ROOT / "personal"))
 ENTRY_CLIENT = "Wireguard Client"
 ENTRY_ENDPOINT = "WireGuard Endpoint"
 
@@ -27,7 +29,7 @@ def load(path) -> dict:
 def router_vars() -> dict:
     """Merge the role defaults with the router group_vars, which win."""
     roles = [load(ROOT / f"roles/{role}/defaults/main.yml") for role in ("wireguard", "router_lan")]
-    return {k: v for d in (*roles, load(ROOT / "group_vars/router/main.yml")) for k, v in d.items()}
+    return {k: v for d in (*roles, load(PERSONAL / "group_vars/router/main.yml")) for k, v in d.items()}
 
 
 def rbw(*args) -> list | dict:

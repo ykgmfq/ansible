@@ -2,6 +2,10 @@
 
 Configures a Fedora CoreOS homeserver and an OpenWRT router using Ansible and Butane/Ignition.
 
+## Personal inventory
+
+Hostnames, domains, addresses, static DHCP leases and the DNS adblock endpoint live in a separate personal repo, included as the `personal/` submodule (clone with `--recurse-submodules`; override the path with `PERSONAL_DIR`). It holds the inventory and `group_vars/`, and every `just` playbook recipe reads it from there. See its `README.md` for the variables it must provide.
+
 ## Workflow
 
 **Homeserver:**

@@ -37,3 +37,21 @@
     - { key: ra_flags, value: none }
   loop_control:
     label: "{{ item.key }}"
+
+# Named sections keep this idempotent; leases dropped from the list are not
+# removed from the router.
+- name: LAN static DHCPv4 leases present
+  notify: "router lan changed"
+  community.openwrt.uci:
+    command: section
+    config: dhcp
+    type: host
+    name: "lease_{{ item.name | regex_replace('[^A-Za-z0-9_]', '_') }}"
+    value:
+      name: "{{ item.name }}"
+      mac: "{{ item.mac }}"
+      ip: "{{ item.ip }}"
+    replace: true
+  loop: "{{ router_lan_static_leases }}"
+  loop_control:
+    label: "{{ item.name }}"

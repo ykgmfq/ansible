@@ -1,4 +1,0 @@
----
-# This host's own identity - not a generic role default, so it lives here
-# rather than in roles/dyndns/defaults/main.yml.
-dyndns_hostname: dm-poepperl.de

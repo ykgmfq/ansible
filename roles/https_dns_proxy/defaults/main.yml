@@ -1,7 +1,6 @@
 ---
-# Personal AdGuard DNS endpoint; the ID comes from Vaultwarden (see group_vars).
-https_dns_proxy_device_id: ""
-https_dns_proxy_resolver_url: "https://d.adguard-dns.com/dns-query/{{ https_dns_proxy_device_id }}"
+# Personal DoH endpoint (may embed a device ID); required, set in the personal inventory.
+https_dns_proxy_resolver_url: ""
 # Plain IPs the proxy uses once to resolve the resolver URL's hostname.
 https_dns_proxy_bootstrap_dns: "2620:fe::fe,2620:fe::9"
 

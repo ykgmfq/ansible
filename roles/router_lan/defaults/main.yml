@@ -1,9 +1,12 @@
 ---
-# Matches the active router's exported LAN configuration.
-router_lan_ipaddr: 192.168.178.1
+# OpenWRT's factory default; override with the active router's subnet in the personal inventory.
+router_lan_ipaddr: 192.168.1.1
 router_lan_netmask: 255.255.255.0
 
-# OpenWRT's own standard default pool (192.168.178.100-.249), not the
+# OpenWRT's own standard default pool (.100-.249), not the
 # active router's partly-implicit range — see roles/router_lan/README.md.
 router_lan_dhcp_start: "100"
 router_lan_dhcp_limit: "150"
+
+# Static DHCPv4 leases as {name, mac, ip}; each becomes a named dhcp host section.
+router_lan_static_leases: []

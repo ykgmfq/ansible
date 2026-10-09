@@ -1,0 +1,10 @@
+---
+- name: UCI dropbear changes committed
+  listen: "router login changed"
+  community.openwrt.uci:
+    command: commit
+- name: Dropbear reloaded
+  listen: "router login changed"
+  community.openwrt.service:
+    name: dropbear
+    state: reloaded

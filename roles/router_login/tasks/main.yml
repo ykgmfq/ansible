@@ -1,0 +1,27 @@
+---
+- name: SSH password login disabled
+  notify: "router login changed"
+  community.openwrt.uci:
+    command: set
+    key: "dropbear.@dropbear[0].{{ item }}"
+    value: "off"
+  loop:
+    - PasswordAuth
+    - RootPasswordAuth
+
+# The salt is derived from the hostname so the hash, and thus the shadow task,
+# is stable across runs.
+- name: Root password hashed
+  no_log: true
+  ansible.builtin.set_fact:
+    router_login_root_hash: >-
+      {{ router_login_root_password
+      | password_hash('sha512', inventory_hostname | hash('sha256') | truncate(16, True, '')) }}
+
+- name: Root password set
+  no_log: true
+  community.openwrt.lineinfile:
+    path: /etc/shadow
+    regexp: '^(root:)[^:]*(:.*)$'
+    line: '\1{{ router_login_root_hash }}\2'
+    backrefs: true

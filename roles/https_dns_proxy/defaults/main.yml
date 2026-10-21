@@ -6,8 +6,17 @@ https_dns_proxy_bootstrap_dns: "2620:fe::fe,2620:fe::9"
 
 https_dns_proxy_instances:
   - { name: adguard, port: "5053" }
+  # Backup: unfiltered, only reached if the instance above fails.
+  - name: quad9
+    port: "5054"
+    resolver_url: "https://dns.quad9.net/dns-query"
 
 # Shipped by the package; removed so only our instances run.
 https_dns_proxy_default_resolver_urls:
   - https://dns.google/dns-query
   - https://cloudflare-dns.com/dns-query
+
+# Resolved to AAAA on the Ansible host at run time and pushed to the router as
+# plain IPs, so the clock can sync while the router's DNS is down.
+https_dns_proxy_ntp_hostnames:
+  - time.cloudflare.com

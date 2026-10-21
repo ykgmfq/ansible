@@ -44,7 +44,7 @@
     type: https-dns-proxy
     name: "{{ item.name }}"
     value:
-      resolver_url: "{{ https_dns_proxy_resolver_url }}"
+      resolver_url: "{{ item.resolver_url | default(https_dns_proxy_resolver_url) }}"
       bootstrap_dns: "{{ https_dns_proxy_bootstrap_dns }}"
       listen_addr: 127.0.0.1
       listen_port: "{{ item.port }}"

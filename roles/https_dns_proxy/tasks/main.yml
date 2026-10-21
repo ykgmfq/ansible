@@ -8,3 +8,5 @@
   ansible.builtin.import_tasks: proxy.yml
 - name: Dnsmasq wired to the proxy only
   ansible.builtin.import_tasks: dnsmasq.yml
+- name: Clock sync independent of DNS
+  ansible.builtin.import_tasks: ntp.yml

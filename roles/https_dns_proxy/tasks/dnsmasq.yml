@@ -13,3 +13,10 @@
     key: "dhcp.@dnsmasq[0].server"
     # dnsmasq's init script only reads `server` as a UCI list
     value: "{{ https_dns_proxy_instances | map(attribute='port') | map('regex_replace', '^', '127.0.0.1#') | list }}"
+
+- name: Dnsmasq tries upstreams in listed order
+  notify: "https dns proxy changed"
+  community.openwrt.uci:
+    command: set
+    key: "dhcp.@dnsmasq[0].strictorder"
+    value: "1"

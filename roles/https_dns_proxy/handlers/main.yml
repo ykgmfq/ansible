@@ -14,3 +14,13 @@
   community.openwrt.service:
     name: dnsmasq
     state: reloaded
+- name: System UCI changes committed
+  listen: "ntp servers changed"
+  community.openwrt.uci:
+    command: commit
+    config: system
+- name: Sysntpd restarted
+  listen: "ntp servers changed"
+  community.openwrt.service:
+    name: sysntpd
+    state: restarted

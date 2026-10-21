@@ -1,0 +1,24 @@
+---
+- name: NTP server addresses resolved on the Ansible host
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.general.dig', item, 'qtype=AAAA', wantlist=true) }}"
+  loop: "{{ https_dns_proxy_ntp_hostnames }}"
+  register: https_dns_proxy_ntp_lookup
+  changed_when: false
+
+- name: NTP addresses collected
+  ansible.builtin.set_fact:
+    https_dns_proxy_ntp_servers: "{{ https_dns_proxy_ntp_lookup.results | map(attribute='msg') | flatten | unique | list }}"
+
+- name: NTP addresses found
+  ansible.builtin.assert:
+    that: https_dns_proxy_ntp_servers | length > 0
+    fail_msg: No AAAA records found for https_dns_proxy_ntp_hostnames
+    quiet: true
+
+- name: NTP servers addressed by IP
+  notify: "ntp servers changed"
+  community.openwrt.uci:
+    command: set
+    key: system.ntp.server
+    value: "{{ https_dns_proxy_ntp_servers }}"

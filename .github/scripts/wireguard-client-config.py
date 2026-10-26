@@ -39,7 +39,7 @@ def config(v, client, endpoint, full_tunnel) -> str:
         allowed = "0.0.0.0/0, ::/0"
     else:
         tunnel = ipaddress.ip_interface(v["wireguard_address"]).network
-        lan = ipaddress.ip_interface(f"{v['router_lan_ipaddr']}/{v['router_lan_netmask']}").network
+        lan = ipaddress.ip_interface(f"{v['router_lan_ipaddr']}/24").network
         allowed = f"{tunnel}, {lan}"
     # PersistentKeepalive keeps NAT mappings on the client's side open so the router can reach it.
     return f"""\

@@ -8,7 +8,7 @@
 
 - name: NTP addresses collected
   ansible.builtin.set_fact:
-    https_dns_proxy_ntp_servers: "{{ https_dns_proxy_ntp_lookup.results | map(attribute='msg') | flatten | unique | list }}"
+    https_dns_proxy_ntp_servers: "{{ https_dns_proxy_ntp_lookup.results | map(attribute='msg') | flatten | unique | sort }}"
 
 - name: NTP addresses found
   ansible.builtin.assert:

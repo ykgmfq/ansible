@@ -1,4 +1,19 @@
 ---
+# A bad lease list makes dnsmasq refuse to start, taking DHCP and DNS down.
+- name: Static leases consistent with the LAN subnet
+  ansible.builtin.assert:
+    that:
+      - ips | unique | length == ips | length
+      - macs | unique | length == macs | length
+      - router_lan_ipaddr not in ips
+      - ips | select('match', subnet_prefix) | length == ips | length
+    fail_msg: Static leases must have unique MACs and IPs, avoid the router's address, and sit in the router's /24 (the only supported netmask)
+    quiet: true
+  vars:
+    ips: "{{ router_lan_static_leases | map(attribute='ip') | list }}"
+    macs: "{{ router_lan_static_leases | map(attribute='mac') | map('lower') | list }}"
+    subnet_prefix: "{{ router_lan_ipaddr | regex_replace('[0-9]+$', '') | regex_escape }}[0-9]+$"
+
 - name: LAN address matches the active router's subnet
   notify: "router lan changed"
   community.openwrt.uci:
@@ -11,7 +26,7 @@
   community.openwrt.uci:
     command: set
     key: network.lan.netmask
-    value: "{{ router_lan_netmask }}"
+    value: 255.255.255.0
 
 - name: LAN DHCPv4 pool present
   notify: "router lan changed"
@@ -38,15 +53,17 @@
   loop_control:
     label: "{{ item.key }}"
 
-# Named sections keep this idempotent; leases dropped from the list are not
-# removed from the router.
+# Matched by MAC so an existing lease (named or anonymous) is adopted rather
+# than duplicated, which makes dnsmasq refuse to start; leases dropped from the
+# list are not removed from the router.
 - name: LAN static DHCPv4 leases present
   notify: "router lan changed"
   community.openwrt.uci:
     command: section
     config: dhcp
     type: host
-    name: "lease_{{ item.name | regex_replace('[^A-Za-z0-9_]', '_') }}"
+    find:
+      mac: "{{ item.mac }}"
     value:
       name: "{{ item.name }}"
       mac: "{{ item.mac }}"

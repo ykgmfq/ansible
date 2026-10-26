@@ -7,7 +7,7 @@ This repository configures a Fedora CoreOS (uCore HCI) homeserver and an OpenWRT
 1. **Butane** (`server.butane`) → generate `server.ign` (Ignition) for initial OS provisioning of the homeserver
 2. **Ansible** (`playbooks/servers.yml`, `playbooks/network.yml`) → configure the running hosts and deploy services
 
-`playbooks/servers.yml` covers the FCoS side: the target host is in group `homeserver` (child of `headless`). A `backup` group exists but is currently commented out in the personal inventory. `playbooks/network.yml` covers the OpenWRT router (group `router`).
+`playbooks/servers.yml` covers the FCoS side: the target host is in group `appserver`, which with `backup` (currently empty in the personal inventory) makes up group `server`. `router` sits beside `server` under `headless`. `playbooks/network.yml` covers the OpenWRT router (group `router`).
 
 The router has two playbooks: `playbooks/router_prep.yml` runs against a new/replacement router still at OpenWRT's factory-default address, verifying WAN/WireGuard/etc. before it goes live. `playbooks/network.yml` is the full-stack idempotent playbook — its first run against a freshly-prepped device performs the go-live cutover (switching the LAN/DHCP subnet and starting DNS for the domain the previously-active router owned), and every run after that is routine maintenance of the whole stack.
 

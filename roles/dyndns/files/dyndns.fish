@@ -2,17 +2,13 @@
 
 # Publishes this host's own global IPv6 address to a dynamic-DNS provider as an AAAA record.
 #
-# Why this exists: the box sits behind a router on a dual-stack line. The router keeps
-# updating the IPv4 A record via its own DynDNS client, but with IPv6 there is no NAT, so the
-# AAAA record must point at this host's address, not the router's. The router cannot publish
-# an internal host's address into a third-party DynDNS record, so this host does it itself.
+# The host is reached directly via its GUA, without NAT, so it publishes its own address.
 #
 # Configuration comes from the systemd unit:
 #   DYNDNS_ENDPOINT   the provider's dyndns2 update URL
 #   DYNDNS_HOSTNAME   the hostname to update (also the basic-auth username)
 #   DYNDNS_USERNAME   optional override for the basic-auth username (defaults to DYNDNS_HOSTNAME)
 #   WAN_IFACE         optional interface override (defaults to the IPv6 default-route interface)
-# The provider password is read from the systemd credential "dyndns-password".
 
 set cache_file /var/lib/dyndns/last-ip6
 
@@ -64,9 +60,11 @@ function address_unchanged --argument-names ip6 --description 'True when the cac
     and test (string trim (cat $cache_file)) = "$ip6"
 end
 
-function publish_update --argument-names ip6 --description 'Update only the AAAA record (myip carries IPv6); the router still owns the A record'
+function publish_update --argument-names ip6 --description 'Update the AAAA record (myip carries IPv6)'
     set --local url "$DYNDNS_ENDPOINT?hostname=$DYNDNS_HOSTNAME&myip=$ip6"
-    set --local response (curl --silent --show-error --fail --user "$DYNDNS_USERNAME:"(read_password) $url)
+    # Credentials go through curl's config on stdin; builtins only, so they never reach a process's arguments.
+    set --local credentials (string join : $DYNDNS_USERNAME (read_password) | string replace --all '\\' '\\\\' | string replace --all '"' '\\"')
+    set --local response (printf 'user = "%s"\n' $credentials | curl --silent --show-error --fail --config - $url)
     or die "DynDNS update request failed (curl exit $status): $response"
 
     switch $response

@@ -4,8 +4,7 @@ Makes the host reachable over IPv6 and keeps its public DNS record current.
 
 ## Purpose
 
-The host sits behind a dual-stack router.
-The router keeps the IPv4 `A` record up to date through its own built-in DynDNS client.
+The host is reachable from outside over IPv6 only; there is no `A` record.
 IPv6 has no NAT, so the `AAAA` record must point at the host itself rather than the router — and the router cannot publish an internal host's address into a third-party record.
 This role gives the host everything it needs to own that side of its own reachability.
 

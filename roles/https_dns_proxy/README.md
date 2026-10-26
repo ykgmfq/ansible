@@ -14,7 +14,7 @@ All of the router's own DNS queries go out encrypted. Kept generic (not router-s
 
 **IPv6 only.** The proxy is forced to IPv6 (`force_ip_family`), for both bootstrap and DoH traffic.
 
-**Bootstrap by IP.** The proxy resolves the resolver's hostname once via fixed Quad9 IPv6 addresses, so there is no dependency on any plaintext resolver.
+**Bootstrap by IP.** The proxy resolves the resolver's hostname once via fixed Quad9 IPv6 addresses, so it doesn't depend on the router's own resolver. That one lookup is plain DNS; everything after it goes over DoH.
 
 **Clock sync by IP.** The router has no battery-backed clock, and DoH certificate validation fails if it boots with a stale time. NTP server hostnames are therefore resolved on the Ansible host and written to the router as IPs, since resolving them on the router would need the very DNS that is broken. Addresses refresh on each run.
 

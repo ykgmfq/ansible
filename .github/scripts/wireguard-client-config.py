@@ -2,7 +2,6 @@
 """Write every WireGuard client's config, built from Vaultwarden (via rbw) and the router's vars."""
 import argparse
 import ipaddress
-import json
 import os
 import re
 import subprocess
@@ -11,10 +10,12 @@ from pathlib import Path
 
 import yaml
 
+from vaultwarden import entries, entry, missing
+
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "output"
 PERSONAL = Path(os.environ.get("PERSONAL_DIR", ROOT / "personal"))
-ENTRY_CLIENT = "Wireguard Client"
+ENTRY_CLIENT = "WireGuard Client"
 ENTRY_ENDPOINT = "WireGuard Endpoint"
 
 
@@ -30,17 +31,6 @@ def router_vars() -> dict:
     """Merge the role defaults with the router group_vars, which win."""
     roles = [load(ROOT / f"roles/{role}/defaults/main.yml") for role in ("wireguard", "router_lan")]
     return {k: v for d in (*roles, load(PERSONAL / "group_vars/router/main.yml")) for k, v in d.items()}
-
-
-def rbw(*args) -> list | dict:
-    """Run rbw and return its parsed JSON output."""
-    return json.loads(subprocess.run(["rbw", *args], check=True, capture_output=True, text=True).stdout)
-
-
-def rbw_entry(*args) -> dict:
-    """Return an entry's password and custom fields."""
-    raw = rbw("get", "--raw", *args)
-    return {"password": raw["data"]["password"], **{f["name"]: f["value"] for f in raw["fields"]}}
 
 
 def config(v, client, endpoint, full_tunnel) -> str:
@@ -71,15 +61,15 @@ def main() -> int:
     parser.add_argument("--full-tunnel", action="store_true", help="route all traffic through home")
     args = parser.parse_args()
     v = router_vars()
-    endpoint = rbw_entry(ENTRY_ENDPOINT)
-    clients = [entry for entry in rbw("list", "--raw") if entry["name"].lower() == ENTRY_CLIENT.lower()]
+    endpoint = entry(ENTRY_ENDPOINT)
+    if error := missing(ENTRY_ENDPOINT, endpoint, ["Public key"]):
+        print(error, file=sys.stderr)
+        return 1
     OUTPUT.mkdir(exist_ok=True)
     failed = 0
-    for entry in clients:
-        device = entry.get("user") or entry["id"]
-        client = rbw_entry(entry["id"])
-        if not client.get("password") or not client.get("IP"):
-            print(f"{device}: missing private key or IP, skipped", file=sys.stderr)
+    for device, client in entries(ENTRY_CLIENT):
+        if error := missing(device, client, ["password", "IP"]):
+            print(f"{error}, skipped", file=sys.stderr)
             failed += 1
             continue
         conf = config(v, client, endpoint, args.full_tunnel)

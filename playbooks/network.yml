@@ -12,5 +12,15 @@
     - wireguard
     - homeserver_passthrough
     - https_dns_proxy
-    - router_lan
     - router_ddns
+
+# Own play so every other role's handlers have flushed first: UCI commits are global,
+# so any earlier network reload would otherwise apply the LAN cutover mid-run.
+- name: Router LAN
+  hosts: router
+  serial: 1
+  remote_user: root
+  become: false
+  gather_facts: false
+  roles:
+    - router_lan

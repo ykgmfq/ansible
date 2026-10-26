@@ -6,6 +6,7 @@
     dest: /etc/systemd/system
     mode: "ugo=r"
 - name: Service definitions synced
+  notify: "system config changed"
   delegate_to: "{{ inventory_hostname }}"
   ansible.posix.synchronize:
     src: "{{ container_ephemeral_services_src }}"

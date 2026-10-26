@@ -68,6 +68,29 @@
   loop_control:
     label: "{{ item.public_key }}"
 
+- name: WireGuard network config read
+  community.openwrt.uci:
+    command: show
+    key: network
+  register: wireguard_network
+
+- name: Retired WireGuard peers identified
+  ansible.builtin.set_fact:
+    wireguard_retired_keys: >-
+      {{ wireguard_network.result
+         | regex_findall("^network\.@wireguard_wg0\[\d+\]\.public_key='([^']+)'$", multiline=True)
+         | difference(wireguard_peers | map(attribute='public_key')) }}
+
+- name: Retired WireGuard peers absent
+  notify: "wireguard changed"
+  community.openwrt.uci:
+    command: absent
+    config: network
+    type: wireguard_wg0
+    find:
+      public_key: "{{ item }}"
+  loop: "{{ wireguard_retired_keys }}"
+
 - name: WireGuard firewall zone present
   notify: "wireguard changed"
   community.openwrt.uci:

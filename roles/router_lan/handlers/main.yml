@@ -3,11 +3,6 @@
   listen: "router lan changed"
   community.openwrt.uci:
     command: commit
-- name: Network reloaded
-  listen: "router lan changed"
-  community.openwrt.service:
-    name: network
-    state: reloaded
 - name: DHCP/DNS reloaded
   listen: "router lan changed"
   community.openwrt.service:
@@ -17,4 +12,10 @@
   listen: "router lan changed"
   community.openwrt.service:
     name: odhcpd
+    state: reloaded
+# Last: on the first cutover this moves the router off the address Ansible is connected to.
+- name: Network reloaded
+  listen: "router lan changed"
+  community.openwrt.service:
+    name: network
     state: reloaded

@@ -17,3 +17,10 @@
     - dyndns
     - container
     - home
+- name: Offsite reachability
+  hosts: backup
+  serial: 1
+  remote_user: root
+  become: false
+  roles:
+    - wireguard_client

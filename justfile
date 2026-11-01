@@ -15,11 +15,11 @@ playbook-verbose target *flags: lint (_playbook target "-vvv " + flags)
 # Playbook Normal
 playbook target *flags: lint (_playbook target flags)
 
-# Router secrets come from Vaultwarden; the homeserver's live on its own pool.
+# Router and backup tunnel secrets come from Vaultwarden; the homeserver's live on its own pool.
 [private]
 _playbook target flags:
     test -f {{INVENTORY}} || { echo "Personal repo missing at {{PERSONAL_DIR}}" >&2; exit 1; }
-    {{ if target =~ "^(network|router_prep)$" { "rbw unlock" } else { "true" } }}
+    {{ if target =~ "^(network|router_prep|servers)$" { "rbw unlock" } else { "true" } }}
     ansible-playbook {{PLAYBOOKS}}/{{target}}.yml -i={{INVENTORY}} --diff {{flags}}
 
 # Run butane to generate ignition file

@@ -30,6 +30,9 @@ Switches the OpenWRT router's LAN from its factory default onto the subnet owned
 ## wireguard
 Road-warrior WireGuard endpoint on the router, including the firewall rule it needs to receive traffic.
 
+## wireguard_client
+WireGuard client on the backup host, so it stays reachable over SSH while offsite.
+
 ## router_ddns
 Keeps the router's own public DNS record pointed at its current IPv6 address.
 

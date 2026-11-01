@@ -1,0 +1,4 @@
+---
+wireguard_client_endpoint_port: 51820
+wireguard_client_allowed_ips: 10.100.0.0/24
+wireguard_client_profile_path: /etc/NetworkManager/system-connections/wg0.nmconnection

@@ -1,0 +1,38 @@
+---
+# NetworkManager drops peer sections written before [wireguard].
+- name: WireGuard private key set
+  notify: "wireguard client config changed"
+  no_log: true
+  community.general.ini_file:
+    path: "{{ wireguard_client_profile_path }}"
+    section: wireguard
+    option: private-key
+    value: "{{ wireguard_client_private_key }}"
+    no_extra_spaces: true
+    owner: root
+    mode: "u=rw,go="
+- name: WireGuard connection profile present
+  notify: "wireguard client config changed"
+  community.general.ini_file:
+    path: "{{ wireguard_client_profile_path }}"
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    no_extra_spaces: true
+    owner: root
+    mode: "u=rw,go="
+  vars:
+    peer: "wireguard-peer.{{ wireguard_client_endpoint_public_key }}"
+  loop:
+    - { section: connection, option: id, value: wg0 }
+    - { section: connection, option: type, value: wireguard }
+    - { section: connection, option: interface-name, value: wg0 }
+    - { section: connection, option: autoconnect, value: "true" }
+    - { section: "{{ peer }}", option: endpoint, value: "{{ wireguard_client_endpoint_host }}:{{ wireguard_client_endpoint_port }}" }
+    - { section: "{{ peer }}", option: allowed-ips, value: "{{ wireguard_client_allowed_ips }};" }
+    - { section: "{{ peer }}", option: persistent-keepalive, value: "25" }
+    - { section: ipv4, option: method, value: manual }
+    - { section: ipv4, option: address1, value: "{{ wireguard_client_address }}" }
+    - { section: ipv6, option: method, value: ignore }
+  loop_control:
+    label: "{{ item.section | truncate(20) }}.{{ item.option }}"

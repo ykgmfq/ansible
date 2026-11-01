@@ -1,0 +1,9 @@
+---
+- name: NetworkManager profiles reloaded
+  listen: "wireguard client config changed"
+  ansible.builtin.command: nmcli connection reload
+  changed_when: true
+- name: WireGuard connection activated
+  listen: "wireguard client config changed"
+  ansible.builtin.command: nmcli connection up wg0
+  changed_when: true

@@ -40,6 +40,6 @@ wireguard-client-config *flags:
 galaxy:
     ansible-galaxy collection install -r=roles/requirements.yml
 
-ignition: butane
+ignition:
     ip a
     python3 -m http.server 9001

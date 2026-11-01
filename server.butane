@@ -2,11 +2,6 @@ variant: fcos
 version: 1.5.0
 passwd:
   users:
-    - name: dmp
-      ssh_authorized_keys:
-      password_hash:
-      groups:
-        - wheel
     - name: root
       ssh_authorized_keys:
 systemd:
@@ -22,7 +17,7 @@ systemd:
         Type=oneshot
         StandardOutput=journal+console
         ExecCondition=/usr/bin/bash -c "! rpm-ostree status -b | grep -qF ucore"
-        ExecStart=/usr/bin/rpm-ostree rebase --bypass-driver ostree-unverified-registry:ghcr.io/ublue-os/ucore-minimal:stable
+        ExecStart=/usr/bin/rpm-ostree rebase --bypass-driver ostree-unverified-registry:ghcr.io/ublue-os/ucore-minimal:lts
         ExecStart=/usr/bin/systemctl reboot
         [Install]
         WantedBy=multi-user.target
@@ -37,7 +32,7 @@ systemd:
         Type=oneshot
         StandardOutput=journal+console
         ExecCondition=/usr/bin/bash -c "rpm-ostree status -b | grep -qF ucore-minimal"
-        ExecStart=/usr/bin/rpm-ostree rebase --bypass-driver ostree-image-signed:docker://ghcr.io/ublue-os/ucore-hci:stable
+        ExecStart=/usr/bin/rpm-ostree rebase --bypass-driver ostree-image-signed:docker://ghcr.io/ublue-os/ucore:lts
         ExecStart=/usr/bin/systemctl reboot
         [Install]
         WantedBy=multi-user.target

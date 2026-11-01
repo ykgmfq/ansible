@@ -4,16 +4,16 @@ INVENTORY := PERSONAL_DIR / "inventory.yml"
 PLAYBOOKS := "playbooks"
 
 # Playbook Check
-playbook-check target: lint (_playbook target "--check")
+playbook-check target *flags: lint (_playbook target "--check " + flags)
 
 # Playbook Check Verbose
-playbook-check-verbose target: lint (_playbook target "--check -vvv")
+playbook-check-verbose target *flags: lint (_playbook target "--check -vvv " + flags)
 
 # Playbook Verbose
-playbook-verbose target: lint (_playbook target "-vvv")
+playbook-verbose target *flags: lint (_playbook target "-vvv " + flags)
 
 # Playbook Normal
-playbook target: lint (_playbook target "")
+playbook target *flags: lint (_playbook target flags)
 
 # Router secrets come from Vaultwarden; the homeserver's live on its own pool.
 [private]

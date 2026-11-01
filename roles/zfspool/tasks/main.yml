@@ -1,11 +1,4 @@
 ---
-- name: User present
-  ansible.builtin.user:
-    name: "{{ zfspool_syncoid_user }}"
-    home: "{{ syncoid_home }}"
-    comment: "from Ansible"
-    system: true
-    shell: "{{ zfspool_syncoid_shell }}"
 - name: Import
   ansible.builtin.import_tasks: files.yml
 - name: Pool imported
@@ -16,8 +9,22 @@
       check_mode: false
   rescue:
     - name: Pool import
-      ansible.builtin.command: "zpool import {{ dataset }}"
+      ansible.builtin.command: "zpool import -f {{ dataset }}"
       changed_when: true
+- name: User present
+  ansible.builtin.user:
+    name: "{{ zfspool_syncoid_user }}"
+    home: "{{ zfspool_syncoid_home }}"
+    comment: "from Ansible"
+    system: true
+    shell: "{{ zfspool_syncoid_shell }}"
+- name: User home present
+  ansible.builtin.file:
+    path: "{{ zfspool_syncoid_home }}"
+    state: directory
+    owner: "{{ zfspool_syncoid_user }}"
+    group: "{{ zfspool_syncoid_user }}"
+    mode: "u=rwx,go="
 - name: Pool allowlist
   community.general.zfs_delegate_admin:
     users: "{{ zfspool_syncoid_user }}"

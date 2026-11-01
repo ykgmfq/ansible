@@ -1,12 +1,41 @@
 ---
-- name: Unit files present
+- name: Timer unit present
   ansible.builtin.copy:
-    src: "syncoid@.{{ item }}"
+    src: syncoid@.timer
     dest: /etc/systemd/system/
     mode: "ugo=r"
-  loop:
-    - timer
-    - service
+- name: Service unit present
+  ansible.builtin.template:
+    src: syncoid@.service
+    dest: /etc/systemd/system/
+    mode: "ugo=r"
+- name: Pool mountpoint
+  community.general.zfs:
+    name: "{{ dataset }}"
+    state: present
+    extra_zfs_properties:
+      mountpoint: "{{ zfspool_sink_mountpoint }}"
+- name: SSH directory present
+  ansible.builtin.file:
+    path: "{{ zfspool_syncoid_home }}/.ssh"
+    state: directory
+    owner: "{{ zfspool_syncoid_user }}"
+    group: "{{ zfspool_syncoid_user }}"
+    mode: "u=rwx,go="
+- name: SSH key present
+  community.crypto.openssh_keypair:
+    path: "{{ zfspool_syncoid_home }}/.ssh/id_ed25519"
+    type: ed25519
+    owner: "{{ zfspool_syncoid_user }}"
+    group: "{{ zfspool_syncoid_user }}"
+    comment: "{{ zfspool_syncoid_user }}@{{ inventory_hostname }}"
+  register: zfspool_syncoid_key
+- name: SSH key authorized on the source
+  when: zfspool_syncoid_key.public_key is defined
+  delegate_to: "{{ groups['appserver'][0] }}"
+  ansible.posix.authorized_key:
+    user: "{{ zfspool_syncoid_user }}"
+    key: "{{ zfspool_syncoid_key.public_key }}"
 - name: Syncoid timer enabled
   ansible.builtin.systemd_service:
     state: started

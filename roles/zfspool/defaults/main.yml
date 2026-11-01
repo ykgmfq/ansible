@@ -1,6 +1,10 @@
 ---
 zfspool_syncoid_user: syncoid
 zfspool_syncoid_shell: /bin/sh
+zfspool_syncoid_home: /var/home/syncoid
+
+# Backup sink pool mountpoint; /var/srv/backup gets a default SELinux label (var_t), no custom context needed.
+zfspool_sink_mountpoint: /var/srv/backup
 
 # One entry per dataset under {{ dataset }}, shared between the sanoid
 # retention template and the per-dataset syncoid timers on backup sinks -

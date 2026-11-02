@@ -45,3 +45,5 @@
   ansible.builtin.import_tasks: autoupgrade.yml
 - name: SSH
   ansible.builtin.import_tasks: ssh.yml
+- name: Hostname
+  ansible.builtin.import_tasks: hostname.yml

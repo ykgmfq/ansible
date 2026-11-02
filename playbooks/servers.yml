@@ -24,3 +24,4 @@
   become: false
   roles:
     - wireguard_client
+    - systempub

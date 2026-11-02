@@ -1,7 +1,7 @@
 # Roles
 
 ## common
-Base configuration for all headless hosts: Fish shell, system services, and automatic OS upgrades.
+Base configuration for all headless hosts: hostname, Fish shell, system services, and automatic OS upgrades.
 
 ## zfspool
 ZFS pool management: user setup, pool import, permissions, scrub/snapshot timers, and (on backup sinks) replication via Syncoid.
@@ -14,6 +14,9 @@ Container infrastructure: Buildah, Podman secrets, systemd units for image build
 
 ## home
 Home Assistant integration: firewall rules for HomeKit and mDNS services, udev rule for ConBee device access.
+
+## systempub
+Publishes ZFS pool and systemd unit state to the Home Assistant MQTT broker over a websocket.
 
 ## dyndns
 IPv6 reachability for the host.

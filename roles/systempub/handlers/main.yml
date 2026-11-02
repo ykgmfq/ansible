@@ -1,0 +1,18 @@
+---
+- name: Systempub restarted
+  listen: "systempub config changed"
+  ansible.builtin.systemd_service:
+    name: systempub.service
+    state: restarted
+    daemon_reload: true
+- name: Broker secret rebuilt
+  listen: "broker passwords changed"
+  delegate_to: "{{ groups['appserver'][0] }}"
+  ansible.builtin.command: podman secret create --replace mosquitto_passwords {{ systempub_broker_passwords_file }}
+  changed_when: true
+- name: Broker restarted
+  listen: "broker passwords changed"
+  delegate_to: "{{ groups['appserver'][0] }}"
+  ansible.builtin.systemd_service:
+    name: mosquitto.service
+    state: restarted

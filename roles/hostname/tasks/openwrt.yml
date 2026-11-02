@@ -1,0 +1,7 @@
+---
+- name: Hostname set
+  notify: "hostname changed"
+  community.openwrt.uci:
+    command: set
+    key: system.@system[0].hostname
+    value: "{{ hostname }}"

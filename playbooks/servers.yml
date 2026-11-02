@@ -5,7 +5,8 @@
   remote_user: root
   become: false
   roles:
-    - common
+    - hostname
+    - fcos_base
     - zfspool
     - lid_switch
 - name: Service providers
@@ -17,6 +18,7 @@
     - dyndns
     - container
     - home
+    - systempub
 - name: Offsite reachability
   hosts: backup
   serial: 1

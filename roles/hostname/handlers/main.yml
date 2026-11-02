@@ -1,0 +1,10 @@
+---
+- name: UCI system changes committed
+  listen: "hostname changed"
+  community.openwrt.uci:
+    command: commit
+- name: System reloaded
+  listen: "hostname changed"
+  community.openwrt.service:
+    name: system
+    state: reloaded

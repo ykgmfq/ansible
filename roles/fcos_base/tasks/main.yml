@@ -40,10 +40,8 @@
     name: "{{ item }}.service"
     enabled: true
     state: started
-  loop: "{{ common_services_enabled }}"
+  loop: "{{ fcos_base_services_enabled }}"
 - name: Auto upgrade
   ansible.builtin.import_tasks: autoupgrade.yml
 - name: SSH
   ansible.builtin.import_tasks: ssh.yml
-- name: Hostname
-  ansible.builtin.import_tasks: hostname.yml

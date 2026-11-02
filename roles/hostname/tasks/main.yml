@@ -1,0 +1,3 @@
+---
+- name: Platform-specific hostname
+  ansible.builtin.include_tasks: "{{ platform }}.yml"

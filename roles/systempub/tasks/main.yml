@@ -6,35 +6,10 @@
     dest: /etc/systempub.yaml
     owner: root
     mode: "ugo=r"
-- name: Override directory present
-  ansible.builtin.file:
-    state: directory
-    dest: /etc/systemd/system/systempub.service.d
-    owner: root
-    mode: "u=rwx,go=rx"
-- name: Credential directory present
-  ansible.builtin.file:
-    state: directory
-    dest: "{{ systempub_credential_path | dirname }}"
-    owner: root
-    mode: "u=rwx,go="
-- name: Credential state read
-  ansible.builtin.stat:
-    path: "{{ systempub_credential_path }}"
-  register: systempub_credential
-- name: MQTT password enrolled and stored
-  when: not systempub_credential.stat.exists
-  ansible.builtin.import_tasks: password.yml
-- name: Credential dropin present
-  notify: "systempub config changed"
-  community.general.ini_file:
-    path: /etc/systemd/system/systempub.service.d/credential.conf
-    section: Service
-    option: LoadCredentialEncrypted
-    value: "mqtt:{{ systempub_credential_path }}"
-    no_extra_spaces: true
-    owner: root
-    mode: "ugo=r"
+# Without a broker URL systempub talks to the broker on the host itself, unauthenticated.
+- name: Remote broker credential present
+  when: systempub_mqtt_host | length > 0
+  ansible.builtin.include_tasks: credential.yml
 - name: Systempub active
   ansible.builtin.systemd_service:
     name: systempub.service

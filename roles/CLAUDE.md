@@ -8,6 +8,7 @@ Agent guidance for working within this directory. See the [top-level CLAUDE.md](
 - File modes must use symbolic `ugo=` notation — never octal.
 - Role tasks should be small and focused; split into sub-task files when a role grows.
 - The `router` play targets OpenWRT and uses `community.openwrt.*` modules (shell-based, no Python needed on the target) instead of the usual `ansible.builtin`/`community.general` ones; it also runs with `gather_facts: false` since the default `setup` module needs Python.
+- Roles shared across host classes (e.g. `hostname`) dispatch with `include_tasks: "{{ platform }}.yml"`; `platform` (`fcos`, `openwrt`) is a group var in `playbooks/group_vars/`, since the router has no facts to branch on. Pool a capability into one role only when its variables and handlers are shared across platforms; platform-only capabilities stay separate roles.
 - Galaxy collections must be installed before running the playbook (`just galaxy`).
 
 ## Safety

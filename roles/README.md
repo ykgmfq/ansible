@@ -1,7 +1,10 @@
 # Roles
 
-## common
-Base configuration for all headless hosts: hostname, Fish shell, system services, and automatic OS upgrades.
+## hostname
+Sets the host's hostname on every headless host, picking the implementation from `platform`.
+
+## fcos_base
+Base configuration for Fedora CoreOS hosts: Fish shell, system services, SSH key exchange, and automatic OS upgrades.
 
 ## zfspool
 ZFS pool management: user setup, pool import, permissions, scrub/snapshot timers, and (on backup sinks) replication via Syncoid.
@@ -16,7 +19,7 @@ Container infrastructure: Buildah, Podman secrets, systemd units for image build
 Home Assistant integration: firewall rules for HomeKit and mDNS services, udev rule for ConBee device access.
 
 ## systempub
-Publishes ZFS pool and systemd unit state to the Home Assistant MQTT broker over a websocket.
+Publishes ZFS pool and systemd unit state to the Home Assistant MQTT broker, over a websocket from remote hosts and directly on the broker host.
 
 ## dyndns
 IPv6 reachability for the host.

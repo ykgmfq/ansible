@@ -1,3 +1,8 @@
+{% if systempub_mqtt_host | length > 0 %}
 mqttserver:
   host: {{ systempub_mqtt_host }}
   user: {{ hostname }}
+{% endif %}
+{% if systempub_loglevel | length > 0 %}
+loglevel: {{ systempub_loglevel }}
+{% endif %}

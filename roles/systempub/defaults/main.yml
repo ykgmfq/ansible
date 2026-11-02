@@ -1,8 +1,12 @@
 ---
-# Websocket URL of the MQTT broker, e.g. wss://mqtt.example.org. Supplied by the personal repo.
+# Websocket URL of a remote MQTT broker, e.g. wss://mqtt.example.org. Supplied by the personal repo.
+# Empty means the broker on the host itself, without authentication.
 systempub_mqtt_host: ""
 
 systempub_credential_path: /etc/credstore.encrypted/systempub-mqtt
 
 # On the first appserver, where the broker's Podman secret is built from.
 systempub_broker_passwords_file: /var/mnt/persist/secrets/mosquitto_passwords.txt
+
+# Empty keeps systempub's own default.
+systempub_loglevel: ""

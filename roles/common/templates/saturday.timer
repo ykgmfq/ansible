@@ -1,3 +1,0 @@
-[Timer]
-OnCalendar=
-OnCalendar={{ common_autoupgrade_schedule }}

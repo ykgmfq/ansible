@@ -5,8 +5,5 @@
     target: "{{ item }}"
     setype: container_file_t
     state: present
-  loop:
-    - '/mnt/persist(/.*)?'
-    - '/mnt/ephemeral(/.*)?'
-    - '/mnt/media(/.*)?'
+  loop: "{{ zfspool_source_mounts | map('regex_replace', '^', '/mnt/') | map('regex_replace', '$', '(/.*)?') | list }}"
   notify: "pool SELinux contexts changed"

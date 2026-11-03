@@ -11,7 +11,7 @@
     mode: "ugo=r"
 - name: Pool mountpoint
   community.general.zfs:
-    name: "{{ dataset }}"
+    name: "{{ hostname }}"
     state: present
     extra_zfs_properties:
       mountpoint: "{{ zfspool_sink_mountpoint }}"

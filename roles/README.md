@@ -7,7 +7,7 @@ Sets the host's hostname on every headless host, picking the implementation from
 Base configuration for Fedora CoreOS hosts: Fish shell, system services, SSH key exchange, and automatic OS upgrades.
 
 ## zfspool
-ZFS pool management: user setup, pool import, permissions, scrub/snapshot timers, and (on backup sinks) replication via Syncoid.
+ZFS pool management (the pool is named after `hostname`): user setup, pool import, dataset mountpoints, permissions, scrub/snapshot timers, and (on backup sinks) replication via Syncoid.
 
 ## lid_switch
 Disables the default lid-close suspend action via systemd logind settings — headless server in a laptop chassis.

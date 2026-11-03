@@ -6,7 +6,7 @@ zfspool_syncoid_home: /var/home/syncoid
 # Backup sink pool mountpoint; /var/srv/backup gets a default SELinux label (var_t), no custom context needed.
 zfspool_sink_mountpoint: /var/srv/backup
 
-# One entry per dataset under {{ dataset }}, shared between the sanoid
+# One entry per dataset under {{ hostname }}, shared between the sanoid
 # retention template and the per-dataset syncoid timers on backup sinks -
 # both used to hardcode "persist"/"media" separately.
 zfspool_datasets:
@@ -19,6 +19,13 @@ zfspool_datasets:
     hourly: 6
     daily: 3
     monthly: 1
+
+# Datasets under {{ hostname }} on the source, each mounted at /var/mnt/<name>.
+# Set here rather than kept on the pool, so a rebuilt pool needs only `zpool create`.
+zfspool_source_mounts:
+  - persist
+  - ephemeral
+  - media
 
 zfspool_permissions_source: send,hold
 zfspool_permissions_sink: compression,mountpoint,create,mount,receive,rollback,recordsize,destroy

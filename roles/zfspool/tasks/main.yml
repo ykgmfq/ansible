@@ -4,12 +4,12 @@
 - name: Pool imported
   block:
     - name: Pool import state
-      ansible.builtin.command: "zpool list {{ dataset }}"
+      ansible.builtin.command: "zpool list {{ hostname }}"
       changed_when: false
       check_mode: false
   rescue:
     - name: Pool import
-      ansible.builtin.command: "zpool import -f {{ dataset }}"
+      ansible.builtin.command: "zpool import -f {{ hostname }}"
       changed_when: true
 - name: User present
   ansible.builtin.user:
@@ -28,13 +28,13 @@
 - name: Pool allowlist
   community.general.zfs_delegate_admin:
     users: "{{ zfspool_syncoid_user }}"
-    name: "{{ dataset }}"
+    name: "{{ hostname }}"
     permissions: "{{ zfspool_permissions_sink if is_backup_sink else zfspool_permissions_source }}"
 - name: Scrub timer enabled
   ansible.builtin.systemd_service:
     state: started
     enabled: true
-    name: "zfs-scrub-monthly@{{ dataset }}.timer"
+    name: "zfs-scrub-monthly@{{ hostname }}.timer"
 - name: Sanoid timer enabled
   ansible.builtin.systemd_service:
     state: started
@@ -43,7 +43,7 @@
 - name: SELinux-compatible attributes on dataset
   become: true
   community.general.zfs:
-    name: "{{ dataset }}"
+    name: "{{ hostname }}"
     state: present
     extra_zfs_properties:
       xattr: sa
@@ -51,6 +51,9 @@
 - name: Syncoid on backup system
   when: is_backup_sink
   ansible.builtin.import_tasks: syncoid.yml
+- name: Source datasets mounted
+  when: not is_backup_sink
+  ansible.builtin.import_tasks: mounts.yml
 - name: SELinux contexts for pool mounts
   when: not is_backup_sink
   ansible.builtin.import_tasks: selinux.yml

@@ -12,4 +12,4 @@ Restart = on-failure
 # Wait 10 min before retrying; allow up to 12 h for a full sync to complete
 RestartSec = 10min
 TimeoutStartSec = 12h
-ExecStart = /usr/sbin/syncoid --preserve-recordsize --recursive --no-sync-snap --no-privilege-elevation --compress=zstd-fast --sshkey=%h/.ssh/id_ed25519 --sshoption=StrictHostKeyChecking=accept-new {{ groups['appserver'][0] }}:{{ hostvars[groups['appserver'][0]].dataset }}/%i {{ dataset }}/%i
+ExecStart = /usr/sbin/syncoid --preserve-recordsize --recursive --no-sync-snap --no-privilege-elevation --compress=zstd-fast --sshkey=%h/.ssh/id_ed25519 --sshoption=StrictHostKeyChecking=accept-new {{ groups['appserver'][0] }}:{{ hostvars[groups['appserver'][0]].hostname }}/%i {{ hostname }}/%i

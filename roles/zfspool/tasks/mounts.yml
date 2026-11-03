@@ -1,0 +1,8 @@
+---
+- name: Dataset mountpoints set
+  community.general.zfs:
+    name: "{{ hostname }}/{{ item }}"
+    state: present
+    extra_zfs_properties:
+      mountpoint: "/var/mnt/{{ item }}"
+  loop: "{{ zfspool_source_mounts }}"

@@ -15,5 +15,5 @@ Agent guidance for working within this directory. See the [top-level CLAUDE.md](
 
 - Do not run `just playbook` without explicit user confirmation — the target is a production host.
 - Use `just playbook-check` for dry-runs.
-- The `container` role expects `/var/mnt/persist/` and `/var/mnt/ephemeral/` to be mounted ZFS datasets — these will not exist in a test environment.
+- The `container` role expects `/srv/containers/` and `/srv/containers/ephemeral/` to be mounted ZFS datasets — these will not exist in a test environment.
 - When editing Quadlet or systemd unit files, validate with `podman-system-generator -dryrun` or `systemd-analyze verify` if possible.

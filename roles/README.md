@@ -13,7 +13,7 @@ ZFS pool management (the pool is named after `hostname`): user setup, pool impor
 Disables the default lid-close suspend action via systemd logind settings — headless server in a laptop chassis.
 
 ## container
-Container infrastructure: Buildah, Podman secrets, systemd units for image building and pruning, Quadlet service sync, auto-update timer, firewall rules, and helper scripts.
+Container infrastructure: Buildah, Podman secrets, systemd units for image building and pruning, auto-update timer, firewall rules, and helper scripts.
 
 ## home
 Home Assistant integration: firewall rules for HomeKit and mDNS services, udev rule for ConBee device access.

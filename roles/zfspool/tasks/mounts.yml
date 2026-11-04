@@ -1,8 +1,8 @@
 ---
 - name: Dataset mountpoints set
   community.general.zfs:
-    name: "{{ hostname }}/{{ item }}"
+    name: "{{ hostname }}/{{ item.key }}"
     state: present
     extra_zfs_properties:
-      mountpoint: "/var/mnt/{{ item }}"
-  loop: "{{ zfspool_source_mounts }}"
+      mountpoint: "{{ item.value }}"
+  loop: "{{ zfspool_source_mounts | dict2items }}"

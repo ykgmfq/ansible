@@ -11,7 +11,7 @@ def parse_args() -> argparse.Namespace:
         prog="pgupgrade.py",
         description="Upgrade a PostgreSQL container service to a new major version using podman and ZFS snapshots.",
     )
-    parser.add_argument("svc", help="systemd service name (also used to locate the data dir under /var/mnt/persist/<svc>/db)")
+    parser.add_argument("svc", help="systemd service name (also used to locate the data dir under /srv/containers/<svc>/db)")
     parser.add_argument("target_major", help="target PostgreSQL major version (e.g. 17)")
     parser.add_argument("--just-dump", action="store_true", help="stop after writing the SQL dump, skip bootstrap")
     return parser.parse_args()
@@ -24,7 +24,7 @@ def main():
         print("❌ target_pg_major must be numeric (e.g. 18)")
         sys.exit(2)
 
-    datadir = Path(f"/var/mnt/persist/{args.svc}/db")
+    datadir = Path(f"/srv/containers/{args.svc}/db")
     backup = Path("/tmp/backup.sql")
     log_path = Path("/tmp/pgupgrade.log")
     pg_version_file = datadir / "PG_VERSION"
@@ -58,7 +58,10 @@ def main():
             log.write(r.stderr)
             raise subprocess.CalledProcessError(r.returncode, r.args)
 
-        snapshot = f"data/persist/{args.svc}/db@pre-pg-upgrade"
+        dataset = subprocess.run(
+            ["zfs", "list", "-H", "-o", "name", str(datadir)], check=True, capture_output=True, text=True
+        ).stdout.strip()
+        snapshot = f"{dataset}@pre-pg-upgrade"
 
         def rollback():
             print(f"⏪ Rolling back to snapshot {snapshot}")

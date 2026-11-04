@@ -20,12 +20,17 @@ zfspool_datasets:
     daily: 3
     monthly: 1
 
-# Datasets under {{ hostname }} on the source, each mounted at /var/mnt/<name>.
+# Datasets under {{ hostname }} on the source and where they mount.
 # Set here rather than kept on the pool, so a rebuilt pool needs only `zpool create`.
+# ephemeral nests under persist; its SELinux context is covered by persist's.
 zfspool_source_mounts:
-  - persist
-  - ephemeral
-  - media
+  persist: /srv/containers
+  ephemeral: /srv/containers/ephemeral
+  media: /mnt/media
+
+zfspool_selinux_paths:
+  - /srv/containers
+  - /mnt/media
 
 zfspool_permissions_source: send,hold
 zfspool_permissions_sink: compression,mountpoint,create,mount,receive,rollback,recordsize,destroy

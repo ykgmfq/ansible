@@ -3,7 +3,7 @@ After = network-online.target
 Requires = network-online.target
 
 [Service]
-WorkingDirectory = /var/mnt/ephemeral/services/images/%i
+WorkingDirectory = /srv/containers/ephemeral/services/images/%i
 ExecStart = /usr/bin/fish build.fish
 Restart = on-failure
 RestartSec = 1h

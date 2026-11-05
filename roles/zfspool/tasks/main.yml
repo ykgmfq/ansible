@@ -35,6 +35,21 @@
     state: started
     enabled: true
     name: "zfs-scrub-monthly@{{ hostname }}.timer"
+- name: Pool status read
+  ansible.builtin.command: "zpool status -t --json --json-flat-vdevs {{ hostname }}"
+  register: zfspool_status
+  changed_when: false
+  check_mode: false
+- name: Trim timer enabled
+  # USB bridges often hide TRIM from the disks; zpool trim would fail there.
+  when: >-
+    (zfspool_status.stdout | from_json).pools[hostname].vdevs.values()
+    | map(attribute='trim_notsup', default='0') | select('eq', '1')
+    | list | length == 0
+  ansible.builtin.systemd_service:
+    state: started
+    enabled: true
+    name: "zfs-trim-weekly@{{ hostname }}.timer"
 - name: Sanoid timer enabled
   ansible.builtin.systemd_service:
     state: started

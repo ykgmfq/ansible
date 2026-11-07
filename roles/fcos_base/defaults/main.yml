@@ -5,6 +5,5 @@ fcos_base_services_enabled:
 
 fcos_base_autoupgrade_schedule: "Sat 05:00"
 
-# Post-quantum key exchange preferred, with a Curve25519 fallback for older
-# clients (e.g. the PuTTY-based Shelly iOS client, which lacks ML-KEM).
+# Post-quantum key exchange preferred, with a Curve25519 fallback for older clients (e.g. the PuTTY-based Shelly iOS client, which lacks ML-KEM).
 fcos_base_ssh_kex_algorithms: "mlkem768x25519-sha256,curve25519-sha256,curve25519-sha256@libssh.org"

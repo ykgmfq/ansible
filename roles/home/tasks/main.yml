@@ -5,7 +5,7 @@
     src: homekit.xml
     dest: /etc/firewalld/services
     mode: "ugo=r"
-# New service definitions must be loaded before "Network access allowed" can enable them
+# New service definitions must be loaded before they can be enabled
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
 - name: Udev rule present

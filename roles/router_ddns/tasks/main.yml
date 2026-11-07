@@ -27,8 +27,7 @@
     - { key: use_ipv6, value: "1" }
     - { key: ip_source, value: network }
     - { key: ip_network, value: wan6 }
-    # ddns-scripts' hotplug hook only starts services whose `interface`
-    # matches the interface that just came up.
+    # ddns-scripts' hotplug hook only starts services whose `interface` matches the interface that just came up.
     - { key: interface, value: wan6 }
   loop_control:
     label: "{{ item.key }}"

@@ -1,5 +1,5 @@
 ---
-- name: Configure persistent SELinux contexts for the data pool
+- name: Pool SELinux contexts persistent
   become: true
   community.general.sefcontext:
     target: "{{ item }}(/.*)?"

@@ -1,4 +1,4 @@
-# $- holds active shell flags; 'i' means interactive — skip for non-interactive shells (e.g. ssh host command)
+# Skip non-interactive shells (e.g. ssh host command)
 [[ $- == *i* ]] || return
 
 # Forced-interactive command strings (bash -ic '...') must not switch — VS Code probes the environment this way

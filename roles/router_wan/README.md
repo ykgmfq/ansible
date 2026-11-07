@@ -1,11 +1,12 @@
 # router_wan
 
-IPv4/IPv6 WAN connectivity for the new OpenWRT router, carried over from the router it replaces.
+IPv4/IPv6 WAN connectivity for the OpenWRT router, carried over from the router it replaces.
 
 ## Purpose
 
-Gets the router talking to the modem so everything else in the `router` group (WireGuard, DDNS, DNS-over-TLS, HTTPS passthrough) has a working uplink. This runs from `playbooks/network.yml` while the router is still reachable at OpenWRT's factory-default LAN address, so WAN can be verified before the router ever claims the production LAN subnet — see `roles/router_lan`.
+Gives everything else on the router a working uplink.
+It runs while the router is still at the factory-default LAN address, so WAN can be verified before the router claims the production subnet.
 
 ## Rationale
 
-**Plain DHCP.** A separate modem now owns the DSL/PPPoE session; the router only ever sees a plain Ethernet handoff, so WAN is `proto dhcp` for IPv4 and `proto dhcpv6` (requesting whatever prefix length the ISP delegates) for IPv6 — no PPPoE credentials involved.
+**Plain DHCP.** A separate modem owns the DSL/PPPoE session; the router only sees a plain Ethernet handoff, so no PPPoE credentials are involved.

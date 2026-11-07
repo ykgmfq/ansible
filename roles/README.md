@@ -1,49 +1,17 @@
 # Roles
 
-## hostname
-Sets the host's hostname on every headless host, picking the implementation from `platform`.
+Each role's README holds its purpose and rationale; `roles/CLAUDE.md` holds the conventions.
 
-## fcos_base
-Base configuration for Fedora CoreOS hosts: Fish shell, system services, SSH key exchange, and automatic OS upgrades.
-
-## zfspool
-ZFS pool management (the pool is named after `hostname`): user setup, pool import, dataset mountpoints, permissions, scrub/snapshot timers, and (on backup sinks) replication via Syncoid.
-
-## lid_switch
-Disables the default lid-close suspend action via systemd logind settings — headless server in a laptop chassis.
-
-## container
-Container infrastructure: Buildah, Podman secrets, systemd units for image building and pruning, auto-update timer, firewall rules, and helper scripts.
-
-## home
-Home Assistant integration: firewall rules for HomeKit and mDNS services, udev rule for ConBee device access.
-
-## systempub
-Publishes ZFS pool and systemd unit state to the Home Assistant MQTT broker, over a websocket from remote hosts and directly on the broker host.
-
-## dyndns
-IPv6 reachability for the host.
-
-## router_wan
-IPv4/IPv6 WAN connectivity for the OpenWRT router, carried over from the router it replaces.
-
-## router_firewall
-Removes blanket wan→lan forwarding rules, such as OpenWRT's stock IPsec passthrough, found on the router itself.
-
-## router_lan
-Switches the OpenWRT router's LAN from its factory default onto the subnet owned by the router it replaces, DHCP pool included — the go-live step, run as part of `playbooks/network.yml`'s full stack.
-
-## wireguard
-Road-warrior WireGuard endpoint on the router, including the firewall rule it needs to receive traffic.
-
-## wireguard_client
-WireGuard client on the backup host, so it stays reachable over SSH while offsite.
-
-## router_ddns
-Keeps the router's own public DNS record pointed at its current IPv6 address.
-
-## homeserver_passthrough
-Firewall rules letting inbound web and SSH traffic reach the homeserver directly through the router.
-
-## https_dns_proxy
-Encrypted DNS-over-HTTPS for the router's own resolution, with no plaintext fallback, via a personal AdGuard DNS endpoint.
+- **hostname**: hostname on every headless host, implementation chosen by platform.
+- **fcos_base**: base configuration for Fedora CoreOS hosts.
+- **zfspool**: ZFS pool management, snapshots and replication.
+- **lid_switch**: ignore lid-close on a headless laptop-chassis server.
+- **container**: Podman/Buildah infrastructure and helper units.
+- **home**: Home Assistant integration prerequisites.
+- **systempub**: publishes ZFS and systemd state to the MQTT broker.
+- **dyndns**: IPv6 reachability for the host.
+- **router_login**, **router_wan**, **router_firewall**, **router_lan**, **router_ddns**: OpenWRT router base configuration.
+- **wireguard**: road-warrior endpoint on the router.
+- **wireguard_client**: tunnel client on the backup host.
+- **homeserver_passthrough**: inbound web and SSH to the homeserver through the router.
+- **https_dns_proxy**: encrypted DNS for the router.

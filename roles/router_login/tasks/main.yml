@@ -9,8 +9,7 @@
     - PasswordAuth
     - RootPasswordAuth
 
-# The salt is derived from the hostname so the hash, and thus the shadow task,
-# is stable across runs.
+# The salt is derived from the hostname so the hash, and thus the shadow task, is stable across runs.
 - name: Root password hashed
   no_log: true
   ansible.builtin.set_fact:

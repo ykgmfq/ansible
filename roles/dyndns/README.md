@@ -4,20 +4,17 @@ Makes the host reachable over IPv6 and keeps its public DNS record current.
 
 ## Purpose
 
-The host is reachable from outside over IPv6 only; there is no `A` record.
-IPv6 has no NAT, so the `AAAA` record must point at the host itself rather than the router — and the router cannot publish an internal host's address into a third-party record.
-This role gives the host everything it needs to own that side of its own reachability.
+The host is reachable from outside over IPv6 only; there is no IPv4 record.
+No NAT66 is used, so the address record must point at the host itself rather than the router, and the router cannot publish an internal host's address into a third-party record.
 
 ## Rationale
 
-**EUI-64 addressing.** The router's inbound IPv6 port shares are pinned to the host's EUI-64 interface suffix.
-NetworkManager otherwise defaults to a stable-privacy address, which is not the address the router opened and which rotates whenever the ISP prefix changes.
-The role sets EUI-64 as the connection default so the global address stays constant and matches the opened ports.
-Applying it requires reactivating the connection or rebooting, so the change only emits a reminder rather than bouncing the link mid-run.
+**Stable interface identifier.** The router's inbound IPv6 openings are pinned to the host's hardware-derived interface identifier.
+The default privacy-oriented addressing would not match what the router opened and would rotate whenever the ISP prefix changes.
+Applying the change needs a reconnect or reboot, so it only emits a reminder instead of interrupting the link mid-run.
 
-**IPv6 ingress.** The reverse-proxy container is published on both IPv4 and IPv6 (`PublishPort=[::]:80:80` / `[::]:443:443`).
-Netavark only creates IPv6 DNAT rules when the container has an IPv6 address, so the container is attached to a dedicated `ingress.network` with `IPv6=true`.
-That network assigns the container a ULA IPv6 address and netavark installs the corresponding `dnat ip6 to [...]` rules, making both stacks reach Caddy directly without an intermediary proxy.
+**IPv6 ingress.** Container networking only creates IPv6 forwarding rules when the container has an IPv6 address, so the reverse proxy sits on a dedicated IPv6-enabled network.
+Both address families then reach it directly without an intermediary proxy.
 
-**DynDNS updater.** A oneshot service reads the host's stable global address and publishes it as the `AAAA` record, driven by a timer that fires every few minutes but only contacts the provider when the address actually changed, to stay within DynDNS fair-use.
-The provider password is provisioned out of band and exposed to the service through systemd `LoadCredential`, so it never enters the environment or the process arguments; this role does not manage the secret.
+**Updater.** The provider is only contacted when the address actually changed, to stay within fair-use limits.
+The provider password is provisioned out of band and handed to the service as a credential, so it never enters the environment or process arguments; this role does not manage the secret.

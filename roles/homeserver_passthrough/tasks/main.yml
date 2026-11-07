@@ -1,5 +1,8 @@
 ---
-# Bare rules are only valid inside a chain; fw4 auto-includes /etc/nftables.d/*.nft at table level
+# Bare rules are only valid inside a chain; fw4 auto-includes /etc/nftables.d/*.nft at table level, where a bare rule is a syntax error that stops the whole firewall from loading.
+# Matched on the address suffix, not `ether daddr`, which is unreliable in the forward hook (the Ethernet header isn't final yet).
+# UCI rules can't express a masked match.
+# Lives in /etc because /var is tmpfs on OpenWRT.
 - name: Homeserver passthrough nftables snippet present
   notify: "homeserver passthrough changed"
   community.openwrt.template:

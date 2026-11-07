@@ -1,12 +1,8 @@
-# .bash_profile
-# User specific environment and startup programs
-
 export PATH
 export EDITOR=nvim
 export VISUAL=$EDITOR
 export LESS="-RSMsi"
 
-# Get the aliases and functions
 if [ -f ~/.bashrc ]; then
 	. ~/.bashrc
 fi

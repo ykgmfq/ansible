@@ -4,7 +4,6 @@
     name: luci-app-https-dns-proxy
     state: present
 
-# We manage dnsmasq's upstreams ourselves (see dnsmasq.yml).
 - name: Proxy leaves dnsmasq's config and clients' DNS alone
   notify: "https dns proxy changed"
   community.openwrt.uci:
@@ -27,8 +26,8 @@
   loop: "{{ https_dns_proxy_default_resolver_urls }}"
   register: https_dns_proxy_default_instances
 
-# Reversed: deleting @https-dns-proxy[N] renumbers every later one. Matched by
-# URL because find_all reports our own named instances as @...[N] too.
+# Reversed: deleting @https-dns-proxy[N] renumbers every later one.
+# Matched by URL because find_all reports our own named instances as @...[N] too.
 - name: Packaged default instances absent
   notify: "https dns proxy changed"
   community.openwrt.uci:

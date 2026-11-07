@@ -2,8 +2,6 @@
 
 # Publishes this host's own global IPv6 address to a dynamic-DNS provider as an AAAA record.
 #
-# The host is reached directly via its GUA, without NAT, so it publishes its own address.
-#
 # Configuration comes from the systemd unit:
 #   DYNDNS_ENDPOINT   the provider's dyndns2 update URL
 #   DYNDNS_HOSTNAME   the hostname to update (also the basic-auth username)

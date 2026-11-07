@@ -4,7 +4,9 @@ Configures a Fedora CoreOS homeserver and an OpenWRT router using Ansible and Bu
 
 ## Personal inventory
 
-Hostnames, domains, addresses, static DHCP leases and the DNS adblock endpoint live in a separate personal repo, included as the `personal/` submodule (clone with `--recurse-submodules`; override the path with `PERSONAL_DIR`). It holds the inventory and `group_vars/`, and every `just` playbook recipe reads it from there. See its `README.md` for the variables it must provide.
+Hostnames, domains, addresses, static DHCP leases and the DNS adblock endpoint live in a separate personal repo, included as the `personal/` submodule (clone with `--recurse-submodules`; override the path with `PERSONAL_DIR`).
+It holds the inventory and `group_vars/`, and every `just` playbook recipe reads it from there.
+See its `README.md` for the variables it must provide.
 
 ## Workflow
 
@@ -17,24 +19,13 @@ See the [Butane docs](https://coreos.github.io/butane/) and [Fedora CoreOS bare-
 
 **Router:**
 
-Configure the OpenWRT router with Ansible.
-
 1. **Provision SSH access** — in the router's web interface (LuCI, *System → Administration → SSH-Keys*), add your public SSH key for `root`
 2. **Trust the host key** — connect once with `ssh root@<router address>` and accept the router's host key fingerprint, so Ansible can connect with host key checking enabled
 3. **Prep** — when migrating from an existing active router, run `just playbook router_prep`: it targets the new router while it's still reachable at its factory-default address, so WAN/WireGuard/etc. can be verified before it goes live
 4. **Go live** — run `just playbook network`: its first run switches the router onto the production LAN subnet/DHCP and hands DNS ownership over from the old router, and every run after that is routine idempotent maintenance of the whole stack
 
-Router secrets (WireGuard key, DynDNS password) and the list of WireGuard client devices are read from Vaultwarden through [rbw](https://github.com/doy/rbw), which the router recipes unlock before each run. Configure it once with `rbw config set email <address>` and `rbw config set base_url <vaultwarden url>`; its config and vault cache live in named volumes, so they survive container rebuilds. The homeserver's secrets live on its own ZFS pool instead, so provisioning it never depends on Vaultwarden.
+Router secrets (WireGuard key, DynDNS password) and the list of WireGuard client devices are read from Vaultwarden through [rbw](https://github.com/doy/rbw), which the router recipes unlock before each run.
+Configure it once with `rbw config set email <address>` and `rbw config set base_url <vaultwarden url>`; its config and vault cache live in named volumes, so they survive container rebuilds.
+The homeserver's secrets live on its own ZFS pool instead, so provisioning it never depends on Vaultwarden.
 
 The host key is recorded per address, so after the go-live cutover moves the router to its production address, repeat step 2 against that address before the next run.
-
-## Common commands
-
-Run `just -l` to list all available commands.
-
-## Devcontainer
-
-*Reopen in Container* offers two configurations:
-
-- **local build** — builds the image from `.devcontainer/Dockerfile` on your machine
-- **prebuilt** — pulls `ghcr.io/ykgmfq/ansible`

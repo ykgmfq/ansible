@@ -16,7 +16,6 @@ https_dns_proxy_default_resolver_urls:
   - https://dns.google/dns-query
   - https://cloudflare-dns.com/dns-query
 
-# Resolved to AAAA on the Ansible host at run time and pushed to the router as
-# plain IPs, so the clock can sync while the router's DNS is down.
+# Resolved to AAAA on the Ansible host at run time and pushed to the router as plain IPs, so the clock can sync while the router's DNS is down.
 https_dns_proxy_ntp_hostnames:
   - time.cloudflare.com

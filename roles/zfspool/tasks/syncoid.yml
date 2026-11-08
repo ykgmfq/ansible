@@ -33,6 +33,7 @@
 - name: SSH key authorized on the source
   when: zfspool_syncoid_key.public_key is defined
   delegate_to: "{{ groups['appserver'][0] }}"
+  throttle: 1 # read-modify-write of one shared file
   ansible.posix.authorized_key:
     user: "{{ zfspool_syncoid_user }}"
     key: "{{ zfspool_syncoid_key.public_key }}"

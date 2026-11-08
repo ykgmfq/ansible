@@ -1,7 +1,6 @@
 ---
 - name: Common server functionality present
   hosts: server
-  serial: 1
   remote_user: root
   become: false
   roles:
@@ -11,7 +10,6 @@
     - lid_switch
 - name: Service providers
   hosts: appserver
-  serial: 1
   remote_user: root
   become: false
   roles:
@@ -21,7 +19,6 @@
     - systempub
 - name: Offsite reachability
   hosts: backup
-  serial: 1
   remote_user: root
   become: false
   roles:

@@ -22,5 +22,5 @@
   remote_user: root
   become: false
   roles:
-    - wireguard_client
+    - { role: wireguard_client, tags: [secrets] }
     - systempub

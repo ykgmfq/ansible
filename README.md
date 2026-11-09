@@ -24,7 +24,7 @@ See the [Butane docs](https://coreos.github.io/butane/) and [Fedora CoreOS bare-
 3. **Prep** — when migrating from an existing active router, run `just playbook router_prep`: it targets the new router while it's still reachable at its factory-default address, so WAN/WireGuard/etc. can be verified before it goes live
 4. **Go live** — run `just playbook network`: its first run switches the router onto the production LAN subnet/DHCP and hands DNS ownership over from the old router, and every run after that is routine idempotent maintenance of the whole stack
 
-Router secrets (WireGuard key, DynDNS password) and the list of WireGuard client devices are read from Vaultwarden through [rbw](https://github.com/doy/rbw), which the router recipes unlock before each run.
+Router and backup-host secrets (WireGuard keys, DynDNS password) and the list of WireGuard client devices are read from Vaultwarden through [rbw](https://github.com/doy/rbw), which the playbook recipe unlocks before each run unless the secret-reading roles are skipped with `--skip-tags secrets`.
 Configure it once with `rbw config set email <address>` and `rbw config set base_url <vaultwarden url>`; its config and vault cache live in named volumes, so they survive container rebuilds.
 The homeserver's secrets live on its own ZFS pool instead, so provisioning it never depends on Vaultwarden.
 

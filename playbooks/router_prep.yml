@@ -7,10 +7,10 @@
   become: false
   gather_facts: false
   roles:
-    - router_login
+    - { role: router_login, tags: [secrets] }
     - hostname
     - router_wan
     - router_firewall
-    - wireguard
+    - { role: wireguard, tags: [secrets] }
     - homeserver_passthrough
-    - https_dns_proxy
+    - { role: https_dns_proxy, tags: [secrets] }

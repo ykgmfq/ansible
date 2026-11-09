@@ -26,12 +26,12 @@ _playbook target flags:
 butane:
     butane --output=server.ign server.butane
 
-# Lint Ansible files and compile Butane
+# Lint Ansible files and nftables templates
 lint:
     ansible-lint
     python3 .github/scripts/nft-lint.py
 
-# Write every WireGuard client's config to output/ and print each as a QR code
+# Write every WireGuard client's config to files and print each as a QR code
 wireguard-client-config *flags:
     rbw unlock
     python3 .github/scripts/wireguard-client-config.py {{flags}}

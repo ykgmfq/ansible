@@ -10,7 +10,7 @@
     dest: /etc/homeserver-passthrough.nft
     mode: "u=rw,go=r"
 
-- name: Homeserver passthrough snippet included in forward_wan
+- name: Passthrough snippet included in firewall
   notify: "homeserver passthrough changed"
   community.openwrt.uci:
     command: section

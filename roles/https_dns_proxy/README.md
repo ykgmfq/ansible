@@ -15,7 +15,7 @@ Changes made in the web UI are overwritten on the next run.
 
 **IPv6 only**, for both bootstrap and DoH traffic.
 
-**Bootstrap by IP.** The proxy resolves the resolver's hostname once via fixed Quad9 addresses, so it doesn't depend on the router's own resolver.
+**Bootstrap by IP.** The proxy resolves the resolver's hostname once via fixed public resolver addresses, so it doesn't depend on the router's own resolver.
 That one lookup is plain DNS; everything after it goes over DoH.
 
 **Clock sync by IP.** DoH certificate validation needs a correct clock.

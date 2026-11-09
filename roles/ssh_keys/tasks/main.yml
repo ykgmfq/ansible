@@ -1,3 +1,8 @@
 ---
+- name: At least one key configured
+  ansible.builtin.assert:
+    that: ssh_keys_authorized | length > 0
+    fail_msg: ssh_keys_authorized is empty; set it in the personal repo.
+    quiet: true
 - name: Platform-specific root keys
   ansible.builtin.include_tasks: "{{ platform }}.yml"

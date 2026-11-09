@@ -1,6 +1,6 @@
 # ssh_keys
 
-Authorizes the public keys in `ssh_keys_authorized` for root, additively.
+Authorizes a configured set of public keys for root, additively.
 
 ## Purpose
 

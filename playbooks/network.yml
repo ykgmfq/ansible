@@ -8,6 +8,7 @@
   roles:
     - { role: router_login, tags: [secrets] }
     - hostname
+    - ssh_keys
     - router_wan
     - router_firewall
     - { role: wireguard, tags: [secrets] }

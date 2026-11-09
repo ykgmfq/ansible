@@ -1,0 +1,8 @@
+---
+- name: Root keys authorized
+  community.openwrt.lineinfile:
+    path: /etc/dropbear/authorized_keys
+    line: "{{ item }}"
+    create: true
+    mode: "u=rw,go="
+  loop: "{{ ssh_keys_authorized }}"

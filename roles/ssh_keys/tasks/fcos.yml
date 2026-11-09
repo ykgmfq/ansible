@@ -1,0 +1,6 @@
+---
+- name: Root keys authorized
+  ansible.posix.authorized_key:
+    user: root
+    key: "{{ item }}"
+  loop: "{{ ssh_keys_authorized }}"

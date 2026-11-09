@@ -1,0 +1,3 @@
+---
+- name: Platform-specific root keys
+  ansible.builtin.include_tasks: "{{ platform }}.yml"

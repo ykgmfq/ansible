@@ -1,0 +1,3 @@
+---
+# Public keys authorized for root, e.g. "sk-ssh-ed25519@openssh.com AAAA... comment".
+ssh_keys_authorized: []

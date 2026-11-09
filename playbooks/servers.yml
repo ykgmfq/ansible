@@ -5,6 +5,7 @@
   become: false
   roles:
     - hostname
+    - ssh_keys
     - fcos_base
     - zfspool
     - lid_switch

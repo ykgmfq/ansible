@@ -6,7 +6,6 @@ Switches the new OpenWRT router's LAN off its factory default and onto the subne
 
 The router is first prepared at its factory-default address to confirm the non-LAN roles work.
 The full-stack run then switches the LAN, so the router starts serving the real network atomically rather than mid-way through unrelated config changes.
-On later runs this role is idempotent upkeep.
 
 ## Rationale
 

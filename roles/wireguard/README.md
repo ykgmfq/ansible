@@ -11,4 +11,4 @@ Owns everything the tunnel needs end-to-end (interface, peers, inbound firewall 
 **Private key supplied, not generated**, so a replacement router takes over the same identity and peers keep working without re-enrollment.
 Only peers' public keys are tracked here.
 
-**Narrow NAT.** Only tunnel-sourced traffic leaving into the LAN is masqueraded: some LAN devices (e.g. FRITZ!Box) refuse logins from addresses outside their own subnet, and masquerading also removes the need for return routes on them.
+**Narrow NAT.** Only tunnel-sourced traffic leaving into the LAN is masqueraded: some devices refuse logins from addresses outside their own subnet

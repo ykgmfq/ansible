@@ -1,10 +1,10 @@
 # homeserver_passthrough
 
-Firewall rules letting inbound web and SSH traffic reach the homeserver directly.
+Firewall rules letting inbound traffic reach the homeserver directly.
 
 ## Purpose
 
-The homeserver terminates its own TLS and is directly reachable over IPv6, so no NAT66 is configured, only a forwarding opening from the internet-facing zone to the LAN.
+The homeserver is directly reachable with no NAT involved, only a forwarding opening from the internet-facing zone to the LAN.
 A separate role because it is ingress for a different host than the router's own services.
 
 ## Rationale

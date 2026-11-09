@@ -31,7 +31,13 @@ If a comment is the only thing explaining a non-obvious hack, keep it.
   They are often wrong or only true in some versions, and they rot.
   Challenge each one: can you verify it from the code, the tool's docs or the web?
   If not, or if it is not needed, delete it.
-  If the underlying point is a decision, rewrite it as the repo's choice ("no NAT66 is used") rather than as a law of nature, and flag a missing reason to the user instead of inventing one.
+  If the underlying point is a decision, rewrite it as the repo's choice rather than as a law of nature, and flag a missing reason to the user instead of inventing one.
+
+- **Expected infrastructure-as-code behavior**: statements any role is assumed to satisfy, such as "implementation chosen by platform", "idempotent", "configures X".
+  The reader expects this from Ansible itself; keep only what is specific to the role.
+
+- **Technique names where the property matters**: when a decision is about an outcome, state the outcome, not the particular mechanism or its variants.
+  "No NAT is involved" instead of "no NAT66 is configured"; naming the specific variant implies a distinction that does not matter.
 
 - **Implementation detail in READMEs**: role READMEs are concept-level, encyclopedia-style prose (purpose, design, rationale) that stays true when the implementation changes.
   No config keys, option or variable names, file paths, directories, command names, or role cross-references.

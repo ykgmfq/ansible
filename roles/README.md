@@ -2,7 +2,7 @@
 
 Each role's README holds its purpose and rationale; `roles/CLAUDE.md` holds the conventions.
 
-- **hostname**: hostname on every headless host, implementation chosen by platform.
+- **hostname**: hostname on every headless host.
 - **fcos_base**: base configuration for Fedora CoreOS hosts.
 - **zfspool**: ZFS pool management, snapshots and replication.
 - **lid_switch**: ignore lid-close on a headless laptop-chassis server.

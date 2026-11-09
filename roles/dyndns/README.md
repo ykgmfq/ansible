@@ -5,7 +5,7 @@ Makes the host reachable over IPv6 and keeps its public DNS record current.
 ## Purpose
 
 The host is reachable from outside over IPv6 only; there is no IPv4 record.
-No NAT66 is used, so the address record must point at the host itself rather than the router, and the router cannot publish an internal host's address into a third-party record.
+No NAT is involved, so the address record must point at the host itself rather than the router, and the router cannot publish an internal host's address into a third-party record.
 
 ## Rationale
 

@@ -1,6 +1,6 @@
 # systempub
 
-Configures the host's systempub to publish to an MQTT broker, so ZFS pool and systemd unit state reaches Home Assistant.
+Publishes ZFS pool and systemd unit state to an MQTT broker so it reaches Home Assistant.
 
 ## Rationale
 

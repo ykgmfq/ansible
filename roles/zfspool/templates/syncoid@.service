@@ -1,6 +1,6 @@
 [Unit]
-After = network-online.target dev-disk-by\x2dlabel-{{ hostname | replace('-', '\\x2d') }}.device
-Requires = network-online.target dev-disk-by\x2dlabel-{{ hostname | replace('-', '\\x2d') }}.device
+After = network-online.target dev-disk-by\x2dlabel-{{ hostname }}.device
+Requires = network-online.target dev-disk-by\x2dlabel-{{ hostname }}.device
 # The timer resets the start limit each cycle
 StartLimitIntervalSec = 1h
 StartLimitBurst = 3

@@ -1,3 +1,9 @@
 ---
+- name: Hostname is RFC 1123 without hyphens
+  ansible.builtin.assert:
+    that: hostname is match('^[a-z0-9]+$')
+    fail_msg: "Hostname {{ hostname }} must be lowercase letters and digits only (hyphens break systemd unit names); override `hostname` in the inventory."
+    quiet: true
+
 - name: Platform-specific hostname
   ansible.builtin.include_tasks: "{{ platform }}.yml"

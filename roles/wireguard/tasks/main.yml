@@ -61,6 +61,7 @@
       public_key: "{{ item.public_key }}"
     value:
       public_key: "{{ item.public_key }}"
+      description: "{{ item.name | default(item.ip) }}"
       allowed_ips: "{{ item.ip }}"
       route_allowed_ips: "1"
     replace: true

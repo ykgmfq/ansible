@@ -16,7 +16,7 @@ def main() -> int:
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1
-    print(json.dumps([{key: client[name] for key, name in FIELDS.items()} for _, client in clients]))
+    print(json.dumps([{"name": device, **{key: client[name] for key, name in FIELDS.items()}} for device, client in clients]))
     return 0
 
 

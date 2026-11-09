@@ -1,6 +1,7 @@
 ---
 - name: Systempub restarted
   listen: "systempub config changed"
+  when: systempub_unit.stat.exists
   ansible.builtin.systemd_service:
     name: systempub.service
     state: restarted

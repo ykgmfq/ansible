@@ -14,3 +14,4 @@
     - { role: wireguard, tags: [secrets] }
     - homeserver_passthrough
     - { role: https_dns_proxy, tags: [secrets] }
+    - { role: router_ddns, tags: [secrets] }

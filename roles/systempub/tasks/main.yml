@@ -10,7 +10,14 @@
 - name: Remote broker credential present
   when: systempub_mqtt_host | length > 0
   ansible.builtin.include_tasks: credential.yml
+# The unit ships in the layered package, which only exists after the reboot that activates it.
+- name: Systempub unit state read
+  ansible.builtin.stat:
+    path: /usr/lib/systemd/system/systempub.service
+  check_mode: false
+  register: systempub_unit
 - name: Systempub active
+  when: systempub_unit.stat.exists
   ansible.builtin.systemd_service:
     name: systempub.service
     enabled: true

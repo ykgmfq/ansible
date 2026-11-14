@@ -1,0 +1,3 @@
+---
+# Entries are {name, sysfs, ...}; further keys are passed to UCI as-is.
+router_led_leds: []

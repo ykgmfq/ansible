@@ -1,0 +1,16 @@
+---
+# Matched by sysfs name so an existing (anonymous) LED section is adopted rather than duplicated.
+# LEDs dropped from the list are not removed from the router.
+- name: LEDs configured
+  notify: "router led changed"
+  community.openwrt.uci:
+    command: section
+    config: system
+    type: led
+    find:
+      sysfs: "{{ item.sysfs }}"
+    value: "{{ item }}"
+    replace: true
+  loop: "{{ router_led_leds }}"
+  loop_control:
+    label: "{{ item.name }}"

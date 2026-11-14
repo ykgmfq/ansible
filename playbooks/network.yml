@@ -8,6 +8,7 @@
   roles:
     - { role: router_login, tags: [secrets] }
     - hostname
+    - router_led
     - ssh_keys
     - router_wan
     - router_firewall

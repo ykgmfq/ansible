@@ -1,0 +1,11 @@
+---
+- name: UCI system changes committed
+  listen: "router led changed"
+  community.openwrt.uci:
+    command: commit
+    config: system
+- name: LEDs reloaded
+  listen: "router led changed"
+  community.openwrt.service:
+    name: led
+    state: restarted

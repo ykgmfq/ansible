@@ -122,6 +122,36 @@
       dest: lan
     replace: true
 
+- name: LAN forwards to WireGuard
+  notify: "wireguard changed"
+  community.openwrt.uci:
+    command: section
+    config: firewall
+    type: forwarding
+    find:
+      src: lan
+      dest: wg
+    value:
+      src: lan
+      dest: wg
+    replace: true
+
+# Peers only route the tunnel subnet, so replies to LAN addresses would have no path back.
+- name: LAN clients masqueraded onto WireGuard
+  notify: "wireguard changed"
+  community.openwrt.uci:
+    command: section
+    config: firewall
+    type: nat
+    find:
+      name: LAN-to-WireGuard
+    value:
+      name: LAN-to-WireGuard
+      src: wg
+      src_ip: "{{ (router_lan_ipaddr ~ '/24') | ansible.utils.ipaddr('network/prefix') }}"
+      target: MASQUERADE
+    replace: true
+
 # LAN devices like the FRITZ!Box reject logins from outside their own subnet.
 - name: WireGuard clients masqueraded onto LAN
   notify: "wireguard changed"

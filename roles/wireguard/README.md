@@ -14,3 +14,5 @@ If the key is lost, generate a new one and redistribute the public half to the c
 Sync the password cache before changing peers, since the peer list is read from it.
 
 **Narrow NAT.** Only tunnel-sourced traffic leaving into the LAN is masqueraded: some devices refuse logins from addresses outside their own subnet.
+
+**LAN reaches peers.** LAN traffic into the tunnel is masqueraded as the router, because peers only route the tunnel subnet and could not answer LAN addresses.

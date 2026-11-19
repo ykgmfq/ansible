@@ -7,6 +7,8 @@ from vaultwarden import entries, missing
 
 ENTRY_CLIENT = "WireGuard Client"
 FIELDS = {"public_key": "Public key", "ip": "IP"}
+# Optional comma-separated subnets behind a site-to-site peer.
+FIELD_NETWORKS = "Networks"
 
 
 def main() -> int:
@@ -16,7 +18,15 @@ def main() -> int:
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1
-    print(json.dumps([{"name": device, **{key: client[name] for key, name in FIELDS.items()}} for device, client in clients]))
+    peers = [
+        {
+            "name": device,
+            **{key: client[name] for key, name in FIELDS.items()},
+            "networks": [net.strip() for net in (client.get(FIELD_NETWORKS) or "").split(",") if net.strip()],
+        }
+        for device, client in clients
+    ]
+    print(json.dumps(peers))
     return 0
 
 

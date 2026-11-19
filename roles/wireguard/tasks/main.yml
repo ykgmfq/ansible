@@ -62,7 +62,7 @@
     value:
       public_key: "{{ item.public_key }}"
       description: "{{ item.name | default(item.ip) }}"
-      allowed_ips: "{{ item.ip }}"
+      allowed_ips: "{{ [item.ip] + (item.networks | default([])) }}"
       route_allowed_ips: "1"
     replace: true
   loop: "{{ wireguard_peers }}"

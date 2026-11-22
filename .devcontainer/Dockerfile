@@ -1,9 +1,8 @@
-ARG DEBIAN_TAG
 # rbw isn't in trixie, and forky's build needs a newer libc.
 FROM docker.io/library/rust:1-slim-trixie AS rbw
 RUN cargo install --locked --root=/opt/rbw rbw@1.15.0
 
-FROM mcr.microsoft.com/devcontainers/base:debian-${DEBIAN_TAG}
+FROM mcr.microsoft.com/devcontainers/base:debian-13
 LABEL org.opencontainers.image.title="ansible"
 LABEL org.opencontainers.image.vendor="Dennis M. Pöpperl"
 LABEL org.opencontainers.image.source="https://github.com/ykgmfq/ansible"

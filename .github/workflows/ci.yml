@@ -11,11 +11,14 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v6
       - name: Install Ansible tooling
         run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends ansible-lint
-          ansible-galaxy collection install -r roles/requirements.yml
+          uv venv --python-preference only-managed "$HOME/ansible"
+          uv pip install --python "$HOME/ansible" -r .devcontainer/requirements.txt
+          echo "$HOME/ansible/bin" >> "$GITHUB_PATH"
+      - name: Install collections
+        run: ansible-galaxy collection install -r roles/requirements.yml
       - name: Lint
         run: ansible-lint
   nft:

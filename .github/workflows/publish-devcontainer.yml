@@ -36,7 +36,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Compute tags
         id: tags
-        run: echo "tags=latest,$(date -u +%Y-%m),sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+        run: |
+          core=$(sed -n 's/^ansible-core==//p' .devcontainer/requirements.txt)
+          echo "core=$core" >> "$GITHUB_OUTPUT"
+          echo "tags=latest,$core,$(date -u +%Y-%m),sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
       - name: Create dev network
         run: docker network inspect dev6 >/dev/null 2>&1 || docker network create dev6
       - name: Build, test and push
@@ -55,6 +58,19 @@ jobs:
             push
             schedule
             workflow_dispatch
+      # GHCR reads the package description from the index annotations, not the image labels
+      - name: Annotate index from Dockerfile labels
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+        env:
+          TAGS: ${{ steps.tags.outputs.tags }}
+          CORE: ${{ steps.tags.outputs.core }}
+        run: |
+          args=()
+          while IFS= read -r label; do args+=(--annotation "index:$label"); done \
+            < <(sed -n 's/^LABEL \(org\.opencontainers\.image\.[a-z]*=.*\)$/\1/p' .devcontainer/Dockerfile | tr -d '"')
+          args+=(--annotation "index:org.opencontainers.image.version=$CORE")
+          for tag in ${TAGS//,/ }; do args+=(-t "$IMAGE:$tag"); done
+          docker buildx imagetools create "${args[@]}" "$IMAGE:sha-${GITHUB_SHA::7}"
       - name: Resolve digest
         id: digest
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'

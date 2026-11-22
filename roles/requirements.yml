@@ -1,8 +1,14 @@
 ---
 collections:
   - name: community.crypto
+    version: "==3.5.1"
   - name: community.general
+    version: "==14.0.1"
   - name: containers.podman
+    version: "==1.21.2"
   - name: ansible.posix
+    version: "==2.2.2"
   - name: community.openwrt
+    version: "==1.11.0"
   - name: ansible.utils
+    version: "==6.1.1"

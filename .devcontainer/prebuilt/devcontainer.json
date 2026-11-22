@@ -2,7 +2,8 @@
   "name": "ansible and butane (prebuilt)",
   "image": "ghcr.io/ykgmfq/ansible:latest",
   "runArgs": [
-    "--network=dev6"
+    "--network=dev6",
+    "--device=/dev/kvm"
   ],
   "mounts": [
     "source=rbw-config,target=/home/vscode/.config/rbw,type=volume",

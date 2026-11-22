@@ -17,6 +17,9 @@ env:
   IMAGE: ghcr.io/${{ github.repository }}
 jobs:
   publish:
+    outputs:
+      tags: ${{ steps.tags.outputs.tags }}
+      core: ${{ steps.tags.outputs.core }}
     permissions:
       contents: read
       packages: write
@@ -58,12 +61,31 @@ jobs:
             push
             schedule
             workflow_dispatch
+  # devcontainers/ci pushes in its post step, so anything needing the pushed image runs in a later job
+  finalize:
+    needs: publish
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       # GHCR reads the package description from the index annotations, not the image labels
       - name: Annotate index from Dockerfile labels
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
         env:
-          TAGS: ${{ steps.tags.outputs.tags }}
-          CORE: ${{ steps.tags.outputs.core }}
+          TAGS: ${{ needs.publish.outputs.tags }}
+          CORE: ${{ needs.publish.outputs.core }}
         run: |
           args=()
           while IFS= read -r label; do args+=(--annotation "index:$label"); done \
@@ -73,7 +95,6 @@ jobs:
           docker buildx imagetools create "${args[@]}" "$IMAGE:sha-${GITHUB_SHA::7}"
       - name: Resolve digest
         id: digest
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
         run: |
           digest=$(docker buildx imagetools inspect "$IMAGE:sha-${GITHUB_SHA::7}" --format '{{json .Manifest}}' | jq --raw-output .digest)
           echo "digest=$digest" >> "$GITHUB_OUTPUT"

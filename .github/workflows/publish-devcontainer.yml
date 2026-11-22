@@ -18,8 +18,7 @@ env:
 jobs:
   publish:
     outputs:
-      tags: ${{ steps.tags.outputs.tags }}
-      core: ${{ steps.tags.outputs.core }}
+      meta: ${{ steps.meta.outputs.json }}
     permissions:
       contents: read
       packages: write
@@ -37,12 +36,29 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Compute tags
+      - name: Read ansible-core version
+        id: core
+        run: sed -n 's/^ansible-core==/core=/p' .devcontainer/requirements.txt >> "$GITHUB_OUTPUT"
+      # GHCR reads the package description from the index annotations, not the image labels
+      - name: Compute tags and annotations
+        id: meta
+        uses: docker/metadata-action@v6
+        env:
+          DOCKER_METADATA_ANNOTATIONS_LEVELS: index
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=raw,value=latest
+            type=raw,value=${{ steps.core.outputs.core }}
+            type=raw,value={{date 'YYYY-MM'}}
+            type=sha,prefix=sha-
+          annotations: |
+            org.opencontainers.image.version=${{ steps.core.outputs.core }}
+      - name: List tag names
         id: tags
-        run: |
-          core=$(sed -n 's/^ansible-core==//p' .devcontainer/requirements.txt)
-          echo "core=$core" >> "$GITHUB_OUTPUT"
-          echo "tags=latest,$core,$(date -u +%Y-%m),sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+        run: echo "tags=$(jq -r '.tags | map(sub(".*:"; "")) | join(",")' <<<"$META")" >> "$GITHUB_OUTPUT"
+        env:
+          META: ${{ steps.meta.outputs.json }}
       - name: Create dev network
         run: docker network inspect dev6 >/dev/null 2>&1 || docker network create dev6
       - name: Build, test and push
@@ -81,18 +97,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      # GHCR reads the package description from the index annotations, not the image labels
-      - name: Annotate index from Dockerfile labels
+      - name: Re-tag the pushed image with index annotations
         env:
-          TAGS: ${{ needs.publish.outputs.tags }}
-          CORE: ${{ needs.publish.outputs.core }}
-        run: |
-          args=()
-          while IFS= read -r label; do args+=(--annotation "index:$label"); done \
-            < <(sed -n 's/^LABEL \(org\.opencontainers\.image\.[a-z]*=.*\)$/\1/p' .devcontainer/Dockerfile | tr -d '"')
-          args+=(--annotation "index:org.opencontainers.image.version=$CORE")
-          for tag in ${TAGS//,/ }; do args+=(-t "$IMAGE:$tag"); done
-          docker buildx imagetools create "${args[@]}" "$IMAGE:sha-${GITHUB_SHA::7}"
+          META: ${{ needs.publish.outputs.meta }}
+        run: .github/scripts/publish-index.sh
       - name: Resolve digest
         id: digest
         run: |

@@ -26,9 +26,17 @@ _playbook target flags:
 butane:
     butane --output=server.ign server.butane
 
+# Validate server.butane without writing the ignition file
+butane-check:
+    butane --strict server.butane > /dev/null
+
 # Lint Ansible files and nftables templates
-lint:
+lint: lint-ansible lint-nft
+
+lint-ansible:
     ansible-lint
+
+lint-nft:
     python3 .github/scripts/nft-lint.py
 
 # Write every WireGuard client's config to files and print each as a QR code

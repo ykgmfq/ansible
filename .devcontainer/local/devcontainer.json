@@ -4,7 +4,6 @@
     "dockerfile": "../Dockerfile",
     "context": "..",
     "args": {
-      "DEBIAN_TAG": "13",
       "BUILDKIT_INLINE_CACHE": "1"
     }
   },

@@ -16,4 +16,6 @@ COPY requirements.txt /tmp/requirements.txt
 ENV UV_PYTHON_PREFERENCE=only-managed UV_PYTHON_INSTALL_DIR=/opt/uv/python
 RUN apt-get update && apt-get install -y just ssh-askpass pre-commit markdownlint nftables python3-jinja2 python3-yaml pinentry-curses qrencode qemu-system-x86 qemu-utils xz-utils && rm -rf /var/lib/apt/lists/* \
  && uv venv /opt/ansible && uv pip install --python /opt/ansible -r /tmp/requirements.txt \
- && ln -s /opt/ansible/bin/ansible* /usr/local/bin/ && rm /tmp/requirements.txt
+ && rm /tmp/requirements.txt
+# Last, so the venv's python3 doesn't shadow Debian's
+ENV PATH="$PATH:/opt/ansible/bin"

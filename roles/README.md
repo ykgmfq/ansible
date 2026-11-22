@@ -12,6 +12,8 @@ Each role's README holds its purpose and rationale; `roles/CLAUDE.md` holds the 
 - **ssh_keys**: extra root SSH keys on every host, from the personal repo.
 - **dyndns**: IPv6 reachability for the host.
 - **router_login**, **router_wan**, **router_firewall**, **router_lan**, **router_led**, **router_ddns**: OpenWRT router base configuration.
+- **wwan**: mobile-broadband uplink through a USB modem.
+- **wifi_ap**: Wi-Fi access point on the router LAN.
 - **wireguard**: road-warrior endpoint on the router.
 - **wireguard_client**: tunnel client on the backup host.
 - **homeserver_passthrough**: inbound web and SSH to the homeserver through the router.

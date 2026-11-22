@@ -19,7 +19,7 @@ playbook target *flags: lint (_playbook target flags)
 [private]
 _playbook target flags:
     test -f {{INVENTORY}} || { echo "Personal repo missing at {{PERSONAL_DIR}}" >&2; exit 1; }
-    {{ if flags =~ "--skip-tags[= ][^ ]*secrets" { "true" } else if target =~ "^(network|router_prep|servers)$" { "rbw unlock" } else { "true" } }}
+    {{ if flags =~ "--skip-tags[= ][^ ]*secrets" { "true" } else if target =~ "^(network|router_prep|travel|servers)$" { "rbw unlock" } else { "true" } }}
     ansible-playbook {{PLAYBOOKS}}/{{target}}.yml -i={{INVENTORY}} --diff {{flags}}
 
 # Run butane to generate ignition file

@@ -1,0 +1,39 @@
+---
+- name: SSID, key and country configured
+  ansible.builtin.assert:
+    that:
+      - wifi_ap_ssid | length > 0
+      - wifi_ap_key | length >= 8
+      - wifi_ap_country | length == 2
+    fail_msg: Set wifi_ap_ssid, wifi_ap_key (8+ characters) and wifi_ap_country in the personal inventory
+    quiet: true
+
+- name: Radios enabled in the regulatory domain
+  notify: "wifi ap changed"
+  community.openwrt.uci:
+    command: set
+    key: "wireless.{{ item.0 }}.{{ item.1.key }}"
+    value: "{{ item.1.value }}"
+  loop: "{{ wifi_ap_radios | product([{'key': 'disabled', 'value': '0'}, {'key': 'country', 'value': wifi_ap_country}]) | list }}"
+  loop_control:
+    label: "{{ item.0 }}.{{ item.1.key }}"
+
+# Named after the stock section so the factory open network is replaced, not duplicated.
+- name: LAN served by a WPA2/WPA3 network on every radio
+  no_log: true
+  notify: "wifi ap changed"
+  community.openwrt.uci:
+    command: section
+    config: wireless
+    type: wifi-iface
+    name: "default_{{ item }}"
+    value:
+      device: "{{ item }}"
+      network: lan
+      mode: ap
+      ssid: "{{ wifi_ap_ssid }}"
+      encryption: sae-mixed
+      key: "{{ wifi_ap_key }}"
+      ieee80211w: "1"
+    replace: true
+  loop: "{{ wifi_ap_radios }}"

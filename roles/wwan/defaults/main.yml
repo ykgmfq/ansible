@@ -1,0 +1,8 @@
+---
+# Required, set in the personal inventory.
+wwan_apn: ""
+# Optional; leave empty for an unlocked SIM.
+wwan_pin: ""
+
+wwan_device: /dev/cdc-wdm0
+wwan_metric: "10"

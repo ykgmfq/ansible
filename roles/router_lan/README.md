@@ -16,3 +16,6 @@ RAs are advertised, DHCPv6 leasing is disabled, and OpenWRT's default M/O RA fla
 
 **First-contact address change.** Changing the LAN address breaks the management connection, since management traffic rides the LAN interface.
 The inventory must keep the factory default until the switch has happened.
+
+**IPv6 relay on prefix-less uplinks.** Mobile broadband gives a single /64, so the LAN can't be given its own prefix.
+Relay mode passes the uplink's prefix, router advertisements and neighbour discovery through instead.

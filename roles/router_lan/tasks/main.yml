@@ -42,6 +42,7 @@
     label: "{{ item.key }}"
 
 - name: LAN IPv6 is SLAAC only
+  when: not router_lan_ipv6_relay
   notify: "router lan changed"
   community.openwrt.uci:
     command: set
@@ -53,6 +54,25 @@
     - { key: ra_flags, value: none }
   loop_control:
     label: "{{ item.key }}"
+
+# The uplink interface needs the matching master settings.
+- name: LAN IPv6 relayed from the uplink
+  when: router_lan_ipv6_relay
+  notify: "router lan changed"
+  community.openwrt.uci:
+    command: set
+    key: "dhcp.{{ item.0 }}.{{ item.1 }}"
+    value: "{{ item.2 }}"
+  loop:
+    - [lan, ra, relay]
+    - [lan, dhcpv6, relay]
+    - [lan, ndp, relay]
+    - [wwan, ra, relay]
+    - [wwan, dhcpv6, relay]
+    - [wwan, ndp, relay]
+    - [wwan, master, "1"]
+  loop_control:
+    label: "{{ item.0 }}.{{ item.1 }}"
 
 # Matched by MAC so an existing lease (named or anonymous) is adopted rather than duplicated, which makes dnsmasq refuse to start.
 # Leases dropped from the list are not removed from the router.

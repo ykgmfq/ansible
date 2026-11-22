@@ -1,0 +1,15 @@
+---
+- name: UCI network/firewall changes committed
+  listen: "wwan changed"
+  community.openwrt.uci:
+    command: commit
+- name: Firewall reloaded
+  listen: "wwan changed"
+  community.openwrt.service:
+    name: firewall
+    state: reloaded
+- name: Network reloaded
+  listen: "wwan changed"
+  community.openwrt.service:
+    name: network
+    state: reloaded

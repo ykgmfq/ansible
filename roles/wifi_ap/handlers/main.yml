@@ -1,0 +1,10 @@
+---
+- name: UCI wireless changes committed
+  listen: "wifi ap changed"
+  community.openwrt.uci:
+    command: commit
+- name: Wi-Fi reloaded
+  listen: "wifi ap changed"
+  community.openwrt.command:
+    cmd: wifi reload
+  changed_when: true

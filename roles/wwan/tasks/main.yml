@@ -1,0 +1,62 @@
+---
+- name: APN configured
+  ansible.builtin.assert:
+    that: wwan_apn | length > 0
+    fail_msg: Set wwan_apn in the personal inventory
+    quiet: true
+
+- name: Modem drivers present
+  community.openwrt.apk:
+    name:
+      - comgt-ncm
+      - kmod-usb-net-huawei-cdc-ncm
+      - kmod-usb-serial-option
+      - luci-proto-ncm
+      - usb-modeswitch
+    state: present
+
+- name: Modem interface is dual-stack over NCM
+  notify: "wwan changed"
+  community.openwrt.uci:
+    command: set
+    key: "network.wwan.{{ item.key }}"
+    value: "{{ item.value }}"
+  loop:
+    - { key: proto, value: ncm }
+    - { key: device, value: "{{ wwan_device }}" }
+    - { key: apn, value: "{{ wwan_apn }}" }
+    - { key: pdptype, value: ipv4v6 }
+    - { key: delegate, value: "0" }
+    - { key: metric, value: "{{ wwan_metric }}" }
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: SIM PIN set
+  when: wwan_pin | length > 0
+  no_log: true
+  notify: "wwan changed"
+  community.openwrt.uci:
+    command: set
+    key: network.wwan.pincode
+    value: "{{ wwan_pin }}"
+
+- name: WAN firewall zone discovered
+  community.openwrt.uci:
+    command: find_all
+    config: firewall
+    type: zone
+    find:
+      name: wan
+  register: wwan_wan_zone
+
+# The IPv6 side of an NCM interface is a dynamic child, so both names are listed.
+- name: Modem interface in the WAN firewall zone
+  notify: "wwan changed"
+  community.openwrt.uci:
+    command: add_list
+    key: "firewall.{{ wwan_wan_zone.result_list | first }}.network"
+    value: "{{ item }}"
+    unique: true
+  loop:
+    - wwan
+    - wwan_6

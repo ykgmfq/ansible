@@ -7,3 +7,6 @@ router_lan_dhcp_limit: "150"
 
 # Entries are {name, mac, ip}.
 router_lan_static_leases: []
+
+# For uplinks without prefix delegation (mobile broadband); expects the uplink interface to be named wwan.
+router_lan_ipv6_relay: false

@@ -1,0 +1,26 @@
+---
+# For a travel router still at OpenWRT's factory-default address.
+- name: Travel router
+  hosts: travel
+  serial: 1
+  remote_user: root
+  become: false
+  gather_facts: false
+  roles:
+    - { role: router_login, tags: [secrets] }
+    - hostname
+    - ssh_keys
+    - { role: wwan, tags: [secrets] }
+    - { role: wifi_ap, tags: [secrets] }
+    - { role: https_dns_proxy, tags: [secrets] }
+
+# Own play so every other role's handlers have flushed first.
+# UCI commits are global, so any earlier network reload would otherwise apply the LAN cutover mid-run.
+- name: Travel router LAN
+  hosts: travel
+  serial: 1
+  remote_user: root
+  become: false
+  gather_facts: false
+  roles:
+    - router_lan

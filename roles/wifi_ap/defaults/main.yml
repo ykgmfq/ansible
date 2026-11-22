@@ -1,0 +1,10 @@
+---
+# Required, set in the personal inventory.
+wifi_ap_ssid: ""
+wifi_ap_key: ""
+# Regulatory domain, e.g. DE.
+wifi_ap_country: ""
+
+wifi_ap_radios:
+  - radio0
+  - radio1

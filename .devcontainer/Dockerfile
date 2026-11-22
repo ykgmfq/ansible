@@ -7,7 +7,7 @@ LABEL org.opencontainers.image.title="ansible"
 LABEL org.opencontainers.image.vendor="Dennis M. Pöpperl"
 LABEL org.opencontainers.image.source="https://github.com/ykgmfq/ansible"
 LABEL org.opencontainers.image.description="Devcontainer with Ansible, ansible-lint, Butane, rbw, qrencode and just"
-COPY --from=quay.io/coreos/butane:release /usr/local/bin/butane /usr/local/bin/butane
+COPY --from=quay.io/coreos/butane:v2.28.0 /usr/local/bin/butane /usr/local/bin/butane
 COPY --from=rbw /opt/rbw/bin/rbw /opt/rbw/bin/rbw-agent /usr/local/bin/
 # Debian's packaged ansible-core is too old for newer target Pythons (setup module crashed in dataclasses).
 # uv downloads the newest Python (only-managed ignores Debian's), so the controller doesn't depend on it.

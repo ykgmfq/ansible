@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v7
       - name: Install Ansible tooling
         run: |
           uv venv --python-preference only-managed "$HOME/ansible"

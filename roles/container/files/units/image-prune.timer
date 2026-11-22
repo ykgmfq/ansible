@@ -3,4 +3,4 @@ OnCalendar = 01:00
 Persistent = true
 
 [Install]
-WantedBy = podman-auto-update.timer
+WantedBy = timers.target

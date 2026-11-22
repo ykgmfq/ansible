@@ -17,6 +17,11 @@
     name: podman-auto-update.timer
     enabled: true
     state: started
+- name: Image prune timer active
+  ansible.builtin.systemd_service:
+    name: image-prune.timer
+    enabled: true
+    state: started
 - name: Quadlet generator dryrun
   ansible.builtin.command: /usr/lib/systemd/system-generators/podman-system-generator -dryrun
   register: generator_result

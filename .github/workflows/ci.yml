@@ -21,6 +21,7 @@ jobs:
       lint: ${{ steps.filter.outputs.lint }}
       nft: ${{ steps.filter.outputs.nft }}
       butane: ${{ steps.filter.outputs.butane }}
+      tooling: ${{ steps.filter.outputs.tooling }}
     steps:
       - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
@@ -42,6 +43,8 @@ jobs:
             butane:
               - server.butane
               - *workflow
+            tooling:
+              - .devcontainer/requirements.txt
   # ubuntu-slim runs unprivileged inside a container, so it can't host container jobs
   lint:
     needs: changes
@@ -50,6 +53,10 @@ jobs:
     container: ghcr.io/ykgmfq/ansible:latest
     steps:
       - uses: actions/checkout@v7
+      # The image only gets the new pins after merge, so a bump PR must install them to be linted with them
+      - name: Install bumped tooling
+        if: needs.changes.outputs.tooling == 'true'
+        run: uv pip install --python /opt/ansible -r .devcontainer/requirements.txt
       - run: just galaxy
       - run: just lint-ansible
   nft:

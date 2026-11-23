@@ -1,0 +1,21 @@
+---
+# Layered packages need a reboot before the second run can finish setting up their units.
+- name: First run
+  ansible.builtin.import_playbook: ../../playbooks/servers.yml
+
+- name: Reboot into layered packages
+  hosts: server
+  gather_facts: false
+  tasks:
+    - name: Pending deployment read
+      ansible.builtin.command: rpm-ostree status --pending-exit-77
+      register: converge_pending
+      changed_when: false
+      failed_when: converge_pending.rc not in [0, 77]
+
+    - name: Rebooted
+      when: converge_pending.rc == 77
+      ansible.builtin.reboot:
+
+- name: Second run
+  ansible.builtin.import_playbook: ../../playbooks/servers.yml

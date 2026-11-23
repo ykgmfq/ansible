@@ -1,0 +1,58 @@
+---
+# Check mode reports a change wherever the host differs from what the roles promise.
+- name: Verify
+  hosts: server
+  gather_facts: false
+  tasks:
+    - name: Packages read
+      ansible.builtin.package_facts:
+        manager: rpm
+
+    - name: Layered packages installed
+      ansible.builtin.assert:
+        that: item in ansible_facts.packages
+        quiet: true
+      loop:
+        - systempub
+        - fish
+        - buildah
+
+    - name: Timers active
+      check_mode: true
+      ansible.builtin.systemd_service:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      register: verify_timer
+      failed_when: verify_timer is changed
+      loop:
+        - rpm-ostreed-automatic.timer
+        - sanoid.timer
+        - zfs-scrub-monthly@{{ hostname }}.timer
+        - podman-auto-update.timer
+        - image-prune.timer
+        - dyndns.timer
+
+    # Enabled only: without a broker on the test host it can't stay connected.
+    - name: Systempub enabled
+      check_mode: true
+      ansible.builtin.systemd_service:
+        name: systempub.service
+        enabled: true
+      register: verify_systempub
+      failed_when: verify_systempub is changed
+
+    - name: Expected mounts loaded
+      ansible.builtin.include_vars:
+        file: ../../roles/zfspool/defaults/main.yml
+
+    - name: Datasets read
+      ansible.builtin.command: zfs list -H -o name,mountpoint,mounted
+      register: verify_datasets
+      changed_when: false
+
+    - name: Datasets mounted where containers expect them
+      ansible.builtin.assert:
+        that: (hostname ~ '/' ~ item.key ~ '\t' ~ item.value ~ '\tyes') in verify_datasets.stdout_lines
+        quiet: true
+      loop: "{{ zfspool_source_mounts | dict2items }}"

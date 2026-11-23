@@ -15,6 +15,8 @@ See its `README.md` for the variables it must provide.
 1. **Provision** — run `just ignition` to build the Ignition file and serve it, then install CoreOS on the target machine
 2. **Configure** — run `just playbook servers` against the running host
 
+To try changes first, `just e2e servers` provisions a throwaway VM the same way, runs the playbook against it twice to check idempotence, and verifies the result; it needs KVM.
+
 See the [Butane docs](https://coreos.github.io/butane/) and [Fedora CoreOS bare-metal installation docs](https://docs.fedoraproject.org/en-US/fedora-coreos/bare-metal/) for details on initial provisioning.
 
 **Router:**

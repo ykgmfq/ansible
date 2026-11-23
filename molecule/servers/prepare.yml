@@ -1,0 +1,16 @@
+---
+# A real host keeps its pool across reinstalls; the playbook only imports it.
+- name: Prepare
+  hosts: server
+  gather_facts: false
+  tasks:
+    - name: Pools read
+      ansible.builtin.command: zpool list -H -o name
+      register: prepare_pools
+      changed_when: false
+
+    # Unmounted at the root, since / is read-only on CoreOS.
+    - name: Pool created
+      when: hostname not in prepare_pools.stdout_lines
+      ansible.builtin.command: zpool create -m none {{ hostname }} /dev/disk/by-id/virtio-pool
+      changed_when: true

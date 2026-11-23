@@ -1,0 +1,36 @@
+---
+# The home router only: the travel router's modem can't be emulated.
+driver:
+  name: default
+platforms:
+  - name: testrouter
+    groups:
+      - network
+      - router
+provisioner:
+  name: ansible
+  playbooks:
+    destroy: ../shared/destroy.yml
+  env:
+    ANSIBLE_ROLES_PATH: ${MOLECULE_PROJECT_DIRECTORY}/roles
+    ANSIBLE_COLLECTIONS_PATH: ${MOLECULE_PROJECT_DIRECTORY}/.ansible/collections
+  inventory:
+    host_vars:
+      testrouter:
+        hostname: testrouter
+        ssh_keys_authorized:
+          - "{{ lookup('ansible.builtin.file', molecule_ephemeral_directory ~ '/id_ed25519.pub') }}"
+        router_login_root_password: molecule
+        wireguard_private_key: bW9sZWN1bGUtdGVzdC13aXJlZ3VhcmQtcHJpdmF0ZTA= # gitleaks:allow
+        wireguard_peers:
+          - name: testpeer
+            public_key: bW9sZWN1bGUtdGVzdC13aXJlZ3VhcmQtcGVlci0wMDA=
+            ip: 10.100.0.2/32
+        homeserver_passthrough_ipv6_iid: 5054:ff:fe00:1
+        https_dns_proxy_resolver_url: https://dns.quad9.net/dns-query
+        router_ddns_domain: example.invalid
+        router_ddns_password: molecule
+        router_ddns_update_url: http://127.0.0.1:9/ # Discard port, so no real record changes.
+        router_lan_ipaddr: 192.168.1.1 # Factory address, so the run never cuts over away from Molecule's SSH forward.
+        router_lan_static_leases:
+          - { name: testhost, mac: "52:54:00:00:00:10", ip: 192.168.1.10 }

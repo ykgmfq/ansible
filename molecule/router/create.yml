@@ -1,0 +1,125 @@
+---
+- name: Create
+  hosts: localhost
+  gather_facts: false
+  vars:
+    openwrt_cache: "{{ lookup('ansible.builtin.env', 'HOME') }}/.cache/molecule-openwrt"
+    ssh_key: "{{ molecule_ephemeral_directory }}/id_ed25519"
+    ssh_port: 2223
+  tasks:
+    - name: Stable release read
+      ansible.builtin.uri:
+        url: https://downloads.openwrt.org/.versions.json
+        return_content: true
+      register: openwrt_versions
+
+    - name: Target located
+      ansible.builtin.set_fact:
+        openwrt_target: https://downloads.openwrt.org/releases/{{ openwrt_versions.json.stable_version }}/targets/x86/64
+
+    - name: Target profiles read
+      ansible.builtin.uri:
+        url: "{{ openwrt_target }}/profiles.json"
+        return_content: true
+      register: openwrt_profiles
+
+    - name: Image located
+      ansible.builtin.set_fact:
+        openwrt_image: >-
+          {{ openwrt_profiles.json.profiles.generic.images
+          | selectattr('type', 'eq', 'combined') | selectattr('filesystem', 'eq', 'ext4') | first }}
+
+    - name: Image cache present
+      ansible.builtin.file:
+        path: "{{ openwrt_cache }}"
+        state: directory
+        mode: "u=rwx,go="
+
+    - name: Image downloaded
+      ansible.builtin.get_url:
+        url: "{{ openwrt_target }}/{{ openwrt_image.name }}"
+        dest: "{{ openwrt_cache }}/{{ openwrt_image.name }}"
+        checksum: "sha256:{{ openwrt_image.sha256 }}"
+        mode: "u=rw,go="
+
+    - name: Image decompressed
+      ansible.builtin.command:
+        cmd: gunzip --keep {{ openwrt_cache }}/{{ openwrt_image.name }}
+        creates: "{{ openwrt_cache }}/{{ openwrt_image.name | splitext | first }}"
+
+    - name: SSH key present
+      community.crypto.openssh_keypair:
+        path: "{{ ssh_key }}"
+        type: ed25519
+
+    - name: Root disk present
+      ansible.builtin.command:
+        cmd: >-
+          qemu-img create -f qcow2 -F raw -b {{ openwrt_cache }}/{{ openwrt_image.name | splitext | first }}
+          {{ molecule_ephemeral_directory }}/root.qcow2
+        creates: "{{ molecule_ephemeral_directory }}/root.qcow2"
+
+    # eth0 is the LAN at the factory address, eth1 the WAN with internet for packages.
+    # The image is small enough to boot without KVM.
+    - name: VM started
+      ansible.builtin.command:
+        argv:
+          - qemu-system-x86_64
+          - -machine
+          - q35,accel=kvm:tcg
+          - -cpu
+          - max
+          - -smp
+          - "2"
+          - -m
+          - "512"
+          - -display
+          - none
+          - -daemonize
+          - -pidfile
+          - "{{ molecule_ephemeral_directory }}/qemu.pid"
+          - -serial
+          - file:{{ molecule_ephemeral_directory }}/console.log
+          - -drive
+          - if=virtio,file={{ molecule_ephemeral_directory }}/root.qcow2
+          - -netdev
+          - user,id=lan,net=192.168.1.0/24,host=192.168.1.2,hostfwd=tcp:127.0.0.1:{{ ssh_port }}-192.168.1.1:22
+          - -device
+          - virtio-net-pci,netdev=lan
+          - -netdev
+          - user,id=wan
+          - -device
+          - virtio-net-pci,netdev=wan
+        creates: "{{ molecule_ephemeral_directory }}/qemu.pid"
+
+    # The README's manual first step; a factory router lets root in without a password.
+    - name: SSH key authorized
+      ansible.builtin.command:
+        argv:
+          - ssh
+          - -p
+          - "{{ ssh_port }}"
+          - -o
+          - BatchMode=yes
+          - -o
+          - StrictHostKeyChecking=no
+          - -o
+          - UserKnownHostsFile=/dev/null
+          - -o
+          - ConnectTimeout=5
+          - root@127.0.0.1
+          - cat >> /etc/dropbear/authorized_keys
+        stdin: "{{ lookup('ansible.builtin.file', ssh_key ~ '.pub') }}"
+      register: openwrt_key
+      until: openwrt_key.rc == 0
+      retries: 60
+      delay: 5
+      changed_when: true
+
+    - name: Instance config written
+      ansible.builtin.copy:
+        dest: "{{ molecule_instance_config }}"
+        mode: "u=rw,go="
+        content: |
+          {{ [{'instance': molecule_yml.platforms[0].name, 'address': '127.0.0.1', 'user': 'root',
+               'port': ssh_port, 'identity_file': ssh_key}] | to_nice_yaml }}

@@ -1,0 +1,24 @@
+---
+# No backup host: it needs WireGuard secrets from Vaultwarden.
+driver:
+  name: default
+platforms:
+  - name: moltest
+    groups:
+      - server
+      - appserver
+provisioner:
+  name: ansible
+  playbooks:
+    destroy: ../shared/destroy.yml
+  env:
+    ANSIBLE_ROLES_PATH: ${MOLECULE_PROJECT_DIRECTORY}/roles
+    ANSIBLE_COLLECTIONS_PATH: ${MOLECULE_PROJECT_DIRECTORY}/.ansible/collections
+  inventory:
+    host_vars:
+      moltest:
+        hostname: moltest
+        is_backup_sink: false
+        ssh_keys_authorized:
+          - "{{ lookup('ansible.builtin.file', molecule_ephemeral_directory ~ '/id_ed25519.pub') }}"
+        dyndns_endpoint: http://127.0.0.1:9  # Discard port, so no real record changes.

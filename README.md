@@ -15,6 +15,8 @@ See its `README.md` for the variables it must provide.
 1. **Provision** — run `just ignition` to build the Ignition file and serve it, then install CoreOS on the target machine
 2. **Configure** — run `just playbook servers` against the running host
 
+To try changes first, `just e2e servers` provisions a throwaway VM the same way, runs the playbook against it twice to check idempotence, and verifies the result; it needs KVM.
+
 See the [Butane docs](https://coreos.github.io/butane/) and [Fedora CoreOS bare-metal installation docs](https://docs.fedoraproject.org/en-US/fedora-coreos/bare-metal/) for details on initial provisioning.
 
 **Router:**
@@ -23,6 +25,8 @@ See the [Butane docs](https://coreos.github.io/butane/) and [Fedora CoreOS bare-
 2. **Trust the host key** — connect once with `ssh root@<router address>` and accept the router's host key fingerprint, so Ansible can connect with host key checking enabled
 3. **Prep** — when migrating from an existing active router, run `just playbook router_prep`: it targets the new router while it's still reachable at its factory-default address, so WAN/WireGuard/etc. can be verified before it goes live
 4. **Go live** — run `just playbook network`: its first run switches the router onto the production LAN subnet/DHCP and hands DNS ownership over from the old router, and every run after that is routine idempotent maintenance of the whole stack
+
+To try changes first, `just e2e router` runs the network playbook twice against a throwaway home-router VM and verifies the result; the VM stays at the factory address, so the go-live cutover is not exercised.
 
 Router and backup-host secrets (WireGuard keys, DynDNS password) and the list of WireGuard client devices are read from Vaultwarden through [rbw](https://github.com/doy/rbw), which the playbook recipe unlocks before each run unless the secret-reading roles are skipped with `--skip-tags secrets`.
 Configure it once with `rbw config set email <address>` and `rbw config set base_url <vaultwarden url>`; its config and vault cache live in named volumes, so they survive container rebuilds.

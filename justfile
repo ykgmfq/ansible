@@ -48,6 +48,10 @@ wireguard-client-config *flags:
 galaxy:
     ansible-galaxy collection install -r=roles/requirements.yml
 
+# Run a playbook against a throwaway VM: `servers` or `router`
+e2e scenario *flags: galaxy
+    molecule test -s {{scenario}} {{flags}}
+
 ignition:
     ip a
     python3 -m http.server 9001

@@ -1,0 +1,160 @@
+---
+- name: Create
+  hosts: localhost
+  gather_facts: false
+  vars:
+    fcos_cache: "{{ lookup('ansible.builtin.env', 'HOME') }}/.cache/molecule-fcos"
+    ssh_key: "{{ molecule_ephemeral_directory }}/id_ed25519"
+    ssh_port: 2222
+    ucore_image: ostree-image-signed:docker://ghcr.io/ublue-os/ucore:lts
+    # Plain `status` also echoes the running transaction's target, which would match too early.
+    ucore_booted_re: '"container-image-reference"\s*:\s*"{{ ucore_image }}"'
+  tasks:
+    - name: Stable stream read
+      ansible.builtin.uri:
+        url: https://builds.coreos.fedoraproject.org/streams/stable.json
+        return_content: true
+      register: fcos_stream
+
+    - name: Image located
+      ansible.builtin.set_fact:
+        fcos_disk: "{{ fcos_stream.json.architectures.x86_64.artifacts.qemu.formats['qcow2.xz'].disk }}"
+
+    - name: Image cache present
+      ansible.builtin.file:
+        path: "{{ fcos_cache }}"
+        state: directory
+        mode: "u=rwx,go="
+
+    - name: Image downloaded
+      ansible.builtin.get_url:
+        url: "{{ fcos_disk.location }}"
+        dest: "{{ fcos_cache }}/{{ fcos_disk.location | basename }}"
+        checksum: "sha256:{{ fcos_disk.sha256 }}"
+        mode: "u=rw,go="
+
+    - name: Image decompressed
+      ansible.builtin.command:
+        cmd: unxz --keep {{ fcos_cache }}/{{ fcos_disk.location | basename }}
+        creates: "{{ fcos_cache }}/{{ fcos_disk.location | basename | splitext | first }}"
+
+    - name: SSH key present
+      community.crypto.openssh_keypair:
+        path: "{{ ssh_key }}"
+        type: ed25519
+
+    - name: Server Ignition built
+      ansible.builtin.command:
+        cmd: butane --strict --output={{ molecule_ephemeral_directory }}/server.ign {{ playbook_dir }}/../../server.butane
+        creates: "{{ molecule_ephemeral_directory }}/server.ign"
+
+    # Merged rather than edited, so the VM boots exactly what a real install gets.
+    - name: Test Butane present
+      ansible.builtin.copy:
+        dest: "{{ molecule_ephemeral_directory }}/test.butane"
+        mode: "u=rw,go="
+        content: |
+          variant: fcos
+          version: 1.5.0
+          ignition:
+            config:
+              merge:
+                - local: server.ign
+          passwd:
+            users:
+              - name: root
+                ssh_authorized_keys:
+                  - {{ lookup('ansible.builtin.file', ssh_key ~ '.pub') }}
+
+    - name: Test Ignition built
+      ansible.builtin.command:
+        cmd: >-
+          butane --strict --files-dir={{ molecule_ephemeral_directory }}
+          --output={{ molecule_ephemeral_directory }}/config.ign {{ molecule_ephemeral_directory }}/test.butane
+        creates: "{{ molecule_ephemeral_directory }}/config.ign"
+
+    # The image's root disk is too small for the uCore rebase.
+    - name: Root disk present
+      ansible.builtin.command:
+        cmd: >-
+          qemu-img create -f qcow2 -F qcow2 -b {{ fcos_cache }}/{{ fcos_disk.location | basename | splitext | first }}
+          {{ molecule_ephemeral_directory }}/root.qcow2 40G
+        creates: "{{ molecule_ephemeral_directory }}/root.qcow2"
+
+    - name: Pool disk present
+      ansible.builtin.command:
+        cmd: qemu-img create -f qcow2 {{ molecule_ephemeral_directory }}/pool.qcow2 8G
+        creates: "{{ molecule_ephemeral_directory }}/pool.qcow2"
+
+    - name: VM started
+      ansible.builtin.command:
+        argv:
+          - qemu-system-x86_64
+          - -machine
+          - q35,accel=kvm
+          - -cpu
+          - host
+          - -smp
+          - "4"
+          - -m
+          - "4096"
+          - -display
+          - none
+          - -daemonize
+          - -pidfile
+          - "{{ molecule_ephemeral_directory }}/qemu.pid"
+          - -serial
+          - file:{{ molecule_ephemeral_directory }}/console.log
+          - -fw_cfg
+          - name=opt/com.coreos/config,file={{ molecule_ephemeral_directory }}/config.ign
+          - -drive
+          - if=none,id=root,file={{ molecule_ephemeral_directory }}/root.qcow2
+          - -device
+          - virtio-blk-pci,drive=root,bootindex=0
+          - -drive
+          - if=none,id=pool,file={{ molecule_ephemeral_directory }}/pool.qcow2
+          - -device
+          - virtio-blk-pci,drive=pool,serial=pool
+          - -netdev
+          - user,id=net0,hostfwd=tcp:127.0.0.1:{{ ssh_port }}-:22
+          - -device
+          - virtio-net-pci,netdev=net0
+        creates: "{{ molecule_ephemeral_directory }}/qemu.pid"
+
+    # SSH comes up before the autorebase reboots are done.
+    - name: Signed uCore booted
+      ansible.builtin.command:
+        argv:
+          - ssh
+          - -i
+          - "{{ ssh_key }}"
+          - -p
+          - "{{ ssh_port }}"
+          - -o
+          - StrictHostKeyChecking=no
+          - -o
+          - UserKnownHostsFile=/dev/null
+          - -o
+          - ConnectTimeout=5
+          - root@127.0.0.1
+          - rpm-ostree status --booted --json
+      register: ucore_status
+      until: ucore_status.rc == 0 and ucore_status.stdout is regex(ucore_booted_re)
+      retries: 120
+      delay: 15
+      changed_when: false
+      failed_when: false
+
+    - name: Rebase finished
+      ansible.builtin.assert:
+        that: ucore_status.stdout is regex(ucore_booted_re)
+        fail_msg: "VM never booted signed uCore; see {{ molecule_ephemeral_directory }}/console.log"
+        quiet: true
+
+    - name: Instance config written
+      ansible.builtin.copy:
+        dest: "{{ molecule_instance_config }}"
+        mode: "u=rw,go="
+        content: |
+          {{ [{'instance': molecule_yml.platforms[0].name, 'address': '127.0.0.1', 'user': 'root',
+               'port': ssh_port, 'identity_file': ssh_key}] | to_nice_yaml }}

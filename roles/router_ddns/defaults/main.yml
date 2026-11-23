@@ -1,1 +1,3 @@
 ---
+# ddns-scripts fills in the bracketed placeholders.
+router_ddns_update_url: "https://[USERNAME]:[PASSWORD]@dyndns.strato.com/nic/update?hostname=[DOMAIN]&myip=[IP]"

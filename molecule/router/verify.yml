@@ -1,0 +1,27 @@
+---
+- name: Verify
+  hosts: router
+  gather_facts: false
+  tasks:
+    # The passthrough snippet is included at chain level; a syntax error there stops the whole firewall.
+    - name: Firewall config loads
+      community.openwrt.command:
+        cmd: fw4 check
+      changed_when: false
+
+    - name: Services running
+      community.openwrt.command:
+        cmd: /etc/init.d/{{ item }} running
+      changed_when: false
+      loop:
+        - dnsmasq
+        - odhcpd
+        - https-dns-proxy
+        - dropbear
+
+    - name: WireGuard listening
+      community.openwrt.command:
+        cmd: wg show wg0 listen-port
+      register: verify_wg
+      changed_when: false
+      failed_when: verify_wg.stdout | trim != '51820'

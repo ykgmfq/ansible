@@ -8,6 +8,12 @@
   community.openwrt.service:
     name: network
     state: reloaded
+# netifd loads protocol handlers only at startup; a reload leaves wg0 with proto none.
+- name: WireGuard network restarted
+  listen: "wireguard protocol installed"
+  community.openwrt.service:
+    name: network
+    state: restarted
 - name: WireGuard firewall reloaded
   listen: "wireguard changed"
   community.openwrt.service:

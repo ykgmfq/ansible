@@ -11,5 +11,5 @@
 
 ## Safety
 
-- The `container` role expects the ZFS datasets from `zfspool` to be mounted, which a test environment lacks.
+- The `container` role expects the ZFS datasets from `zfspool` to be mounted; `just e2e servers` provides them on a throwaway VM.
 - When editing Quadlet or systemd unit files, validate with `podman-system-generator -dryrun` or `systemd-analyze verify` if possible.

@@ -1,0 +1,36 @@
+---
+- name: Destroy
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Pidfile read
+      ansible.builtin.stat:
+        path: "{{ molecule_ephemeral_directory }}/qemu.pid"
+      register: destroy_pidfile
+
+    - name: VM stopped
+      when: destroy_pidfile.stat.exists
+      ansible.builtin.command: kill {{ lookup('ansible.builtin.file', destroy_pidfile.stat.path) }}
+      changed_when: true
+      failed_when: false
+
+    # Create skips whatever already exists, so a stale disk would boot an already-configured host.
+    - name: VM files found
+      ansible.builtin.find:
+        paths: "{{ molecule_ephemeral_directory }}"
+        patterns: ["*.qcow2", "*.ign", "qemu.pid"]
+      register: destroy_files
+
+    - name: VM files removed
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ destroy_files.files }}"
+      loop_control:
+        label: "{{ item.path | basename }}"
+
+    - name: Instance config cleared
+      ansible.builtin.copy:
+        dest: "{{ molecule_instance_config }}"
+        content: "[]\n"
+        mode: "u=rw,go="

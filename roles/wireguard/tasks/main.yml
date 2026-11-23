@@ -11,6 +11,7 @@
     label: "{{ item.public_key | default('?') }}"
 
 - name: WireGuard packages present
+  notify: "wireguard protocol installed"
   community.openwrt.apk:
     name: luci-proto-wireguard
     state: present
